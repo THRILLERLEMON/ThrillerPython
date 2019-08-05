@@ -1,2 +1,2 @@
 print('Hello Git')
-print('hi python')
+print('Remember to Click Update')
