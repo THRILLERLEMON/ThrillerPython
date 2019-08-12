@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
-#张老师安排，将黄河流域各县的数据整理到一个表格中
+# 张老师安排，将黄河流域各县的数据整理到一个表格中
+# 创建于2019年8月10日
+
 # import sys
-# stdi,stdo,stde=sys.stdin,sys.stdout,sys.stderr 
+# stdi,stdo,stde=sys.stdin,sys.stdout,sys.stderr
 # reload(sys)
-# sys.stdin,sys.stdout,sys.stderr=stdi,stdo,stde 
+# sys.stdin,sys.stdout,sys.stderr=stdi,stdo,stde
 # sys.setdefaultencoding('utf-8')
 
 import os
@@ -11,48 +13,53 @@ import pandas as pd
 import numpy as np
 
 
-def Findfilenames(path,parstr):
-	filenames = os.listdir(path)
-	pxlsList=list()
-	for i, filename in enumerate(filenames):
-		findresult=filename.find(parstr)
-		if findresult != -1:
-			pxlsList.append(filename)
-		else:
-			continue
-	return pxlsList
+def Findfilenames(path, parstr):
+    filenames = os.listdir(path)
+    pxlsList = list()
+    for i, filename in enumerate(filenames):
+        findresult = filename.find(parstr)
+        if findresult != -1:
+            pxlsList.append(filename)
+        else:
+            continue
+    return pxlsList
 
-def FindValue(parstr,pFileList,pCountryCode,pYear):
-	for file in pFileList:
-		print('查找 '+str(pCountryCode)+'县'+str(pYear)+' 年 '+parstr +'in '+str(file))
-		thisSheet=pd.read_excel(path+'/'+file)
-		verifyStr=thisSheet.iloc[0,10]
-		if parstr==verifyStr:
-			findresult = thisSheet[(thisSheet['county_code']==int(pCountryCode)) & (thisSheet['temporal_period']==pYear)]
-			if findresult.empty is True:
-				continue
-			else:
-				print(findresult.iloc[0])
-				print(findresult.iloc[0,10])
-				if pd.isnull(findresult.iloc[0,10]):
-					print('find a empty')
-				else:
-					print('find one it is'+str(findresult.iloc[0,10]))
-					return findresult.iloc[0,10]
-		else:
-			print(file)
-			print('has something wrong')
 
+def FindValue(parstr, pFileList, pCountryCode, pYear):
+    for file in pFileList:
+        print("查找 " + str(pCountryCode) + "县" +
+              str(pYear) + " 年" + parstr + " in " + str(file))
+        thisSheet = pd.read_excel(path + "/" + file)
+        verifyStr = thisSheet.iloc[0, 10]
+        if parstr == verifyStr:
+            findresult = thisSheet[
+                (thisSheet["county_code"] == int(pCountryCode))
+                & (thisSheet["temporal_period"] == pYear)
+            ].copy()
+            if findresult.empty is True:
+                continue
+            else:
+                # print(findresult.iloc[0])
+                # print(findresult.iloc[0, 10])
+                if pd.isnull(findresult.iloc[0, 10]):
+                    print("find a empty")
+                else:
+                    print("find one it is " + str(findresult.iloc[0, 10]))
+                    return findresult.iloc[0, 10]
+        else:
+            print(file)
+            print("has something wrong")
 
 
 # path='/home/JiQiulei/EXCELwork201908/data'
-path='C:\\Users\\thril\\Desktop\\EXCELwork201908\\Data'
-allCountryData=pd.read_excel('C:\\Users\\thril\\Desktop\\EXCELwork201908\\YR_All.xlsx', sheet_name='Sheet1')
-onetoN_Code=pd.read_excel('C:\\Users\\thril\\Desktop\\EXCELwork201908\\OnetoN_Code.xlsx', sheet_name='Code')
+path = "C:\\Users\\thril\\Desktop\\EXCELwork201908\\Data"
+allCountryData = pd.read_excel(
+    "C:\\Users\\thril\\Desktop\\EXCELwork201908\\YR_All.xlsx", sheet_name="Sheet1")
+onetoN_Code = pd.read_excel(
+    "C:\\Users\\thril\\Desktop\\EXCELwork201908\\OnetoN_Code.xlsx", sheet_name="Code")
 
 
-#建立表头（手动？自动？）代码写
-#参量_年份
+# 参量_年份
 # pars=['乡(镇)个数','建制镇个数','村民委员会个数','自来水受益村','通电话村数','年末总人口','女性人口','男性人口','当年出生人口',
 # '当年死亡人口','常住人口','城镇人口','乡村人口','年末总户数','乡村户数','第二产业从业人员数','第三产业从业人员','年末单位从业人员数',
 # '国有单位从业人员','城镇集体单位从业人员数','其他单位从业人员数','乡村从业人员数','农林牧渔业从业人员数','城镇登记失业人员数',
@@ -77,51 +84,57 @@ onetoN_Code=pd.read_excel('C:\\Users\\thril\\Desktop\\EXCELwork201908\\OnetoN_Co
 # '高等级公路里程','农用地膜使用量','城镇生活污水处理率','污水处理厂数','垃圾处理站数','通有线电视村数','迁入人口合计',
 # '省内迁入人口','省外迁入人口','迁出人口合计','迁往省内人口','迁往省外人口','农林牧渔业增加值','农业增加值','林业增加值',
 # '牧业增加值','渔业增加值','农林牧渔服务业增加值']
-pars=['建制镇个数','村民委员会个数','自来水受益村','通电话村数','年末总人口','女性人口','男性人口','当年出生人口']
+pars = ["建制镇个数", "村民委员会个数", "自来水受益村", "通电话村数",
+        "年末总人口", "女性人口", "男性人口", "当年出生人口"]
 
-#循环每一个参数
-for i,par in enumerate(pars):
-	xlsList=Findfilenames(path,par)
-	#循环每一个县
-	for c,urbanCode in enumerate(allCountryData.loc[:,'GB1999']):
-	#循环每一年
-		for yearn in np.arange(2011,2016,1):
-			newfiledname=par+'_'+str(yearn)
-			allCountryData[newfiledname]=None
-			#对城区的代码进行加和处理
-			if int(urbanCode) in onetoN_Code.columns:
-				thisCitynCode = onetoN_Code.loc[:,urbanCode]
-				urbanValue=FindValue(par,xlsList,urbanCode,yearn)
-				for nCode in thisCitynCode:
-					thisCountryValue=FindValue(par,xlsList,nCode,yearn)
-					urbanValue=urbanValue+thisCountryValue
-				allCountryData[newfiledname].iloc[c]=urbanValue
-			else:	
-				findvalue = FindValue(par,xlsList,urbanCode,yearn)
-				if pd.isnull(findvalue):
-					continue
-				else:
-					allCountryData[newfiledname].iloc[c]=findvalue
-					print(allCountryData[newfiledname].iloc[c])
-					print(allCountryData.iloc[c])
-					print('ok today 0812')
-				
-
-
+# 循环每一个参数
+for i, par in enumerate(pars):
+    xlsList = Findfilenames(path, par)
+    # 循环每一个县
+    for c, oneCountryCode in enumerate(allCountryData.loc[:, "GB1999"]):
+        # 循环每一年
+        for yearn in np.arange(2011, 2014, 1):
+            newfiledname = par + "_" + str(yearn)
+            allCountryData[newfiledname] = None
+            # 对城区的代码进行加和处理
+            if int(oneCountryCode) in onetoN_Code.columns:
+                thisCityNCode = onetoN_Code.loc[:, oneCountryCode]
+                urbanValue = FindValue(par, xlsList, oneCountryCode, yearn)
+                if pd.isnull(urbanValue):
+                    urbanValue = 0
+                for nCode in thisCityNCode:
+                    thisCountryValue = FindValue(par, xlsList, nCode, yearn)
+                    if pd.isnull(thisCountryValue):
+                        thisCountryValue = 0
+                    urbanValue = urbanValue + thisCountryValue
+                if urbanValue == 0:
+                    continue
+                allCountryData.loc[newfiledname, c] = urbanValue
+                print(allCountryData.loc[newfiledname, c])
+                print("get a one2N")
+            # 正常的区县
+            else:
+                findvalue = FindValue(par, xlsList, oneCountryCode, yearn)
+                if pd.isnull(findvalue):
+                    continue
+                else:
+                    allCountryData.loc[newfiledname, c] = findvalue
+                    print(allCountryData[newfiledname].iloc[c])
+                    print("ok find a normal value")
+            print('完成 ' + str(oneCountryCode) +
+                  '县的' + str(yearn) + '年' + par + '的值')
+            print('stop point')
+    print('完成 '+par+'所有值的寻找')
 
 
 # wb = load_workbook(path+'/'+filename)
-
 # from openpyxl import load_workbook
 # wball = load_workbook('/home/JiQiulei/EXCELwork/allwb.xlsx')
 # sheetall = wball['Sheet1']
 # columnmax = sheetall.max_column
-
-
-
 # path='/home/JiQiulei/EXCELwork/data'
 # #rowindex from 2 to 293
-# for rowindex in range(2,293):  
+# for rowindex in range(2,293):
 #     namecell = sheetall['A'+str(rowindex)]
 #     namelong=len(namecell.value)-1
 #     shortname=namecell.value[0:namelong]
@@ -129,7 +142,7 @@ for i,par in enumerate(pars):
 #     tagetsheet=Findsheet(path,shortname)
 #     if tagetsheet is not None:
 #         for r in range(1, tagetsheet.max_row+1):
-#         #for r in range(1, 10): 
+#         #for r in range(1, 10):
 #             for c in range(1, tagetsheet.max_column+1):
 #             #for c in range(1, 7):
 #                 v = tagetsheet.cell(row=r, column=c).value
@@ -141,8 +154,8 @@ for i,par in enumerate(pars):
 #                         if c-2>=1:
 #                             fieldvalue=str(tagetsheet.cell(row=r, column=c-2).value)[0:4]+'_'+str(tagetsheet.cell(row=r, column=c-1).value)[0:4]+'_'+str(tagetsheet.cell(row=2, column=index).value)+'('+str(tagetsheet.cell(row=4, column=index).value)+')'
 #                         else:
-#                             fieldvalue=str(tagetsheet.cell(row=r, column=c-1).value)[0:4]+'_'+str(tagetsheet.cell(row=2, column=index).value)+'('+str(tagetsheet.cell(row=4, column=index).value)+')'                           
-#                         fieldvalue=fieldvalue.replace('_?','')                  
+#                             fieldvalue=str(tagetsheet.cell(row=r, column=c-1).value)[0:4]+'_'+str(tagetsheet.cell(row=2, column=index).value)+'('+str(tagetsheet.cell(row=4, column=index).value)+')'
+#                         fieldvalue=fieldvalue.replace('_?','')
 #                         # print('fieldstr is '+fieldvalue)
 #                         findornot=False
 #                         for clonumber in range(1,columnmax):
@@ -163,10 +176,3 @@ for i,par in enumerate(pars):
 #     print 'over row_'+str(rowindex)
 # wball.save('/home/JiQiulei/EXCELwork/allwbafer.xlsx')
 # print 'ok'
-                
-
-
-
-
-
-
