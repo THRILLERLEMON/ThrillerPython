@@ -48,6 +48,8 @@ def FindValue(parstr,pFileList,pCountryCode,pYear):
 # path='/home/JiQiulei/EXCELwork201908/data'
 path='C:\\Users\\thril\\Desktop\\EXCELwork201908\\Data'
 allCountryData=pd.read_excel('C:\\Users\\thril\\Desktop\\EXCELwork201908\\YR_All.xlsx', sheet_name='Sheet1')
+onetoN_Code=pd.read_excel('C:\\Users\\thril\\Desktop\\EXCELwork201908\\OnetoN_Code.xlsx', sheet_name='Code')
+
 
 #建立表头（手动？自动？）代码写
 #参量_年份
@@ -81,21 +83,29 @@ pars=['建制镇个数','村民委员会个数','自来水受益村','通电话�
 for i,par in enumerate(pars):
 	xlsList=Findfilenames(path,par)
 	#循环每一个县
-	for c,code in enumerate(allCountryData.loc[:,'GB1999']):
+	for c,urbanCode in enumerate(allCountryData.loc[:,'GB1999']):
 	#循环每一年
-		for n in np.arange(2011,2016,1):
-			newfiledname=par+'_'+str(n)
+		for yearn in np.arange(2011,2016,1):
+			newfiledname=par+'_'+str(yearn)
 			allCountryData[newfiledname]=None
-			findvalue = FindValue(par,xlsList,code,n)
-			if pd.isnull(findvalue):
-				continue
-			else:
-				allCountryData[newfiledname].iloc[c]=findvalue
-				print(allCountryData[newfiledname].iloc[c])
-				print(allCountryData.iloc[c])
-				print('ok today')
-			# print(newfiledname)
-			
+			#对城区的代码进行加和处理
+			if int(urbanCode) in onetoN_Code.columns:
+				thisCitynCode = onetoN_Code.loc[:,urbanCode]
+				urbanValue=FindValue(par,xlsList,urbanCode,yearn)
+				for nCode in thisCitynCode:
+					thisCountryValue=FindValue(par,xlsList,nCode,yearn)
+					urbanValue=urbanValue+thisCountryValue
+				allCountryData[newfiledname].iloc[c]=urbanValue
+			else:	
+				findvalue = FindValue(par,xlsList,urbanCode,yearn)
+				if pd.isnull(findvalue):
+					continue
+				else:
+					allCountryData[newfiledname].iloc[c]=findvalue
+					print(allCountryData[newfiledname].iloc[c])
+					print(allCountryData.iloc[c])
+					print('ok today 0812')
+				
 
 
 
