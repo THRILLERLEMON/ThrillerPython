@@ -1,22 +1,26 @@
 # -*- coding: utf-8 -*-
+# coding: utf-8
+import chardet
+import xlwt
+import numpy as np
+import pandas as pd
+import os
+import sys
+stdi, stdo, stde = sys.stdin, sys.stdout, sys.stderr
+reload(sys)
+sys.stdin, sys.stdout, sys.stderr = stdi, stdo, stde
+sys.setdefaultencoding('utf-8')
+
 # 张老师安排，将黄河流域各县的数据整理到一个表格中
 # 创建于2019年8月10日
-
-# import sys
-# stdi,stdo,stde=sys.stdin,sys.stdout,sys.stderr
-# reload(sys)
-# sys.stdin,sys.stdout,sys.stderr=stdi,stdo,stde
-# sys.setdefaultencoding('utf-8')
-
-import os
-import pandas as pd
-import numpy as np
 
 
 def Findfilenames(path, parstr):
     filenames = os.listdir(path)
     pxlsList = list()
     for i, filename in enumerate(filenames):
+        # 转码
+        filename = filename.decode('gbk')
         findresult = filename.find(parstr)
         if findresult != -1:
             pxlsList.append(filename)
@@ -27,9 +31,9 @@ def Findfilenames(path, parstr):
 
 def FindValue(parstr, pFileList, pCountryCode, pYear):
     for file in pFileList:
-        print("查找 " + str(pCountryCode) + "县" +
-              str(pYear) + " 年" + parstr + " in " + str(file))
-        thisSheet = pd.read_excel(path + "/" + file)
+        # print("查找 " + str(pCountryCode) + "县" +
+        #       str(pYear) + " 年" + parstr + " in " + str(file))
+        thisSheet = pd.read_excel((path + "/" + file).encode('gbk'))
         verifyStr = thisSheet.iloc[0, 10]
         if parstr == verifyStr:
             findresult = thisSheet[
@@ -41,22 +45,23 @@ def FindValue(parstr, pFileList, pCountryCode, pYear):
             else:
                 # print(findresult.iloc[0])
                 # print(findresult.iloc[0, 10])
-                if pd.isnull(findresult.iloc[0, 10]):
-                    print("find a empty")
-                else:
-                    print("find one it is " + str(findresult.iloc[0, 10]))
+                if not pd.isnull(findresult.iloc[0, 10]):
                     return findresult.iloc[0, 10]
+                # else:
+                    # print("find one it is " + str(findresult.iloc[0, 10]))
+                    # print ("find a empty")
         else:
-            print(file)
-            print("has something wrong")
+            includOrNot = file.find(parstr)
+            if includOrNot == -1:
+                print(file+" has something wrong")
 
 
 # path='/home/JiQiulei/EXCELwork201908/data'
-path = "C:\\Users\\thril\\Desktop\\EXCELwork201908\\Data"
+path = '/home/JiQiulei/EXCELwork_V2/Data'
 allCountryData = pd.read_excel(
-    "C:\\Users\\thril\\Desktop\\EXCELwork201908\\YR_All.xlsx", sheet_name="Sheet1")
+    '/home/JiQiulei/EXCELwork_V2/YR_All.xlsx', sheet_name="Sheet1")
 onetoN_Code = pd.read_excel(
-    "C:\\Users\\thril\\Desktop\\EXCELwork201908\\OnetoN_Code.xlsx", sheet_name="Code")
+    '/home/JiQiulei/EXCELwork_V2/OnetoN_Code.xlsx', sheet_name="Code")
 
 
 # 参量_年份
@@ -70,7 +75,7 @@ onetoN_Code = pd.read_excel(
 # '农作物播种面积','粮食作物播种面积','稻谷播种面积','小麦播种面积','玉米播种面积','豆类作物播种面积','大豆播种面积','薯类作物播种面积',
 # '油料播种面积','棉花播种面积','蔬菜播种面积','瓜果种植面积','果园面积','粮食产量','小麦产量','玉米产量','豆类产量','大豆产量','薯类产量',
 # '油料产量','棉花产量','蔬菜产量','园林水果产量','苹果产量','肉类总产量','牛肉产量','羊肉产量','猪肉产量','年末生猪存栏','大牲畜年末存栏',
-# '牛年末存栏头数','羊年末存栏只数','奶类产量','禽蛋产量','水产品产量','工业企业数','工业总产值(现价)','从业人员年平均数','主营业务收入',
+# '牛年末存栏头数','羊年末存栏只数','奶类产量','禽蛋产量','水产品产量','工业企业数','工业总产值(现价)','工业生产总值','从业人员年平均数','主营业务收入',
 # '本年应交增值税','利润总额','建筑业企业个数','期末从业人员数','建筑业总产值','公路里程','年末邮电局(所)数','电信业务总量','固定电话用户',
 # '农村电话用户','移动电话用户','互联网宽带接入用户','社会消费品零售总额','城镇社会消费品零售总额','乡村社会消费品零售总额','全社会固定资产投资',
 # '新增固定资产投资','建成区面积','环境污染治理本年完成投资总额','全社会用电量','城镇固定资产投资','房地产开发投资','住宅开发投资',
@@ -84,95 +89,71 @@ onetoN_Code = pd.read_excel(
 # '高等级公路里程','农用地膜使用量','城镇生活污水处理率','污水处理厂数','垃圾处理站数','通有线电视村数','迁入人口合计',
 # '省内迁入人口','省外迁入人口','迁出人口合计','迁往省内人口','迁往省外人口','农林牧渔业增加值','农业增加值','林业增加值',
 # '牧业增加值','渔业增加值','农林牧渔服务业增加值']
-pars = ["建制镇个数", "村民委员会个数", "自来水受益村", "通电话村数",
-        "年末总人口", "女性人口", "男性人口", "当年出生人口"]
+pars = ["城镇人口", "乡村人口", "国内生产总值", "第一产业生产总值", "第二产业生产总值",
+        "第三产业生产总值", "工业生产总值", "大牲畜年末存栏", "年末生猪存栏", "羊年末存栏只数", "有效灌溉面积"]
 
 # 循环每一个参数
 for i, par in enumerate(pars):
     xlsList = Findfilenames(path, par)
     # 循环每一个县
-    for c, oneCountryCode in enumerate(allCountryData.loc[:, "GB1999"]):
+    for c, oneCountryCode in enumerate(allCountryData.loc[:, "County_code_N"]):
+        if pd.isnull(oneCountryCode):
+            break
         # 循环每一年
-        for yearn in np.arange(2011, 2014, 1):
+        for yearn in np.arange(2000, 2016, 1):
             newfiledname = par + "_" + str(yearn)
-            allCountryData[newfiledname] = None
+            # 第一次要新键表头，后面的不需要
+            if c == 0:
+                allCountryData[newfiledname] = None
             # 对城区的代码进行加和处理
             if int(oneCountryCode) in onetoN_Code.columns:
                 thisCityNCode = onetoN_Code.loc[:, oneCountryCode]
                 urbanValue = FindValue(par, xlsList, oneCountryCode, yearn)
                 if pd.isnull(urbanValue):
                     urbanValue = 0
+                try:
+                    input_num = float(urbanValue)
+                except:
+                    urbanValue = 0
+                    print('Not a number')
                 for nCode in thisCityNCode:
+                    if pd.isnull(nCode):
+                        break
                     thisCountryValue = FindValue(par, xlsList, nCode, yearn)
                     if pd.isnull(thisCountryValue):
                         thisCountryValue = 0
+                    try:
+                        input_num = float(thisCountryValue)
+                    except:
+                        thisCountryValue = 0
+                        print('Not a number')
                     urbanValue = urbanValue + thisCountryValue
                 if urbanValue == 0:
                     continue
-                allCountryData.loc[newfiledname, c] = urbanValue
-                print(allCountryData.loc[newfiledname, c])
-                print("get a one2N")
+                allCountryData.loc[c, newfiledname] = urbanValue
+                # print(allCountryData.loc[c, newfiledname])
+                # print("get a one2N")
             # 正常的区县
             else:
-                findvalue = FindValue(par, xlsList, oneCountryCode, yearn)
-                if pd.isnull(findvalue):
+                findedvalue = FindValue(par, xlsList, oneCountryCode, yearn)
+                if pd.isnull(findedvalue):
                     continue
+                try:
+                    input_num = float(findedvalue)
+                except:
+                    findedvalue = 0
+                    print('Not a number')
                 else:
-                    allCountryData.loc[newfiledname, c] = findvalue
-                    print(allCountryData[newfiledname].iloc[c])
-                    print("ok find a normal value")
-            print('完成 ' + str(oneCountryCode) +
-                  '县的' + str(yearn) + '年' + par + '的值')
-            print('stop point')
+                    allCountryData.loc[c, newfiledname] = findedvalue
+            #         print(allCountryData[newfiledname].iloc[c])
+                    # print("ok find a normal value")
+            # print('完成 ' + str(oneCountryCode) +
+            #       '县的' + str(yearn) + '年' + par + '的值')
     print('完成 '+par+'所有值的寻找')
-
-
-# wb = load_workbook(path+'/'+filename)
-# from openpyxl import load_workbook
-# wball = load_workbook('/home/JiQiulei/EXCELwork/allwb.xlsx')
-# sheetall = wball['Sheet1']
-# columnmax = sheetall.max_column
-# path='/home/JiQiulei/EXCELwork/data'
-# #rowindex from 2 to 293
-# for rowindex in range(2,293):
-#     namecell = sheetall['A'+str(rowindex)]
-#     namelong=len(namecell.value)-1
-#     shortname=namecell.value[0:namelong]
-#     #print('start row_'+str(rowindex))
-#     tagetsheet=Findsheet(path,shortname)
-#     if tagetsheet is not None:
-#         for r in range(1, tagetsheet.max_row+1):
-#         #for r in range(1, 10):
-#             for c in range(1, tagetsheet.max_column+1):
-#             #for c in range(1, 7):
-#                 v = tagetsheet.cell(row=r, column=c).value
-#                 if v == tagetsheet.title:
-#                     # print('finded_')
-#                     # print(tagetsheet.title)
-#                     for index in range(c+1,tagetsheet.max_column+1):
-#                         fieldvalue=''
-#                         if c-2>=1:
-#                             fieldvalue=str(tagetsheet.cell(row=r, column=c-2).value)[0:4]+'_'+str(tagetsheet.cell(row=r, column=c-1).value)[0:4]+'_'+str(tagetsheet.cell(row=2, column=index).value)+'('+str(tagetsheet.cell(row=4, column=index).value)+')'
-#                         else:
-#                             fieldvalue=str(tagetsheet.cell(row=r, column=c-1).value)[0:4]+'_'+str(tagetsheet.cell(row=2, column=index).value)+'('+str(tagetsheet.cell(row=4, column=index).value)+')'
-#                         fieldvalue=fieldvalue.replace('_?','')
-#                         # print('fieldstr is '+fieldvalue)
-#                         findornot=False
-#                         for clonumber in range(1,columnmax):
-#                             alfield=sheetall.cell(row=1, column=clonumber)
-#                             if fieldvalue==alfield.value:
-#                                 tagetcell=sheetall.cell(row=rowindex, column=clonumber)
-#                                 tagetcell.value = tagetsheet.cell(row=r, column=index).value
-#                                 findornot=True
-#                                 break
-#                         if findornot==False:
-#                             columnmax=columnmax+1
-#                             sheetall.insert_cols(columnmax)
-#                             fieldcell=sheetall.cell(row=1, column=columnmax)
-#                             fieldcell.value = fieldvalue
-#                             tagetcell=sheetall.cell(row=rowindex, column=columnmax)
-#                             tagetcell.value = tagetsheet.cell(row=r, column=index).value
-#                             # print('value is '+str(tagetcell.value))
-#     print 'over row_'+str(rowindex)
-# wball.save('/home/JiQiulei/EXCELwork/allwbafer.xlsx')
-# print 'ok'
+# wb = xlwt.Workbook(encoding='utf-8')
+# LST_test = wb.add_sheet('test', 'cell_overwrite_ok=True')
+# LST_test.write(allCountryData)
+# wb.save('/home/JiQiulei/EXCELwork_V2/newXlsx.xlsx')
+allCountryData.to_csv(
+    '/home/JiQiulei/EXCELwork_V2/newXlsx.csv', encoding='gbk')
+print('already finish test! Good!')
