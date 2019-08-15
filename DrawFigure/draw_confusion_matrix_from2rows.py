@@ -5,23 +5,22 @@ import numpy as np
 
 # labels表示你不同类别的代号
 labels = [
-    'DBF',
     'ENF',
+    'DBF',
     'MF',
-    'Oshrub',
     'Cshrub',
+    'Oshrub',
     'Grass',
-    'Crop',
-    'Orchard',
-    'Buildup',
-    'Water',
     'Wet',
+    'Crop',
+    'Buildup',
+    'Crop&Tree',
     'Snow',
-    'Desert',
-    'Barren']
+    'Barren',
+    'Water']
 
 # y_true代表真实的label值 y_pred代表预测得到的lavel值
-y_true = np.loadtxt('C:/Users/thril/Desktop/ChinaCoverls.txt')
+y_true = np.loadtxt('C:/Users/thril/Desktop/Modisls.txt')
 y_pred = np.loadtxt('C:/Users/thril/Desktop/ls_landcover.txt')
 
 tick_marks = np.array(range(len(labels))) + 0.5
@@ -34,8 +33,8 @@ def plot_confusion_matrix(cm, title='Confusion Matrix', cmap=plt.cm.binary):
     xlocations = np.array(range(len(labels)))
     plt.xticks(xlocations, labels, rotation=90)
     plt.yticks(xlocations, labels)
-    plt.ylabel('ChinaCover_Class')
-    plt.xlabel('LP_90m_Class')
+    plt.ylabel('LP_90m_Class')
+    plt.xlabel('Modis_Class')
 
 
 cm = confusion_matrix(y_true, y_pred)
@@ -62,5 +61,5 @@ plt.gcf().subplots_adjust(bottom=0.15)
 
 plot_confusion_matrix(cm_normalized, title='Normalized Confusion Matrix')
 # show confusion matrix
-plt.savefig('C:/Users/thril/Desktop/confusion_matrix.png', format='png')
+plt.savefig('C:/Users/thril/Desktop/confusion_matrix2016.png', format='png')
 plt.show()
