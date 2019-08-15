@@ -111,11 +111,13 @@ for i, par in enumerate(parszhang):
                     if pd.isnull(thisCountryValue):
                         thisCountryValue = 0
                     try:
-                        input_num = float(thisCountryValue)
+                        urbanValue = urbanValue + thisCountryValue
                     except:
-                        thisCountryValue = 0
-                        print('Not a number')
-                    urbanValue = urbanValue + thisCountryValue
+                        try:
+                            input_num = float(thisCountryValue)
+                            urbanValue = urbanValue + input_num
+                        except:
+                            print('Not a number')
                 if urbanValue == 0:
                     continue
                 allCountryData.loc[c, newfiledname] = urbanValue
@@ -127,12 +129,9 @@ for i, par in enumerate(parszhang):
                 if pd.isnull(findedvalue):
                     continue
                 try:
-                    input_num = float(findedvalue)
-                except:
-                    findedvalue = 0
-                    print('Not a number')
-                else:
                     allCountryData.loc[c, newfiledname] = findedvalue
+                except:
+                    print("普通县赋值出了个问题")         
             #         print(allCountryData[newfiledname].iloc[c])
                     # print("ok find a normal value")
             # print('完成 ' + str(oneCountryCode) +
