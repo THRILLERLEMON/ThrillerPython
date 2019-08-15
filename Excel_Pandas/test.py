@@ -96,8 +96,8 @@ for i, par in enumerate(pars):
         # 循环每一年
         for yearn in np.arange(2011, 2014, 1):
             newfiledname = par + "_" + str(yearn)
-            #第一次要新键表头，后面的不需要
-            if c==0:
+            # 第一次要新键表头，后面的不需要
+            if c == 0:
                 allCountryData[newfiledname] = None
             # 对城区的代码进行加和处理
             if int(oneCountryCode) in onetoN_Code.columns:

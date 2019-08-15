@@ -16,7 +16,7 @@ for feat in layer1:
     buff_geom = feat.geometry().Buffer(1000)
     tmp = buff_feat.SetGeometry(buff_geom)
     tmp = buff_lyr.CreateFeature(buff_feat)
-    
+
 result_lyr = memory_ds.CreateLayer('result')
 # 将河流缓冲区与斑块矢量进行重叠
 buff_lyr.Intersection(layer2, result_lyr)

@@ -131,7 +131,7 @@ for i, par in enumerate(parszhang):
                 try:
                     allCountryData.loc[c, newfiledname] = findedvalue
                 except:
-                    print("普通县赋值出了个问题")         
+                    print("普通县赋值出了个问题")
             #         print(allCountryData[newfiledname].iloc[c])
                     # print("ok find a normal value")
             # print('完成 ' + str(oneCountryCode) +
