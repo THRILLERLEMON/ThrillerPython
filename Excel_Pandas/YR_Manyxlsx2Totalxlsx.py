@@ -108,14 +108,7 @@ for i, par in enumerate(pars):
             # 对城区的代码进行加和处理
             if int(oneCountryCode) in onetoN_Code.columns:
                 thisCityNCode = onetoN_Code.loc[:, oneCountryCode]
-                urbanValue = FindValue(par, xlsList, oneCountryCode, yearn)
-                if pd.isnull(urbanValue):
-                    urbanValue = 0
-                try:
-                    input_num = float(urbanValue)
-                except:
-                    urbanValue = 0
-                    print('Not a number')
+                urbanValue = 0
                 for nCode in thisCityNCode:
                     if pd.isnull(nCode):
                         break
