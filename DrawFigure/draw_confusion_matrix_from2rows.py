@@ -33,7 +33,7 @@ def plot_confusion_matrix(cm, title='Confusion Matrix', cmap=plt.cm.binary):
     xlocations = np.array(range(len(labels)))
     plt.xticks(xlocations, labels, rotation=90)
     plt.yticks(xlocations, labels)
-    plt.ylabel('LP_90m_Class')
+    plt.ylabel('YR_90m_Class')
     plt.xlabel('Modis_Class')
 
 
