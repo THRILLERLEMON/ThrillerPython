@@ -14,15 +14,76 @@ import sys
 # 张老师安排，将黄河流域各县的数据整理到一个表格中
 # 第三阶段，添加2000年之前的数据
 
-# shanxi
-path = 'D:\OneDrive\SharedFile\EXCEL 数据处理\EXCELwork201908_linux_3RD\Data_Shanxi'
-allCountryData = pd.read_excel(
-    'D:\OneDrive\SharedFile\EXCEL 数据处理\EXCELwork201908_linux_3RD\YR_All_3RD.xlsx', sheet_name="Sheet1")
-onetoN_Code = pd.read_excel(
-    'D:\OneDrive\SharedFile\EXCEL 数据处理\EXCELwork201908_linux_3RD\OnetoN_Code_3RD.xlsx', sheet_name="Code")
 
-#以山西省晋城市为例提取的参数
-#1 能找到的对应参数，key是2000之前的参数名称，value是2000年后的参数名称
+
+def Findfilename(path, findstr):
+    filenames = os.listdir(path)
+    pxlsList = list()
+    for i, filename in enumerate(filenames):
+        # # 转码
+        # filename = filename.decode('gbk')
+        findresult = filename.find(findstr)
+        if findresult != -1:
+            pxlsList.append(filename)
+        else:
+            continue
+    return pxlsList
+
+
+
+
+# shanxi
+path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\Data_Shanxi'
+allCountryData = pd.read_excel(
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\YR_All_3RD.xlsx', sheet_name="Sheet1")
+onetoN_Code = pd.read_excel(
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\OnetoN_Code_3RD.xlsx', sheet_name="Code")
+
+
+findresult = allCountryData[allCountryData["Province_name"] == '山西省']
+
+for tindex, trow in findresult.iterrows():
+    countryName = trow["NAME"]
+    thisCountryshortName = countryName[0:len(countryName) - 1]
+    thisCountryCity = trow["City_name"]
+    thisCountryCityshortName = thisCountryCity[0:len(countryName) - 1]
+    getCityFilename=Findfilename(path,thisCountryCityshortName)
+    if not pd.isnull(getCityFilename[0]):
+        # thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]).encode('gbk'))
+        thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]))
+        countryPars=thisSheet.iloc[0][5:thisSheet.columns.size].values
+        print(countryPars)
+        for oindex, orow in thisSheet.iterrows():
+            if oindex > 4:
+                ocountryName=orow['Name-of-District-and-County']
+                if thisCountryshortName == ocountryName[0:len(thisCountryshortName)]:
+                    timeYear = int(str(orow['Temporal_Period_Begin'])[0:4])
+
+                    
+                    print(timeYear)
+                    print(countryName)
+                    print(ocountryName)
+                
+            
+
+
+        # findallrecord=thisSheet['Name-of-District-and-County']
+        # allCountryinCity=findallrecord[5:findallrecord.size]
+        # for countryName in allCountryinCity:
+        #     print(allCountryinCity)
+        
+    print('test')
+        
+# for c, oneCityName in enumerate(findresult.loc[:, "NAME"]):
+#     if pd.isnull(oneCityName):
+#         break
+#     print(oneCityName)
+
+# for i, row in enumerate(findresult):
+#     print(row)
+
+# 以山西省晋城市为例提取的参数
+# 1 能找到的对应参数，key是2000之前的参数名称，value是2000年后的参数名称
 parsDic = {
     '乡镇及街道办': '乡(镇)个数',
     '村民委员会/社区居委会': '村民委员会个数',
@@ -91,7 +152,7 @@ parsDic = {
     '果园面积': '果园面积'
 }
 
-#2 参数对应单位
+# 2 参数对应单位
 parsUni = {
     '乡镇及街道办': '个',
     '村民委员会/社区居委会': '个',
@@ -161,24 +222,23 @@ parsUni = {
 }
 
 
-
-#2 2000年之前特有的参数
-unknowpars = {
-    '社会从业人数': '',
-    '在岗职工平均工资': '',
-    '单位GDP能耗': '',
-    '单位工业增加值能耗': '',
-    '#非农业人口': '',
-    '# 水田水浇地': '',
-    '受灾面积': '',
-    '成灾面积': '',
-    '封山育林面积': '',
-    '工业销售产值': '',
-    '主要工业产品产量': '',
-    '#原煤': '',
-    '#发电量': '',
-    '#水泥': '',
-    '#焦炭': '',
-    '#高中': '',
-    '企业数': ''
-}
+# #2 2000年之前特有的参数
+# unknowpars = {
+#     '社会从业人数': '',
+#     '在岗职工平均工资': '',
+#     '单位GDP能耗': '',
+#     '单位工业增加值能耗': '',
+#     '#非农业人口': '',
+#     '# 水田水浇地': '',
+#     '受灾面积': '',
+#     '成灾面积': '',
+#     '封山育林面积': '',
+#     '工业销售产值': '',
+#     '主要工业产品产量': '',
+#     '#原煤': '',
+#     '#发电量': '',
+#     '#水泥': '',
+#     '#焦炭': '',
+#     '#高中': '',
+#     '企业数': ''
+# }
