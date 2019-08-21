@@ -83,8 +83,8 @@ pars7 = ['瓜果种植面积', '果园面积', '粮食产量', '小麦产量', '
          '蔬菜产量', '园林水果产量', '苹果产量', '肉类总产量', '牛肉产量', '羊肉产量', '猪肉产量', '牛年末存栏头数',  '奶类产量', '禽蛋产量']
 pars8 = ['公路里程', '年末邮电局(所)数', '电信业务总量', '固定电话用户', '农村电话用户', '移动电话用户',
          '互联网宽带接入用户', '社会消费品零售总额', '城镇社会消费品零售总额', '乡村社会消费品零售总额']
-pars9 = ['迁入人口合计', '省内迁入人口', '省外迁入人口', '迁出人口合计', '迁往省内人口', '迁往省外人口',
-         '农林牧渔业增加值', '农业增加值', '林业增加值', '牧业增加值', '渔业增加值', '农林牧渔服务业增加值']
+pars9 = ['迁入人口合计', '省内迁入人口', '省外迁入人口', '迁出人口合计', '迁往省内人口',
+         '迁往省外人口', '农林牧渔业增加值', '农业增加值', '林业增加值', '牧业增加值']
 pars10 = ['水产品产量', '工业企业数', '工业总产值(现价)',  '从业人员年平均数', '主营业务收入',
           '本年应交增值税', '利润总额', '建筑业企业个数', '期末从业人员数', '建筑业总产值']
 pars11 = ['商品房屋销售额', '普通中学数', '小学数', '普通中学专任教师数', '小学专任教师数', '普通中学在校学生数',
@@ -97,8 +97,13 @@ pars14 = ['医院、卫生院卫生技术人员数', '执业(助理)医师', '�
           '农村居民人均纯收入', '农村居民人均生活消费支出', '农民人均住房面积', '各种社会福利收养性单位数', '各种社会福利收养性单位床位数']
 pars15 = ['耕地面积', '水田面积', '水浇地面积', '基建占地面积', '年内减少耕地面积',
           '家禽存栏', '在岗职工数', '工业二氧化硫排放量', '烟(粉)尘排放量', '氮氧化物排放量']
-pars16 = ['年末耕地总资源', '退耕还林还草面积', '邮政业务总量', '邮电业务总量', '高等级公路里程',
-          '农用地膜使用量', '城镇生活污水处理率', '污水处理厂数', '垃圾处理站数', '通有线电视村数']
+pars16 = ['年末耕地总资源', '退耕还林还草面积', '邮政业务总量', '邮电业务总量',
+          '高等级公路里程', '农用地膜使用量', '城镇生活污水处理率', '污水处理厂数', '垃圾处理站数']
+pars17 = ['全社会从业人员数', '第一产业从业人员数', '内资企业', '港、澳、台商投资企业', '外商投资企业',
+          '流动资产合计', '出口总额', '当年实际使用外资金额', '小学学龄儿童净入学率', '油菜播种面积']
+pars18 = ['稻谷产量', '茶叶产量', '蚕茧产量', '固定资产净值', '主营业务税金及附加',
+          '工业用电量', '居民生活用电量', '进口总额', '新增固定资产', '体育场馆数']
+pars19 = ['5岁以下儿童死亡率', '婴儿死亡率', '产妇住院分娩比例', '渔业增加值', '农林牧渔服务业增加值', '通有线电视村数']
 
 
 # 循环每一个参数
@@ -109,7 +114,7 @@ for i, par in enumerate(parszhang):
         if pd.isnull(oneCountryCode):
             break
         # 循环每一年
-        for yearn in np.arange(2000, 2016, 1):
+        for yearn in np.arange(2000, 2017, 1):
             newfiledname = par + "_" + str(yearn)
             # 第一次要新键表头，后面的不需要
             if c == 0:
@@ -131,7 +136,8 @@ for i, par in enumerate(parszhang):
                             input_num = float(thisCountryValue)
                             urbanValue = urbanValue + input_num
                         except:
-                            print('Not a number')
+                            print('在计算'+str(oneCountryCode)+'城区的_'+par +
+                                  '_时，出现问题，寻找到的'+str(thisCityNCode)+'区县'+str(yearn)+'年的值不是一个数字，忽略这个值，请检查！')
                 if urbanValue == 0:
                     continue
                 allCountryData.loc[c, newfiledname] = urbanValue
@@ -145,7 +151,8 @@ for i, par in enumerate(parszhang):
                 try:
                     allCountryData.loc[c, newfiledname] = findedvalue
                 except:
-                    print("普通县赋值出了个问题")
+                    print('在计算'+str(oneCountryCode)+'普通县'+str(yearn)+'年的_'+par +
+                          '_时，出现问题，请检查！')
             #         print(allCountryData[newfiledname].iloc[c])
                     # print("ok find a normal value")
             # print('完成 ' + str(oneCountryCode) +
@@ -156,5 +163,5 @@ for i, par in enumerate(parszhang):
 # LST_test.write(allCountryData)
 # wb.save('/home/JiQiulei/EXCELwork_V2/newXlsx.xlsx')
 allCountryData.to_csv(
-    '/home/JiQiulei/EXCELwork_V2/newXlsx.csv', encoding='gbk')
+    '/home/JiQiulei/EXCELwork_V2/newXlsx_zhang.csv', encoding='gbk')
 print('already finish test! Good!')
