@@ -15,21 +15,24 @@ import sys
 # 第三阶段，添加不同市的参数
 
 
+class Logger(object):
+    def __init__(self, filename="Default.log"):
+        self.terminal = sys.stdout
+        self.log = open(filename, "a")
+ 
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+ 
+    def flush(self):
+        pass
+path = os.path.abspath(os.path.dirname(__file__))
+type = sys.getfilesystemencoding()
+sys.stdout = Logger('OutLog.txt')
+ 
+print(path)
 
 
-
-
-# shanxi
-path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\Data_Shanxi'
-allCountryData = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\YR_All_3RD.xlsx', sheet_name="Sheet1")
-onetoN_Code = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\OnetoN_Code_3RD.xlsx', sheet_name="Code")
-
-
-filenames = os.listdir(path)
-for i, filename in enumerate(filenames):
-    thisCitySheet= pd.read_excel(path+'\\'+filename)
 
 
 # 以山西省晋城市为例提取的参数
@@ -201,3 +204,26 @@ parsUni = {
     '#焦炭': '吨',
     '#高中': '人',
 }
+
+
+# shanxi
+path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\Data_Shanxi'
+allCountryData = pd.read_excel(
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\YR_All_3RD.xlsx', sheet_name="Sheet1")
+onetoN_Code = pd.read_excel(
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\OnetoN_Code_3RD.xlsx', sheet_name="Code")
+
+
+filenames = os.listdir(path)
+for i, filename in enumerate(filenames):
+    thisCitySheet = pd.read_excel(path + '\\'+filename)
+    countryPars=thisCitySheet.iloc[0][5:thisCitySheet.columns.size]
+    countryParsUnit=thisCitySheet.iloc[2][5:thisCitySheet.columns.size]
+    for num in range(0, countryPars.size):
+        pParStr = countryPars[num]
+        if not pParStr in parsDic.keys():
+            print('请添加参数'+pParStr+'他的单位是:'+str(countryParsUnit[num])+'来自：'+filename)
+    print('ok')
+
+
+
