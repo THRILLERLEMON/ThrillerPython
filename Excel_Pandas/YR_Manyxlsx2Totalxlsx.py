@@ -129,6 +129,8 @@ for i, par in enumerate(parszhang):
                     thisCountryValue = FindValue(par, xlsList, nCode, yearn)
                     if pd.isnull(thisCountryValue):
                         thisCountryValue = 0
+                    if str(thisCountryValue).isspace():
+                        thisCountryValue = 0
                     try:
                         urbanValue = urbanValue + thisCountryValue
                     except:

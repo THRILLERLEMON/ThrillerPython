@@ -262,14 +262,6 @@ onetoN_Code = pd.read_excel(
 findresult = allCountryData[allCountryData["Province_name"] == '山西省']
 
 
-# def FindValue(thisCitySheet,, , ):
-
-
-
-
-
-
-
 # 循环每个县
 for tIndex, tRow in findresult.iterrows():
     countryName = tRow["NAME"]
@@ -312,6 +304,28 @@ for tIndex, tRow in findresult.iterrows():
                                       ocountryName+timeYear + '年的' + pParStr + '的值出现错误')
                         # 2000年之后也有的参数
                         else:
+                            # ---------------
+                            # 对城区代码进行处理
+                            if countryName in onetoN_Code.columns:
+                                thisCityNName = onetoN_Code.loc[:, countryName]
+                                urbanValue = 0
+                                for nName in thisCityNName:
+                                    nfindresult = thisSheet[ (thisSheet["Name-of-District-and-County"] == nName) & (thisSheet["temporal_period"] == oRow['Temporal_Period_Begin'])]
+                                    nValue = nfindresult[countryPars.index[num]]
+                                    if pd.isnull(nValue):
+                                        nValue = 0
+                                    if str(nValue).isspace():
+                                        nValue = 0
+                                    try:
+                                        urbanValue=urbanValue+nValue
+                                    except:
+                                        try:
+                                            urbanValue=urbanValue+float( nValue)
+                                        except:
+                                            print('error')
+                                allCountryData.loc[tIndex,realParField] = urbanValue
+                            # ---------------
+
                             try:
                                 allCountryData.loc[tIndex,
                                                    realParField] = pValue
