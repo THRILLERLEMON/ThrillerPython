@@ -29,44 +29,6 @@ def Findfilename(path, findstr):
     return pxlsList
 
 
-# shanxi
-path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\Data_Shanxi'
-allCountryData = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\YR_All_3RD.xlsx', sheet_name="Sheet1")
-onetoN_Code = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\OnetoN_Code_3RD.xlsx', sheet_name="Code")
-
-
-findresult = allCountryData[allCountryData["Province_name"] == '山西省']
-
-#循环每个县
-for tIndex, tRow in findresult.iterrows():
-    countryName = tRow["NAME"]
-    thisCountryshortName = countryName[0:len(countryName) - 1]
-    thisCountryCity = tRow["City_name"]
-    thisCountryCityshortName = thisCountryCity[0:len(countryName) - 1]
-    getCityFilename = Findfilename(path, thisCountryCityshortName)
-    #找到文件
-    if not pd.isnull(getCityFilename[0]):
-        # thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]).encode('gbk'))
-        thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]))
-        countryPars=thisSheet.iloc[0][5:thisSheet.columns.size]
-        countryParsUnit=thisSheet.iloc[2][5:thisSheet.columns.size]
-        #循环这个市的每一个行（很多县）
-        for oIndex, oRow in thisSheet.iterrows():
-            ocountryName = oRow['Name-of-District-and-County']
-            #筛选出目标县的数据
-            if oIndex > 4 and thisCountryshortName == ocountryName[0:len(thisCountryshortName)]:
-                timeYear = int(str(oRow['Temporal_Period_Begin'])[0:4])
-                for num in range(0, countryPars.size):
-                    pParStr=countryPars[num]
-                    pParIndex = countryPars.index[num]
-                    pValue=thisSheet.loc[oIndex,pParIndex]
-                    print(countryName+str(timeYear)+'年的'+pParStr+'的值是：'+str(pValue))
-
-    print('test')
-
-
 # 以山西省晋城市为例提取的参数
 # 1 能找到的对应参数，key是2000之前的参数名称，value是2000年后的参数名称
 parsDic = {
@@ -145,11 +107,11 @@ parsDic = {
     '水田': '水田面积',
     '#非农业人口': '城镇人口',
     '#水浇地': '水浇地面积',
-    '社会福利院数(个)':'各种社会福利收养性单位数',
+    '社会福利院数(个)': '各种社会福利收养性单位数',
     '旱涝保收面积': '旱涝保收面积',
     '#内资企业': '内资企业',
     '#港澳台商投资企业': '港、澳、台商投资企业',
-    '#外商投资企业':'外商投资企业',
+    '#外商投资企业': '外商投资企业',
     '社会从业人数': '',
     '在岗职工平均工资': '',
     '单位GDP能耗': '',
@@ -161,7 +123,6 @@ parsDic = {
     '封山育林面积': '',
     '工业销售产值': '',
     '工业销售产值(当年价)': '',
-    '主要工业产品产量': '',
     '#原煤': '',
     '#发电量': '',
     '#水泥': '',
@@ -176,7 +137,7 @@ parsDic = {
     '#农业人口数': '',
     '单位GDP电耗': '',
     '建成区绿地覆盖率': '',
-    '企业数':''
+    '企业数': ''
 }
 
 # 2 参数对应单位
@@ -260,7 +221,7 @@ parsUni = {
     '旱涝保收面积': '公顷',
     '#内资企业': '万元',
     '#港澳台商投资企业': '万元',
-    '#外商投资企业':'万元',
+    '#外商投资企业': '万元',
     '社会从业人数': '万人',
     '在岗职工平均工资': '元',
     '单位GDP能耗': '吨标准煤/万元',
@@ -286,5 +247,83 @@ parsUni = {
     '#农业人口数': '人',
     '单位GDP电耗': '千瓦时/万元',
     '建成区绿地覆盖率': '%',
-    '企业数':'个'
+    '企业数': '个'
 }
+
+
+# shanxi
+path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\Data_Shanxi'
+allCountryData = pd.read_excel(
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\YR_All_3RD.xlsx', sheet_name="Sheet1")
+onetoN_Code = pd.read_excel(
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\OnetoN_Code_3RD.xlsx', sheet_name="Code")
+
+
+findresult = allCountryData[allCountryData["Province_name"] == '山西省']
+
+
+# def FindValue(thisCitySheet,, , ):
+
+
+
+
+
+
+
+# 循环每个县
+for tIndex, tRow in findresult.iterrows():
+    countryName = tRow["NAME"]
+    thisCountryshortName = countryName[0:len(countryName) - 1]
+    thisCountryCity = tRow["City_name"]
+    thisCountryCityshortName = thisCountryCity[0:len(countryName) - 1]
+    getCityFilename = Findfilename(path, thisCountryCityshortName)
+    # 找到文件
+    if not pd.isnull(getCityFilename[0]):
+        # thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]).encode('gbk'))
+        thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]))
+        countryPars = thisSheet.iloc[0][5:thisSheet.columns.size]
+        countryParsUnit = thisSheet.iloc[2][5:thisSheet.columns.size]
+        # 循环这个市的每一个行（很多县）
+        for oIndex, oRow in thisSheet.iterrows():
+            ocountryName = oRow['Name-of-District-and-County']
+            # 筛选出目标县的行数据
+            if oIndex > 4 and thisCountryshortName == ocountryName[0:len(thisCountryshortName)]:
+                timeYear = str(oRow['Temporal_Period_Begin'])[0:4]
+                # 循环每个参数
+                for num in range(0, countryPars.size):
+                    pParStr = countryPars[num]
+                    # 是需要的参数
+                    if pParStr in parsDic.keys():
+                        pParIndex = countryPars.index[num]
+                        realParField = parsDic[pParStr] + '_' + timeYear
+                        realParUnit = parsUni[pParStr]
+                        pValue = thisSheet.loc[oIndex, pParIndex]
+                        if pd.isnull(pValue):
+                            continue
+                        # 2000年之前特有的参数
+                        if parsDic[pParStr] == '':
+                            # 需要新建表头
+                            allCountryData[realParField] = None
+                            try:
+                                allCountryData.loc[tIndex,
+                                                   realParField] = pValue
+                            except:
+                                print('error in set value at Before2000SpecialPar:' +
+                                      ocountryName+timeYear + '年的' + pParStr + '的值出现错误')
+                        # 2000年之后也有的参数
+                        else:
+                            try:
+                                allCountryData.loc[tIndex,
+                                                   realParField] = pValue
+                            except:
+                                print('error in set value:'+ocountryName +
+                                      timeYear + '年的' + pParStr + '的值出现错误')
+                            # 单位不同的参数
+                            if realParUnit != countryParsUnit[num]:
+                                print('得到的参数名称'+pParStr)
+                                print('应该的字段名称'+realParField)
+                                print('得到的单位'+str(countryParsUnit[num]))
+                                print('应该的单位'+str(realParUnit))
+                                print('-----------------------------------------')
+
+    print('test')
