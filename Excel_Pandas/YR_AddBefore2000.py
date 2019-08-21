@@ -264,7 +264,7 @@ findresult = allCountryData[allCountryData["Province_name"] == '山西省']
 
 # 循环每个县
 for tIndex, tRow in findresult.iterrows():
-    countryName = tRow["NAME"]
+    countryName = tRow["County_name"]
     thisCountryshortName = countryName[0:len(countryName) - 1]
     thisCountryCity = tRow["City_name"]
     thisCountryCityshortName = thisCountryCity[0:len(countryName) - 1]
