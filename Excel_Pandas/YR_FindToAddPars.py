@@ -12,21 +12,11 @@ import sys
 # sys.setdefaultencoding('utf-8')
 
 # 张老师安排，将黄河流域各县的数据整理到一个表格中
-# 第三阶段，添加2000年之前的数据
+# 第三阶段，添加不同市的参数
 
 
-def Findfilename(path, findstr):
-    filenames = os.listdir(path)
-    pxlsList = list()
-    for i, filename in enumerate(filenames):
-        # # 转码
-        # filename = filename.decode('gbk')
-        findresult = filename.find(findstr)
-        if findresult != -1:
-            pxlsList.append(filename)
-        else:
-            continue
-    return pxlsList
+
+
 
 
 # shanxi
@@ -37,34 +27,9 @@ onetoN_Code = pd.read_excel(
     'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\OnetoN_Code_3RD.xlsx', sheet_name="Code")
 
 
-findresult = allCountryData[allCountryData["Province_name"] == '山西省']
-
-#循环每个县
-for tIndex, tRow in findresult.iterrows():
-    countryName = tRow["NAME"]
-    thisCountryshortName = countryName[0:len(countryName) - 1]
-    thisCountryCity = tRow["City_name"]
-    thisCountryCityshortName = thisCountryCity[0:len(countryName) - 1]
-    getCityFilename = Findfilename(path, thisCountryCityshortName)
-    #找到文件
-    if not pd.isnull(getCityFilename[0]):
-        # thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]).encode('gbk'))
-        thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]))
-        countryPars=thisSheet.iloc[0][5:thisSheet.columns.size]
-        countryParsUnit=thisSheet.iloc[2][5:thisSheet.columns.size]
-        #循环这个市的每一个行（很多县）
-        for oIndex, oRow in thisSheet.iterrows():
-            ocountryName = oRow['Name-of-District-and-County']
-            #筛选出目标县的数据
-            if oIndex > 4 and thisCountryshortName == ocountryName[0:len(thisCountryshortName)]:
-                timeYear = int(str(oRow['Temporal_Period_Begin'])[0:4])
-                for num in range(0, countryPars.size):
-                    pParStr=countryPars[num]
-                    pParIndex = countryPars.index[num]
-                    pValue=thisSheet.loc[oIndex,pParIndex]
-                    print(countryName+str(timeYear)+'年的'+pParStr+'的值是：'+str(pValue))
-
-    print('test')
+filenames = os.listdir(path)
+for i, filename in enumerate(filenames):
+    thisCitySheet= pd.read_excel(path+'\\'+filename)
 
 
 # 以山西省晋城市为例提取的参数
