@@ -378,7 +378,6 @@ for tIndex, tRow in findresult.iterrows():
                         # ---------------
                         # 对城区代码进行处理
                         if thisCountryCity in onetoN_Code.columns and ocountryName == onetoN_Code.loc[0, thisCountryCity]:
-                            print('开始处理城区代码')
                             thisCityNName = onetoN_Code.loc[1:,
                                                             thisCountryCity]
                             urbanValue = 0
@@ -414,9 +413,8 @@ for tIndex, tRow in findresult.iterrows():
                                             '得到的单位:'+str(countryParsUnit[num]))
                                         print('应该的单位:' + str(realParUnit))
                                         print(
-                                            '-----------------------------------------')
+                                            '+++++++++++++++++++++++++')
                                 else:
-                                    print(allCountryData.loc[tIndex, realParField])
                                     if pd.isnull(allCountryData.loc[tIndex, realParField]):
                                         allCountryData.loc[tIndex,
                                                            realParField] = urbanValue
@@ -439,9 +437,8 @@ for tIndex, tRow in findresult.iterrows():
                                         '得到的单位:'+str(countryParsUnit[num]))
                                     print('应该的单位:' + str(realParUnit))
                                     print(
-                                        '-----------------------------------------')
+                                        '-------------------------')
                             else:
-                                print('正常赋值')
                                 if pd.isnull(allCountryData.loc[tIndex, realParField]):
                                     allCountryData.loc[tIndex,
                                                     realParField] = pValue
@@ -450,6 +447,7 @@ for tIndex, tRow in findresult.iterrows():
                                   timeYear + '年的' + pParStr + '的值出现错误，请检查！')
                             print('-----------------------------------------')
     print('整理完成一个县：'+thisCountryCity+'_'+countryName)
-    print('#########################################################################')
+    print('##################################################')
 allCountryData.to_csv(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\newCsv.csv')
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\newCsv.csv', encoding='gbk')
+print('Already Finish Work! Good! THRILLER柠檬！')
