@@ -14,10 +14,9 @@ import sys
 # 张老师安排，将黄河流域各县的数据整理到一个表格中
 # 第三阶段，添加2000年之前的数据
 
-# 寻找特定文件名
-
 
 def Findfilename(path, findstr):
+    """寻找特定文件名"""
     filenames = os.listdir(path)
     pxlsList = list()
     for i, filename in enumerate(filenames):
@@ -30,15 +29,68 @@ def Findfilename(path, findstr):
             continue
     return pxlsList
 
-# 转换单位
-
 
 def Changevalue(pOldValue, pOldUnit, pNeedUnit):
+    """转换单位"""
+    returnmes = '未能转换'
+    findresult = pOldUnit.find('以前为')
+    # 不统一
+    if findresult != -1:
+        return None, '单位不统一，无法统一转换！'
+    # * → 万*
+    if pNeedUnit == '万' + pOldUnit:
+        try:
+            newValue = float(pOldValue) / 10000
+            return newValue, '装换成功'
+        except:
+            return None, '未能转换'
+    # * → 千*
+    if pNeedUnit == '千' + pOldUnit:
+        try:
+            newValue = float(pOldValue) / 1000
+            return newValue, '装换成功'
+        except:
+            return None, '未能转换'
+    # 万* → *
+    if pOldUnit == '万' + pNeedUnit:
+        try:
+            newValue = float(pOldValue) * 10000
+            return newValue, '装换成功'
+        except:
+            return None, '未能转换'
+    # 千* → *
+    if pOldUnit == '千' + pNeedUnit:
+        try:
+            newValue = float(pOldValue) * 1000
+            return newValue, '装换成功'
+        except:
+            return None, '未能转换'
+    # 万亩 → 公顷
+    if pOldUnit == '万亩' and pNeedUnit=='公顷':
+        try:
+            newValue = float(pOldValue)*666.7
+            return newValue, '装换成功'
+        except:
+            return None, '未能转换'
+    # 公顷 → 平方公里
+    if pOldUnit == '公顷' and pNeedUnit=='平方公里':
+        try:
+            newValue = float(pOldValue)*0.01
+            return newValue, '装换成功'
+        except:
+            return None, '未能转换'
+    # 亿千瓦小时 → 万千瓦小时
+    if pOldUnit == '亿千瓦小时' and pNeedUnit=='万千瓦小时':
+        try:
+            newValue = float(pOldValue)*10000
+            return newValue, '装换成功'
+        except:
+            return None, '未能转换'
+    return None, returnmes
 
-    return newValue, ''
 
-    # 以山西省晋城市为例提取的参数
-    # 1 能找到的对应参数，key是2000之前的参数名称，value是2000年后的参数名称
+# 以山西省晋城市为例提取的参数
+# 1 能找到的对应参数，key是2000之前的参数名称，value是2000年后的参数名称
 parsDic = {
     '乡镇及街道办': '乡(镇)个数',
     '村民委员会/社区居委会': '村民委员会个数',
@@ -247,7 +299,7 @@ parsUni = {
     '#焦炭': '吨',
     '#高中': '人',
     '人口自然增长率': '‰',
-    '旱地': '公顷',
+    '旱地': '千公顷',
     '核桃产量': '吨',
     '进出口总额': '万美元',
     '外贸出口额': '万美元',
@@ -324,13 +376,26 @@ for tIndex, tRow in findresult.iterrows():
                                         urbanValue = urbanValue+float(nValue)
                                     except:
                                         print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
-                                              '_时，出现问题，寻找到的'+str(nName)+'区县'+timeYear+'年的值不是一个数字，忽略这个值，请检查！')
+                                              '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值不是一个数字，忽略这个值，请检查！')
+                                        print(
+                                            '-----------------------------------------')
                             if urbanValue != 0:
                                 if realParUnit != countryParsUnit[num]:
                                     newUrbanValue, mesUrbanValue = Changevalue(
                                         urbanValue, countryParsUnit[num], realParUnit)
-                                    allCountryData.loc[tIndex,
-                                                       realParField] = newUrbanValue
+                                    if mesUrbanValue == '装换成功':
+                                        allCountryData.loc[tIndex,
+                                                           realParField] = newUrbanValue
+                                    else:
+                                        print(
+                                            '在计算' + thisCountryCity + ocountryName + '(城区)的_' + pParStr + '_时，出现问题!')
+                                        print('单位未能装换，请手动转换!')
+                                        print(mesUrbanValue)
+                                        print(
+                                            '得到的单位:'+str(countryParsUnit[num]))
+                                        print('应该的单位:' + str(realParUnit))
+                                        print(
+                                            '-----------------------------------------')
                                 else:
                                     allCountryData.loc[tIndex,
                                                        realParField] = urbanValue
@@ -347,13 +412,6 @@ for tIndex, tRow in findresult.iterrows():
                         except:
                             print('error in set value:'+ocountryName +
                                   timeYear + '年的' + pParStr + '的值出现错误，请检查！')
-                        # 单位不同的参数
-                        # Changevalue
-                        if realParUnit != countryParsUnit[num]:
-                            print('得到的参数名称'+pParStr)
-                            print('应该的字段名称'+realParField)
-                            print('得到的单位'+str(countryParsUnit[num]))
-                            print('应该的单位'+str(realParUnit))
                             print('-----------------------------------------')
-
-    print('test')
+    print('整理完成一个县：'+thisCountryCity+'_'+countryName)
+    print('#########################################################################')
