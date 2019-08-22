@@ -66,21 +66,21 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
         except:
             return None, '未能转换'
     # 万亩 → 公顷
-    if pOldUnit == '万亩' and pNeedUnit=='公顷':
+    if pOldUnit == '万亩' and pNeedUnit == '公顷':
         try:
             newValue = float(pOldValue)*666.7
             return newValue, '装换成功'
         except:
             return None, '未能转换'
     # 公顷 → 平方公里
-    if pOldUnit == '公顷' and pNeedUnit=='平方公里':
+    if pOldUnit == '公顷' and pNeedUnit == '平方公里':
         try:
             newValue = float(pOldValue)*0.01
             return newValue, '装换成功'
         except:
             return None, '未能转换'
     # 亿千瓦小时 → 万千瓦小时
-    if pOldUnit == '亿千瓦小时' and pNeedUnit=='万千瓦小时':
+    if pOldUnit == '亿千瓦小时' and pNeedUnit == '万千瓦小时':
         try:
             newValue = float(pOldValue)*10000
             return newValue, '装换成功'
@@ -314,9 +314,9 @@ parsUni = {
 # shanxi
 path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\Data_Shanxi'
 allCountryData = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\YR_All_3RD.xlsx', sheet_name="Sheet1")
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\YR_All_3RD_Test0823.xlsx', sheet_name="Sheet1")
 onetoN_Code = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\OnetoN_Code_3RD.xlsx', sheet_name="Code")
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\OnetoN_Code_3RD_Test0823.xlsx', sheet_name="Code")
 
 
 findresult = allCountryData[allCountryData["Province_name"] == '山西省']
