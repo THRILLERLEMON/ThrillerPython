@@ -14,6 +14,8 @@ import sys
 # 张老师安排，将黄河流域各县的数据整理到一个表格中
 # 第三阶段，添加2000年之前的数据
 
+# 寻找特定文件名
+
 
 def Findfilename(path, findstr):
     filenames = os.listdir(path)
@@ -28,9 +30,15 @@ def Findfilename(path, findstr):
             continue
     return pxlsList
 
+# 转换单位
 
-# 以山西省晋城市为例提取的参数
-# 1 能找到的对应参数，key是2000之前的参数名称，value是2000年后的参数名称
+
+def Changevalue(pOldValue, pOldUnit, pNeedUnit):
+
+    return newValue, ''
+
+    # 以山西省晋城市为例提取的参数
+    # 1 能找到的对应参数，key是2000之前的参数名称，value是2000年后的参数名称
 parsDic = {
     '乡镇及街道办': '乡(镇)个数',
     '村民委员会/社区居委会': '村民委员会个数',
@@ -293,7 +301,7 @@ for tIndex, tRow in findresult.iterrows():
                         if pd.isnull(pValue):
                             continue
                         # 2000年之前特有的参数需要新建表头
-                        if parsDic[pParStr] == '':
+                        if parsDic[pParStr] == '' and not realParField in allCountryData.columns:
                             allCountryData[realParField] = None
                         # ---------------
                         # 对城区代码进行处理
@@ -317,18 +325,30 @@ for tIndex, tRow in findresult.iterrows():
                                     except:
                                         print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
                                               '_时，出现问题，寻找到的'+str(nName)+'区县'+timeYear+'年的值不是一个数字，忽略这个值，请检查！')
-                            if urbanValue == 0:
-                                allCountryData.loc[tIndex,
-                                                   realParField] = urbanValue
+                            if urbanValue != 0:
+                                if realParUnit != countryParsUnit[num]:
+                                    newUrbanValue, mesUrbanValue = Changevalue(
+                                        urbanValue, countryParsUnit[num], realParUnit)
+                                    allCountryData.loc[tIndex,
+                                                       realParField] = newUrbanValue
+                                else:
+                                    allCountryData.loc[tIndex,
+                                                       realParField] = urbanValue
                         # ---------------
-
                         try:
-                            allCountryData.loc[tIndex,
-                                               realParField] = pValue
+                            if realParUnit != countryParsUnit[num]:
+                                newpValue, mespValue = Changevalue(
+                                    pValue, countryParsUnit[num], realParUnit)
+                                allCountryData.loc[tIndex,
+                                                   realParField] = newpValue
+                            else:
+                                allCountryData.loc[tIndex,
+                                                   realParField] = pValue
                         except:
                             print('error in set value:'+ocountryName +
-                                  timeYear + '年的' + pParStr + '的值出现错误')
+                                  timeYear + '年的' + pParStr + '的值出现错误，请检查！')
                         # 单位不同的参数
+                        # Changevalue
                         if realParUnit != countryParsUnit[num]:
                             print('得到的参数名称'+pParStr)
                             print('应该的字段名称'+realParField)
