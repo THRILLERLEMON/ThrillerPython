@@ -139,7 +139,7 @@ for i, par in enumerate(parszhang):
                             urbanValue = urbanValue + input_num
                         except:
                             print('在计算'+str(oneCountryCode)+'城区的_'+par +
-                                  '_时，出现问题，寻找到的'+str(thisCityNCode)+'区县'+str(yearn)+'年的值不是一个数字，忽略这个值，请检查！')
+                                  '_时，出现问题，寻找到的'+str(nCode)+'区县'+str(yearn)+'年的值不是一个数字，忽略这个值，请检查！')
                 if urbanValue == 0:
                     continue
                 allCountryData.loc[c, newfiledname] = urbanValue

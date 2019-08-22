@@ -292,52 +292,48 @@ for tIndex, tRow in findresult.iterrows():
                         pValue = thisSheet.loc[oIndex, pParIndex]
                         if pd.isnull(pValue):
                             continue
-                        # 2000年之前特有的参数
+                        # 2000年之前特有的参数需要新建表头
                         if parsDic[pParStr] == '':
-                            # 需要新建表头
                             allCountryData[realParField] = None
-                            try:
-                                allCountryData.loc[tIndex,
-                                                   realParField] = pValue
-                            except:
-                                print('error in set value at Before2000SpecialPar:' +
-                                      ocountryName+timeYear + '年的' + pParStr + '的值出现错误')
-                        # 2000年之后也有的参数
-                        else:
-                            # ---------------
-                            # 对城区代码进行处理
-                            if countryName in onetoN_Code.columns:
-                                thisCityNName = onetoN_Code.loc[:, countryName]
-                                urbanValue = 0
-                                for nName in thisCityNName:
-                                    nfindresult = thisSheet[ (thisSheet["Name-of-District-and-County"] == nName) & (thisSheet["temporal_period"] == oRow['Temporal_Period_Begin'])]
-                                    nValue = nfindresult[countryPars.index[num]]
-                                    if pd.isnull(nValue):
-                                        nValue = 0
-                                    if str(nValue).isspace():
-                                        nValue = 0
+                        # ---------------
+                        # 对城区代码进行处理
+                        if thisCountryCity in onetoN_Code.columns and ocountryName == thisCityNName[0]:
+                            thisCityNName = onetoN_Code.loc[1:,
+                                                            thisCountryCity]
+                            urbanValue = 0
+                            for nName in thisCityNName:
+                                nfindresult = thisSheet[(thisSheet["Name-of-District-and-County"] == nName) & (
+                                    thisSheet["temporal_period"] == oRow['Temporal_Period_Begin'])]
+                                nValue = nfindresult[countryPars.index[num]]
+                                if pd.isnull(nValue):
+                                    nValue = 0
+                                if str(nValue).isspace():
+                                    nValue = 0
+                                try:
+                                    urbanValue = urbanValue+nValue
+                                except:
                                     try:
-                                        urbanValue=urbanValue+nValue
+                                        urbanValue = urbanValue+float(nValue)
                                     except:
-                                        try:
-                                            urbanValue=urbanValue+float( nValue)
-                                        except:
-                                            print('error')
-                                allCountryData.loc[tIndex,realParField] = urbanValue
-                            # ---------------
-
-                            try:
+                                        print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                              '_时，出现问题，寻找到的'+str(nName)+'区县'+timeYear+'年的值不是一个数字，忽略这个值，请检查！')
+                            if urbanValue == 0:
                                 allCountryData.loc[tIndex,
-                                                   realParField] = pValue
-                            except:
-                                print('error in set value:'+ocountryName +
-                                      timeYear + '年的' + pParStr + '的值出现错误')
-                            # 单位不同的参数
-                            if realParUnit != countryParsUnit[num]:
-                                print('得到的参数名称'+pParStr)
-                                print('应该的字段名称'+realParField)
-                                print('得到的单位'+str(countryParsUnit[num]))
-                                print('应该的单位'+str(realParUnit))
-                                print('-----------------------------------------')
+                                                   realParField] = urbanValue
+                        # ---------------
+
+                        try:
+                            allCountryData.loc[tIndex,
+                                               realParField] = pValue
+                        except:
+                            print('error in set value:'+ocountryName +
+                                  timeYear + '年的' + pParStr + '的值出现错误')
+                        # 单位不同的参数
+                        if realParUnit != countryParsUnit[num]:
+                            print('得到的参数名称'+pParStr)
+                            print('应该的字段名称'+realParField)
+                            print('得到的单位'+str(countryParsUnit[num]))
+                            print('应该的单位'+str(realParUnit))
+                            print('-----------------------------------------')
 
     print('test')
