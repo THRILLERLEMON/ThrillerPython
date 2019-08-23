@@ -374,6 +374,9 @@ for tIndex, tRow in findresult.iterrows():
                         pValue = thisSheet.loc[oIndex, pParIndex]
                         if pd.isnull(pValue):
                             continue
+                        # 2000年前特有的参数
+                        if parsDic[pParStr] == '':
+                            realParField = pParStr + '_' + timeYear
                         # 需要新建表头
                         if realParField not in allCountryData.columns:
                             allCountryData[realParField] = None
