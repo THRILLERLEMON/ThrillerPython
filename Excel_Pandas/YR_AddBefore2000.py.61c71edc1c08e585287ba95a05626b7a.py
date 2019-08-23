@@ -350,8 +350,6 @@ for tIndex, tRow in findresult.iterrows():
     thisCountryCityshortName = thisCountryCity[0:len(countryName) - 1]
     getCityFilename = Findfilename(path, thisCountryCityshortName)
     # 找到文件
-    print('#region')
-    print('。。。开始整理：'+thisCountryCity+'_'+countryName)
     if not pd.isnull(getCityFilename[0]):
         # thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]).encode('gbk'))
         thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]))
@@ -408,7 +406,7 @@ for tIndex, tRow in findresult.iterrows():
                                                                realParField] = newUrbanValue
                                     else:
                                         print(
-                                            '在计算' + thisCountryCity + ocountryName + '(城区)的_' + timeYear+ '年的' + pParStr + '_时，出现问题!')
+                                            '在计算' + thisCountryCity + ocountryName + '(城区)的_' + timeYear + pParStr + '_时，出现问题!')
                                         print('单位未能转换，请手动转换!具体信息如下：')
                                         print(mesUrbanValue)
                                         print(
@@ -432,8 +430,8 @@ for tIndex, tRow in findresult.iterrows():
                                                            realParField] = newpValue
                                 else:
                                     print(
-                                        '在计算' + thisCountryCity + ocountryName + '的_' + timeYear + '年的'+ pParStr + '_时，出现问题!')
-                                    print('单位未能转换，请手动转换!具体信息如下：')
+                                        '在计算' + thisCountryCity + ocountryName + '的_' + timeYear + pParStr + '_时，出现问题!')
+                                    print('单位未能转换，请手动转换!')
                                     print(mespValue)
                                     print(
                                         '得到的单位:'+str(countryParsUnit[num]))
@@ -448,8 +446,8 @@ for tIndex, tRow in findresult.iterrows():
                             print('error in set value:'+ocountryName +
                                   timeYear + '年的' + pParStr + '的值出现错误，请检查！')
                             print('-----------------------------------------')
+    print('整理完成一个县：'+thisCountryCity+'_'+countryName)
     print('##################################################')
-    print('#endregion')
 allCountryData.to_csv(
     'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_3RD\\newCsv.csv', encoding='gbk')
 print('Already Finish Work! Good! THRILLER柠檬！')
