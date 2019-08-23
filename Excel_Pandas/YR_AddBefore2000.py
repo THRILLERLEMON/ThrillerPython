@@ -347,7 +347,7 @@ for tIndex, tRow in findresult.iterrows():
     countryName = tRow["County_name"]
     thisCountryshortName = countryName[0:len(countryName) - 1]
     thisCountryCity = tRow["City_name"]
-    thisCountryCityshortName = thisCountryCity[0:len(countryName) - 1]
+    thisCountryCityshortName = thisCountryCity[0:len(thisCountryCity) - 1]
     getCityFilename = Findfilename(path, thisCountryCityshortName)
     # 找到文件
     print('#region')
@@ -391,6 +391,8 @@ for tIndex, tRow in findresult.iterrows():
                                     continue
                                 nfindresult = thisSheet[(thisSheet["Name-of-District-and-County"] == nName) & (
                                     thisSheet["Temporal_Period_Begin"] == oRow['Temporal_Period_Begin'])]
+                                if nfindresult.empty:
+                                    continue
                                 nValue = nfindresult[countryPars.index[num]].values[0]
                                 if pd.isnull(nValue):
                                     nValue = 0
