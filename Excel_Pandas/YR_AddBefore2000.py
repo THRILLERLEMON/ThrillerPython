@@ -384,6 +384,8 @@ for tIndex, tRow in findresult.iterrows():
                                                             thisCountryCity]
                             urbanValue = 0
                             for nName in thisCityNName:
+                                if pd.isnull(nName):
+                                    continue
                                 nfindresult = thisSheet[(thisSheet["Name-of-District-and-County"] == nName) & (
                                     thisSheet["Temporal_Period_Begin"] == oRow['Temporal_Period_Begin'])]
                                 nValue = nfindresult[countryPars.index[num]].values[0]
@@ -408,7 +410,7 @@ for tIndex, tRow in findresult.iterrows():
                                                                realParField] = newUrbanValue
                                     else:
                                         print(
-                                            '在计算' + thisCountryCity + ocountryName + '(城区)的_' + timeYear+ '年的' + pParStr + '_时，出现问题!')
+                                            '在计算' + thisCountryCity + ocountryName + '(城区)的_' + timeYear + '年的' + pParStr + '_时，出现问题!')
                                         print('单位未能转换，请手动转换!具体信息如下：')
                                         print(mesUrbanValue)
                                         print(
@@ -432,7 +434,7 @@ for tIndex, tRow in findresult.iterrows():
                                                            realParField] = newpValue
                                 else:
                                     print(
-                                        '在计算' + thisCountryCity + ocountryName + '的_' + timeYear + '年的'+ pParStr + '_时，出现问题!')
+                                        '在计算' + thisCountryCity + ocountryName + '的_' + timeYear + '年的' + pParStr + '_时，出现问题!')
                                     print('单位未能转换，请手动转换!具体信息如下：')
                                     print(mespValue)
                                     print(
