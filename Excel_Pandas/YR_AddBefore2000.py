@@ -56,7 +56,7 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     findresult = pOldUnit.find('以前为')
     # 不统一
     if findresult != -1:
-        return None, '单位不统一，无法统一转换！'
+        return None, '时间段内单位不统一，无法统一转换！'
     # * → 万*
     if pNeedUnit == '万' + pOldUnit:
         try:
@@ -350,8 +350,7 @@ for tIndex, tRow in findresult.iterrows():
     thisCountryCityshortName = thisCountryCity[0:len(thisCountryCity) - 1]
     getCityFilename = Findfilename(path, thisCountryCityshortName)
     # 找到文件
-    print('#region')
-    print('。。。开始整理：'+thisCountryCity+'_'+countryName)
+    print('#region 开始整理：'+thisCountryCity+'_'+countryName)
     if not pd.isnull(getCityFilename[0]):
         # thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]).encode('gbk'))
         thisSheet = pd.read_excel((path + "\\" + getCityFilename[0]))
