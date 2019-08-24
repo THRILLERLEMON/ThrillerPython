@@ -50,15 +50,32 @@ def Findfilename(path, findstr):
     return pxlsList
 
 
+def is_number(s):
+    """是否是数字"""
+    if s=='.':
+        return True
+    try:
+        float(s)
+        return True
+    except ValueError:
+        pass
+    try:
+        import unicodedata
+        unicodedata.numeric(s)
+        return True
+    except (TypeError, ValueError):
+        pass
+    return False
+    
 def GetValueandUnit(pStrVandU):
     """拆分出数值和单位"""
     try:
-        filterResult = filter(str.isdigit, pStrVandU)
+        filterResult = filter(is_number, pStrVandU)
         number = ''.join(list(filterResult))
         unit = pStrVandU.replace(number, '')
         return float(number), unit
     except:
-        return 0, None
+        return None, None
 
 
 def Changevalue(pOldValue, pOldUnit, pNeedUnit):
@@ -68,9 +85,9 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     # 时间段内不统一
     if findresult != -1:
         return None, '时间段内单位不统一，无法统一转换！'
-    # 数值是需要的单位，去除单位，只剩下数值
-    if pNeedUnit in str(pOldValue) and str(pOldValue).replace(pNeedUnit, '').isdigit():
-        return float(str(pOldValue).replace(pNeedUnit, '')), '转换成功'
+    #不用转换
+    if pOldUnit == pNeedUnit:
+        return float(pOldValue),'转换成功'
     # * → 万*
     if pNeedUnit == '万' + pOldUnit:
         try:
@@ -145,6 +162,13 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     if pOldUnit == '公顷' and pNeedUnit == '平方公里':
         try:
             newValue = float(pOldValue)*0.01
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 万斤 → 吨
+    if pOldUnit == '万斤' and pNeedUnit == '吨':
+        try:
+            newValue = float(pOldValue)*5
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
@@ -479,6 +503,14 @@ for tIndex, tRow in findresult.iterrows():
                         pValue = thisSheet.loc[oIndex, pParIndex]
                         if pd.isnull(pValue):
                             continue
+                        if pValue=='':
+                            continue
+                        if pValue==' ':
+                            continue
+                        if pValue=='-':
+                            continue
+                        if pValue is None:
+                            continue
                         # 2000年前特有的参数
                         if parsDic[pParStr] == '':
                             realParField = pParStr + '_' + timeYear
@@ -500,7 +532,7 @@ for tIndex, tRow in findresult.iterrows():
                                     continue
                                 nValue = nfindresult[countryPars.index[num]].values[0]
                                 # 不是数字
-                                if not nValue.isdigit():
+                                if not is_number(str(nValue)):
                                     # 拆分开值和单位
                                     nsplitValue, nsplitUnit = GetValueandUnit(
                                         str(nValue))
@@ -538,7 +570,7 @@ for tIndex, tRow in findresult.iterrows():
                                     # 转换单位
                                     else:
                                         nChangeValue, nChangeMes = Changevalue(
-                                            nValue, countryParsUnit[num], realParUnit)
+                                            nValue, str(countryParsUnit[num]), realParUnit)
                                         if nChangeMes == '转换成功':
                                             try:
                                                 urbanValue = urbanValue + nChangeValue
@@ -563,7 +595,7 @@ for tIndex, tRow in findresult.iterrows():
                         # ---------------
                         # 处理普通区县
                         # 不是数字
-                        if not pValue.isdigit():
+                        if not is_number(str(pValue)):
                             # 拆分开值和单位
                             nsplitValue, nsplitUnit = GetValueandUnit(
                                 str(pValue))
@@ -602,7 +634,7 @@ for tIndex, tRow in findresult.iterrows():
                             # 转换单位
                             else:
                                 nChangeValue, nChangeMes = Changevalue(
-                                    pValue, countryParsUnit[num], realParUnit)
+                                    pValue, str(countryParsUnit[num]), realParUnit)
                                 if nChangeMes == '转换成功':
                                     try:
                                         allCountryData.loc[tIndex,
