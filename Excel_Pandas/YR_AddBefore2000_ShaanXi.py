@@ -54,9 +54,12 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     """转换单位"""
     returnmes = '单位特殊，未能转换！'
     findresult = pOldUnit.find('以前为')
-    # 不统一
+    # 时间段内不统一
     if findresult != -1:
         return None, '时间段内单位不统一，无法统一转换！'
+    #数值是需要的单位，去除单位，只剩下数值
+    if pNeedUnit in str(pOldValue) and str(pOldValue).replace(pNeedUnit, '').isdigit():
+        return float(str(pOldValue).replace(pNeedUnit, '')), '数值是需要的单位，已经去除单位，只剩下数值'
     # * → 万*
     if pNeedUnit == '万' + pOldUnit:
         try:

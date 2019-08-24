@@ -54,9 +54,12 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     """转换单位"""
     returnmes = '单位特殊，未能转换！'
     findresult = pOldUnit.find('以前为')
-    # 不统一
+    # 时间段内不统一
     if findresult != -1:
         return None, '时间段内单位不统一，无法统一转换！'
+    #数值是需要的单位，去除单位，只剩下数值
+    if pNeedUnit in str(pOldValue) and str(pOldValue).replace(pNeedUnit, '').isdigit():
+        return float(str(pOldValue).replace(pNeedUnit, '')), '数值是需要的单位，已经去除单位，只剩下数值'
     # * → 万*
     if pNeedUnit == '万' + pOldUnit:
         try:
@@ -92,6 +95,34 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 亿* → 万*
+    if pOldUnit[0] == '亿' and pNeedUnit[0] == '万':
+        try:
+            newValue = float(pOldValue)*10000
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 亩 → 公顷
+    if pOldUnit == '亩' and pNeedUnit == '公顷':
+        try:
+            newValue = float(pOldValue)*(1/15)
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 亩 → 千公顷
+    if pOldUnit == '亩' and pNeedUnit == '千公顷':
+        try:
+            newValue = float(pOldValue)*(1/15000)
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 公斤 → 吨
+    if pOldUnit == '公斤' and pNeedUnit == '吨':
+        try:
+            newValue = float(pOldValue)*0.001
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
     # 万亩 → 公顷
     if pOldUnit == '万亩' and pNeedUnit == '公顷':
         try:
@@ -103,13 +134,6 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     if pOldUnit == '公顷' and pNeedUnit == '平方公里':
         try:
             newValue = float(pOldValue)*0.01
-            return newValue, '转换成功'
-        except:
-            return None, '数值转换失败，可能不是个数字，未能转换！'
-    # 亿千瓦小时 → 万千瓦小时
-    if pOldUnit == '亿千瓦小时' and pNeedUnit == '万千瓦小时':
-        try:
-            newValue = float(pOldValue)*10000
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
