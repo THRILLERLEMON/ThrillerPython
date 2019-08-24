@@ -27,9 +27,12 @@ newpart13 = getNewpart('C:\\Users\\thril\\Desktop\\TEST\\newXlsx_pars13.csv')
 newpart14 = getNewpart('C:\\Users\\thril\\Desktop\\TEST\\newXlsx_pars14.csv')
 newpart15 = getNewpart('C:\\Users\\thril\\Desktop\\TEST\\newXlsx_pars15.csv')
 newpart16 = getNewpart('C:\\Users\\thril\\Desktop\\TEST\\newXlsx_pars16.csv')
+newpart17 = getNewpart('C:\\Users\\thril\\Desktop\\TEST\\newXlsx_pars17.csv')
+newpart18 = getNewpart('C:\\Users\\thril\\Desktop\\TEST\\newXlsx_pars18.csv')
+newpart19 = getNewpart('C:\\Users\\thril\\Desktop\\TEST\\newXlsx_pars19.csv')
 
 out = pd.concat([newXlsx_parszhang, newpart1, newpart2, newpart3, newpart4, newpart5, newpart6, newpart7, newpart8,
-                 newpart9, newpart10, newpart11, newpart12, newpart13, newpart14, newpart15, newpart16], axis=1, sort=False)
+                 newpart9, newpart10, newpart11, newpart12, newpart13, newpart14, newpart15, newpart16, newpart17, newpart18, newpart19], axis=1, sort=False)
 
-out.to_excel('C:/Users/thril/Desktop/output.xlsx')
+out.to_excel('C:/Users/thril/Desktop/OutputAll.xlsx')
 print('ok')
