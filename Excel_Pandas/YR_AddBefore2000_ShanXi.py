@@ -85,6 +85,13 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 千* → 万*
+    if pOldUnit[0] == '千' and pNeedUnit[0] == '万':
+        try:
+            newValue = float(pOldValue) / 10
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
     # 万亩 → 公顷
     if pOldUnit == '万亩' and pNeedUnit == '公顷':
         try:
