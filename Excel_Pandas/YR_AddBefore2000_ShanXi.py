@@ -50,6 +50,17 @@ def Findfilename(path, findstr):
     return pxlsList
 
 
+def GetValueandUnit(pStrVandU):
+    """拆分出数值和单位"""
+    try:
+        filterResult = filter(str.isdigit, pStrVandU)
+        number = ''.join(list(filterResult))
+        unit = pStrVandU.replace(number, '')
+        return float(number), unit
+    except:
+        return 0, None
+
+
 def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     """转换单位"""
     returnmes = '单位特殊，未能转换！'
@@ -57,9 +68,9 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     # 时间段内不统一
     if findresult != -1:
         return None, '时间段内单位不统一，无法统一转换！'
-    #数值是需要的单位，去除单位，只剩下数值
+    # 数值是需要的单位，去除单位，只剩下数值
     if pNeedUnit in str(pOldValue) and str(pOldValue).replace(pNeedUnit, '').isdigit():
-        return float(str(pOldValue).replace(pNeedUnit, '')), '数值是需要的单位，已经去除单位，只剩下数值'
+        return float(str(pOldValue).replace(pNeedUnit, '')), '转换成功'
     # * → 万*
     if pNeedUnit == '万' + pOldUnit:
         try:
@@ -153,6 +164,7 @@ parsDic = {
     '第三产业': '第三产业生产总值',
     '人均地区生产总值': '人均国内生产总值',
     '总户数': '年末总户数',
+    '年末总户数': '年末总户数',
     '单位从业人员': '年末单位从业人员数',
     '在岗职工数': '在岗职工数',
     '全社会固定资产投资': '全社会固定资产投资',
@@ -175,6 +187,7 @@ parsDic = {
     '有效灌溉面积': '有效灌溉面积',
     '农村用电量': '农村用电量',
     '农用化肥施用折纯量': '化肥使用量(折纯量)',
+    '农用化肥施用量': '化肥使用量(折纯量)',
     '农用塑料薄膜使用量': '农用塑料薄膜使用量',
     '#地膜': '农用地膜使用量',
     '农药使用量': '农药使用量',
@@ -188,6 +201,7 @@ parsDic = {
     '蔬菜种植面积': '蔬菜播种面积',
     '蔬菜总产量': '蔬菜产量',
     '大牲畜年末存栏': '大牲畜年末存栏',
+    '大牲畜年末头数': '大牲畜年末存栏',
     '肉类总产量': '肉类总产量',
     '奶类总产量': '奶类产量',
     '禽蛋总产量': '禽蛋产量',
@@ -216,13 +230,22 @@ parsDic = {
     '家禽年末存栏数': '家禽存栏',
     '果园面积': '果园面积',
     '水田': '水田面积',
+    '#水田': '水田面积',
     '#非农业人口': '城镇人口',
     '#水浇地': '水浇地面积',
     '社会福利院数(个)': '各种社会福利收养性单位数',
     '旱涝保收面积': '旱涝保收面积',
     '#内资企业': '内资企业',
+    '内资企业': '内资企业',
     '#港澳台商投资企业': '港、澳、台商投资企业',
+    '港澳台商投资企业': '港、澳、台商投资企业',
     '#外商投资企业': '外商投资企业',
+    '外商投资企业': '外商投资企业',
+    '农林牧渔业从业人数': '农林牧渔业从业人员数',
+    '#农林牧渔业从业人数': '农林牧渔业从业人员数',
+    '#农林牧渔业从业人': '农林牧渔业从业人员数',
+    '森林面积': '森林面积',
+    '瓜类面积': '瓜果种植面积',
     '社会从业人数': '',
     '在岗职工平均工资': '',
     '单位GDP能耗': '',
@@ -241,14 +264,33 @@ parsDic = {
     '#高中': '',
     '人口自然增长率': '',
     '旱地': '',
+    '#旱地': '',
     '核桃产量': '',
     '进出口总额': '',
     '外贸出口额': '',
     '人口密度': '',
+    '常住人口密度': '',
     '#农业人口数': '',
     '单位GDP电耗': '',
     '建成区绿地覆盖率': '',
-    '企业数': ''
+    '建成区绿化覆盖率': '',
+    '企业数': '',
+    '花椒产量': '',
+    '工业企业产品销售收入': '',
+    '中药材面积': '',
+    '中药材产量': '',
+    '#退耕造林面积': '',
+    '森林覆盖率': '',
+    '瓜类总产量': '',
+    '人均公共绿地面积': '',
+    '#国有经济': '',
+    '#国有': '',
+    '#集体经济': '',
+    '#集体': '',
+    '#其他经济类型': '',
+    '#其他': '',
+    '#原油': '',
+    '#原油加工量': '',
 }
 
 # 2 参数对应单位
@@ -263,6 +305,7 @@ parsUni = {
     '第三产业': '万元',
     '人均地区生产总值': '元/人',
     '总户数': '户',
+    '年末总户数': '户',
     '单位从业人员': '人',
     '在岗职工数': '人',
     '全社会固定资产投资': '万元',
@@ -285,6 +328,7 @@ parsUni = {
     '有效灌溉面积': '公顷',
     '农村用电量': '万千瓦时',
     '农用化肥施用折纯量': '吨',
+    '农用化肥施用量': '吨',
     '农用塑料薄膜使用量': '吨',
     '#地膜': '吨',
     '农药使用量': '吨',
@@ -298,6 +342,7 @@ parsUni = {
     '蔬菜种植面积': '公顷',
     '蔬菜总产量': '吨',
     '大牲畜年末存栏': '头',
+    '大牲畜年末头数': '头',
     '肉类总产量': '吨',
     '奶类总产量': '吨',
     '禽蛋总产量': '吨',
@@ -326,13 +371,22 @@ parsUni = {
     '家禽年末存栏数': '万只',
     '果园面积': '公顷',
     '水田': '公顷',
+    '#水田': '公顷',
     '#非农业人口': '万人',
     '#水浇地': '公顷',
     '社会福利院数(个)': '个',
     '旱涝保收面积': '公顷',
     '#内资企业': '万元',
+    '内资企业': '万元',
     '#港澳台商投资企业': '万元',
+    '港澳台商投资企业': '万元',
     '#外商投资企业': '万元',
+    '外商投资企业': '万元',
+    '农林牧渔业从业人数': '人',
+    '#农林牧渔业从业人数': '人',
+    '#农林牧渔业从业人': '人',
+    '森林面积': '公顷',
+    '瓜类面积': '公顷',
     '社会从业人数': '万人',
     '在岗职工平均工资': '元',
     '单位GDP能耗': '吨标准煤/万元',
@@ -345,20 +399,39 @@ parsUni = {
     '工业销售产值': '万元',
     '工业销售产值(当年价)': '万元',
     '#原煤': '万吨',
-    '#发电量': '万千瓦小时',
+    '#发电量': '万千瓦时',
     '#水泥': '万吨',
     '#焦炭': '吨',
     '#高中': '人',
     '人口自然增长率': '‰',
     '旱地': '千公顷',
+    '#旱地': '千公顷',
     '核桃产量': '吨',
     '进出口总额': '万美元',
     '外贸出口额': '万美元',
     '人口密度': '人/平方公里',
+    '常住人口密度': '人/平方公里',
     '#农业人口数': '人',
     '单位GDP电耗': '千瓦时/万元',
     '建成区绿地覆盖率': '%',
-    '企业数': '个'
+    '建成区绿化覆盖率': '%',
+    '企业数': '个',
+    '花椒产量': '吨',
+    '工业企业产品销售收入': '万元',
+    '中药材面积': '亩',
+    '中药材产量': '公斤',
+    '#退耕造林面积': '亩',
+    '森林覆盖率': '%',
+    '瓜类总产量': '吨',
+    '人均公共绿地面积': '平方米',
+    '#国有经济': '亿元',
+    '#国有': '万元',
+    '#集体经济': '亿元',
+    '#集体': '万元',
+    '#其他经济类型': '亿元',
+    '#其他': '万元',
+    '#原油': '万吨',
+    '#原油加工量': '吨',
 }
 
 
@@ -380,6 +453,8 @@ for tIndex, tRow in findresult.iterrows():
     thisCountryCity = tRow["City_name"]
     thisCountryCityshortName = thisCountryCity[0:len(thisCountryCity) - 1]
     getCityFilename = Findfilename(path, thisCountryCityshortName)
+    if len(getCityFilename) == 0:
+        continue
     # 找到文件
     print('#region 开始整理：'+thisCountryCity+'_'+countryName)
     if not pd.isnull(getCityFilename[0]):
@@ -424,67 +499,126 @@ for tIndex, tRow in findresult.iterrows():
                                 if nfindresult.empty:
                                     continue
                                 nValue = nfindresult[countryPars.index[num]].values[0]
-                                if pd.isnull(nValue):
-                                    nValue = 0
-                                if str(nValue).isspace():
-                                    nValue = 0
-                                try:
-                                    urbanValue = urbanValue + float(nValue)
-                                except:
-                                    print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
-                                          '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值不是一个数字，忽略这个值，请检查！')
-                                    print(
-                                        '-----------------------------------------')
-                            if urbanValue != 0:
-                                if realParUnit != countryParsUnit[num]:
-                                    newUrbanValue, mesUrbanValue = Changevalue(
-                                        urbanValue, countryParsUnit[num], realParUnit)
-                                    if mesUrbanValue == '转换成功':
-                                        if pd.isnull(allCountryData.loc[tIndex, realParField]):
-                                            allCountryData.loc[tIndex,
-                                                               realParField] = newUrbanValue
+                                # 不是数字
+                                if not nValue.isdigit():
+                                    # 拆分开值和单位
+                                    nsplitValue, nsplitUnit = GetValueandUnit(
+                                        str(nValue))
+                                    if pd.isnull(nsplitValue):
+                                        continue
+                                    # 转换单位
+                                    nChangeValue, nChangeMes = Changevalue(
+                                        nsplitValue, nsplitUnit, realParUnit)
+                                    if nChangeMes == '转换成功':
+                                        try:
+                                            urbanValue = urbanValue + nChangeValue
+                                        except:
+                                            print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                                nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
+                                            print('-------------------------')
                                     else:
-                                        print(
-                                            '在计算' + thisCountryCity + ocountryName + '(城区)的_' + timeYear + '年的' + pParStr + '_时，出现问题!')
+                                        print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                              '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
                                         print('单位未能转换，请手动转换!具体信息如下：')
-                                        print(mesUrbanValue)
-                                        print(
-                                            '得到的单位:'+str(countryParsUnit[num]))
+                                        print(nChangeMes)
+                                        print('得到的单位:'+nsplitUnit)
                                         print('应该的单位:' + str(realParUnit))
-                                        print(
-                                            '+++++++++++++++++++++++++')
+                                        print('+++++++++++++++++++++++++')
+                                # 是数字，再判断要不要转换单位
                                 else:
-                                    if pd.isnull(allCountryData.loc[tIndex, realParField]):
-                                        allCountryData.loc[tIndex,
-                                                           realParField] = urbanValue
+                                    # 不用转换单位
+                                    if realParUnit == countryParsUnit[num]:
+                                        try:
+                                            urbanValue = urbanValue + \
+                                                float(nValue)
+                                        except:
+                                            print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                                nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
+                                            print('-------------------------')
+                                    # 转换单位
+                                    else:
+                                        nChangeValue, nChangeMes = Changevalue(
+                                            nValue, countryParsUnit[num], realParUnit)
+                                        if nChangeMes == '转换成功':
+                                            try:
+                                                urbanValue = urbanValue + nChangeValue
+                                            except:
+                                                print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                                    nName) + '区县' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                                print(
+                                                    '-------------------------')
+                                        else:
+                                            print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                                  '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
+                                            print('单位未能转换，请手动转换!具体信息如下：')
+                                            print(nChangeMes)
+                                            print(
+                                                '得到的单位:'+countryParsUnit[num])
+                                            print('应该的单位:' + str(realParUnit))
+                                            print('+++++++++++++++++++++++++')
+                            if urbanValue != 0 and pd.isnull(allCountryData.loc[tIndex, realParField]):
+                                allCountryData.loc[tIndex,
+                                                   realParField] = urbanValue
+                            continue
                         # ---------------
-                        try:
-                            # 处理普通区县
-                            if realParUnit != countryParsUnit[num]:
-                                newpValue, mespValue = Changevalue(
-                                    pValue, countryParsUnit[num], realParUnit)
-                                if mespValue == '转换成功':
-                                    if pd.isnull(allCountryData.loc[tIndex, realParField]):
-                                        allCountryData.loc[tIndex,
-                                                           realParField] = newpValue
-                                else:
-                                    print(
-                                        '在计算' + thisCountryCity + ocountryName + '的_' + timeYear + '年的' + pParStr + '_时，出现问题!')
-                                    print('单位未能转换，请手动转换!具体信息如下：')
-                                    print(mespValue)
-                                    print(
-                                        '得到的单位:'+str(countryParsUnit[num]))
-                                    print('应该的单位:' + str(realParUnit))
-                                    print(
-                                        '-------------------------')
+                        # 处理普通区县
+                        # 不是数字
+                        if not pValue.isdigit():
+                            # 拆分开值和单位
+                            nsplitValue, nsplitUnit = GetValueandUnit(
+                                str(pValue))
+                            if pd.isnull(nsplitValue):
+                                continue
+                            # 转换单位
+                            nChangeValue, nChangeMes = Changevalue(
+                                nsplitValue, nsplitUnit, realParUnit)
+                            if nChangeMes == '转换成功':
+                                try:
+                                    allCountryData.loc[tIndex,
+                                                       realParField] = nChangeValue
+                                except:
+                                    print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
+                                          '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                    print('-------------------------')
                             else:
-                                if pd.isnull(allCountryData.loc[tIndex, realParField]):
+                                print('在计算'+thisCountryCity+ocountryName+'的_' +
+                                      pParStr + '_时，出现问题，寻找到的' + timeYear + '年的值有误！')
+                                print('单位未能转换，请手动转换!具体信息如下：')
+                                print(nChangeMes)
+                                print('得到的单位:'+nsplitUnit)
+                                print('应该的单位:' + str(realParUnit))
+                                print('+++++++++++++++++++++++++')
+                        # 是数字，再判断要不要转换单位
+                        else:
+                            # 不用转换单位
+                            if realParUnit == countryParsUnit[num]:
+                                try:
                                     allCountryData.loc[tIndex,
                                                        realParField] = pValue
-                        except:
-                            print('error in set value:'+ocountryName +
-                                  timeYear + '年的' + pParStr + '的值出现错误，请检查！')
-                            print('-----------------------------------------')
+                                except:
+                                    print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
+                                          '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                    print('-------------------------')
+                            # 转换单位
+                            else:
+                                nChangeValue, nChangeMes = Changevalue(
+                                    pValue, countryParsUnit[num], realParUnit)
+                                if nChangeMes == '转换成功':
+                                    try:
+                                        allCountryData.loc[tIndex,
+                                                           realParField] = nChangeValue
+                                    except:
+                                        print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
+                                              '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                        print('-------------------------')
+                                else:
+                                    print('在计算'+thisCountryCity+ocountryName+'的_' +
+                                          pParStr + '_时，出现问题，寻找到的' + timeYear + '年的值有误！')
+                                    print('单位未能转换，请手动转换!具体信息如下：')
+                                    print(nChangeMes)
+                                    print('得到的单位:'+countryParsUnit[num])
+                                    print('应该的单位:' + str(realParUnit))
+                                    print('+++++++++++++++++++++++++')
     print('##################################################')
     print('#endregion')
 allCountryData.to_excel(
