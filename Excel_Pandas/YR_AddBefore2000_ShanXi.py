@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import os
 import sys
+
 # stdi, stdo, stde = sys.stdin, sys.stdout, sys.stderr
 # reload(sys)
 # sys.stdin, sys.stdout, sys.stderr = stdi, stdo, stde
@@ -52,7 +53,7 @@ def Findfilename(path, findstr):
 
 def is_number(s):
     """是否是数字"""
-    if s=='.':
+    if s == '.':
         return True
     try:
         float(s)
@@ -66,7 +67,8 @@ def is_number(s):
     except (TypeError, ValueError):
         pass
     return False
-    
+
+
 def GetValueandUnit(pStrVandU):
     """拆分出数值和单位"""
     try:
@@ -82,17 +84,29 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     """转换单位"""
     returnmes = '单位特殊，未能转换！'
     findresult = pOldUnit.find('以前为')
-    #不用转换
+    # 不用转换
     if pOldUnit == pNeedUnit:
         return pOldValue, '转换成功'
     # 时间段内不统一
-    if is_number(str(pOldValue)) and findresult != -1:
-        oldUnitshort = pOldUnit.split('（')[0]
-        value,mes=Changevalue(pOldValue,oldUnitshort,pNeedUnit)
-        return value, mes
-    #不用转换
+    if findresult != -1:
+        if is_number(str(pOldValue)):
+            oldUnitshort = pOldUnit.split('（')[0]
+            if oldUnitshort == pOldUnit:
+                oldUnitshort = pOldUnit.split('(')[0]
+            if oldUnitshort == pOldUnit:
+                return None, returnmes
+            value, mes = Changevalue(pOldValue, oldUnitshort, pNeedUnit)
+            return value, mes
+        else:
+            newnewValue, newnewUnit = GetValueandUnit(str(pOldValue))
+            if pd.isnull(nsplitValue):
+                return None, returnmes
+            else:
+                value, mes = Changevalue(newnewValue, newnewUnit, pNeedUnit)
+                return value, mes
+    # 不用转换
     if pOldUnit == pNeedUnit:
-        return float(pOldValue),'转换成功'
+        return float(pOldValue), '转换成功'
     # * → 万*
     if pNeedUnit == '万' + pOldUnit:
         try:
@@ -508,11 +522,11 @@ for tIndex, tRow in findresult.iterrows():
                         pValue = thisSheet.loc[oIndex, pParIndex]
                         if pd.isnull(pValue):
                             continue
-                        if pValue=='':
+                        if pValue == '':
                             continue
-                        if pValue==' ':
+                        if pValue == ' ':
                             continue
-                        if pValue=='-':
+                        if pValue == '-':
                             continue
                         if pValue is None:
                             continue
