@@ -82,9 +82,14 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     """转换单位"""
     returnmes = '单位特殊，未能转换！'
     findresult = pOldUnit.find('以前为')
+    #不用转换
+    if pOldUnit == pNeedUnit:
+        return pOldValue, '转换成功'
     # 时间段内不统一
-    if findresult != -1:
-        return None, '时间段内单位不统一，无法统一转换！'
+    if is_number(str(pOldValue)) and findresult != -1:
+        oldUnitshort = pOldUnit.split('（')[0]
+        value,mes=Changevalue(pOldValue,oldUnitshort,pNeedUnit)
+        return value, mes
     #不用转换
     if pOldUnit == pNeedUnit:
         return float(pOldValue),'转换成功'
