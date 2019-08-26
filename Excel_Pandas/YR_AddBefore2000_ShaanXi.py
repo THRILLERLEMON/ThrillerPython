@@ -75,7 +75,7 @@ def GetValueandUnit(pStrVandU):
         filterResult = filter(is_number, pStrVandU)
         number = ''.join(list(filterResult))
         unit = pStrVandU.replace(number, '')
-        return float(number), unit
+        return float(number), unit.strip()
     except:
         return None, None
 
@@ -167,6 +167,13 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     if pOldUnit == '万斤' and pNeedUnit == '吨':
         try:
             newValue = float(pOldValue)*5
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 人/公顷→人/平方公里
+    if pOldUnit == '人/公顷' and pNeedUnit == '人/平方公里':
+        try:
+            newValue = float(pOldValue)*100
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
@@ -498,8 +505,8 @@ for tIndex, tRow in findresultSP.iterrows():
                         pParIndex = countryPars.index[num]
                         realParField = parsDic[pParStr] + '_' + timeYear
                         realParUnit = parsUni[pParStr]
-                        pUnit = countryParsUnit[num]
-                        findresultSP = pUnit.find('以前为')
+                        pUnit = str(countryParsUnit[num]).strip()
+                        findresultSP = pUnit.find('为')
                         if findresultSP != -1:
                             print('Warning! '+thisCountryCity+'的参数：' + pParStr +
                                   '的单位是：'+pUnit+'；处理数据时CELL中没有标明单位的已经按照括号之前的单位处理,使用前请注意！')
