@@ -499,9 +499,10 @@ for tIndex, tRow in findresultSP.iterrows():
                         realParField = parsDic[pParStr] + '_' + timeYear
                         realParUnit = parsUni[pParStr]
                         pUnit = countryParsUnit[num]
-                        findresultSP = pUnit.find('及以前为')
+                        findresultSP = pUnit.find('以前为')
                         if findresultSP != -1:
-                            print('Warning! '+thisCountryCity+'的参数：'+ pParStr+'的单位是：'+pUnit+'；处理数据时CELL中没有标明单位的已经按照括号之前的单位处理,使用前请注意！')
+                            print('Warning! '+thisCountryCity+'的参数：' + pParStr +
+                                  '的单位是：'+pUnit+'；处理数据时CELL中没有标明单位的已经按照括号之前的单位处理,使用前请注意！')
                         pValue = thisSheet.loc[oIndex, pParIndex]
                         if pd.isnull(pValue):
                             continue
@@ -550,22 +551,22 @@ for tIndex, tRow in findresultSP.iterrows():
                                         if pUnitshort == pUnit:
                                             pUnitshort = pUnit.split('(')[0]
                                         if pUnitshort == pUnit:
-                                            print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                 nName) + '区县' + timeYear + '年的单位有误! 忽略这个值，请检查！')
                                             print('-------------------------')
                                         else:
                                             nChangeValue, nChangeMes = Changevalue(
-                                                str(nValue), pUnitshort, realParUnit)
+                                                nValue, pUnitshort, realParUnit)
                                             if nChangeMes == '转换成功':
                                                 try:
                                                     urbanValue = urbanValue + nChangeValue
                                                 except:
-                                                    print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                                    print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                         nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
                                                     print(
                                                         '-------------------------')
                                             else:
-                                                print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                                print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr +
                                                       '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
                                                 print('单位未能转换，请手动转换!具体信息如下：')
                                                 print(nChangeMes)
@@ -589,11 +590,11 @@ for tIndex, tRow in findresultSP.iterrows():
                                         try:
                                             urbanValue = urbanValue + nChangeValue
                                         except:
-                                            print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                 nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
                                             print('-------------------------')
                                     else:
-                                        print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                        print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr +
                                               '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
                                         print('单位未能转换，请手动转换!具体信息如下：')
                                         print(nChangeMes)
@@ -608,7 +609,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                             urbanValue = urbanValue + \
                                                 float(nValue)
                                         except:
-                                            print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                 nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
                                             print('-------------------------')
                                     # 转换单位
@@ -619,12 +620,12 @@ for tIndex, tRow in findresultSP.iterrows():
                                             try:
                                                 urbanValue = urbanValue + nChangeValue
                                             except:
-                                                print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                                print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                     nName) + '区县' + timeYear + '年的值有误，忽略这个值，请检查！')
                                                 print(
                                                     '-------------------------')
                                         else:
-                                            print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr +
                                                   '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
                                             print('单位未能转换，请手动转换!具体信息如下：')
                                             print(nChangeMes)
@@ -660,11 +661,11 @@ for tIndex, tRow in findresultSP.iterrows():
                                     print('-------------------------')
                                 else:
                                     pChangeValue, pChangeMes = Changevalue(
-                                        str(pValue), pUnitshort, realParUnit)
+                                        pValue, pUnitshort, realParUnit)
                                     if pChangeMes == '转换成功':
                                         try:
-                                            allCountryData.loc[tIndex,
-                                                               realParField] = pChangeValue
+                                            if pd.isnull(allCountryData.loc[tIndex,realParField]):
+                                                allCountryData.loc[tIndex,realParField] = pChangeValue
                                         except:
                                             print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                                   '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
@@ -674,7 +675,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                               pParStr + '_时，出现问题，寻找到的' + timeYear + '年的值有误！')
                                         print('单位未能转换，请手动转换!具体信息如下：')
                                         print(pChangeMes)
-                                        print('得到的单位:'+pUnit)
+                                        print('得到的单位:'+pUnitshort)
                                         print('应该的单位:' + str(realParUnit))
                                         print('+++++++++++++++++++++++++')
                                     continue
@@ -690,8 +691,8 @@ for tIndex, tRow in findresultSP.iterrows():
                                 nsplitValue, nsplitUnit, realParUnit)
                             if pChangeMes == '转换成功':
                                 try:
-                                    allCountryData.loc[tIndex,
-                                                       realParField] = pChangeValue
+                                    if pd.isnull(allCountryData.loc[tIndex,realParField]):
+                                        allCountryData.loc[tIndex,realParField] = pChangeValue
                                 except:
                                     print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                           '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
@@ -701,7 +702,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                       pParStr + '_时，出现问题，寻找到的' + timeYear + '年的值有误！')
                                 print('单位未能转换，请手动转换!具体信息如下：')
                                 print(pChangeMes)
-                                print('得到的单位:'+pUnit)
+                                print('得到的单位:'+nsplitUnit)
                                 print('应该的单位:' + str(realParUnit))
                                 print('+++++++++++++++++++++++++')
                         # 是数字，再判断要不要转换单位
@@ -709,8 +710,8 @@ for tIndex, tRow in findresultSP.iterrows():
                             # 不用转换单位
                             if realParUnit == pUnit:
                                 try:
-                                    allCountryData.loc[tIndex,
-                                                       realParField] = pValue
+                                    if pd.isnull(allCountryData.loc[tIndex,realParField]):
+                                        allCountryData.loc[tIndex,realParField] = pChangeValue
                                 except:
                                     print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                           '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
@@ -721,8 +722,8 @@ for tIndex, tRow in findresultSP.iterrows():
                                     pValue, pUnit, realParUnit)
                                 if pChangeMes == '转换成功':
                                     try:
-                                        allCountryData.loc[tIndex,
-                                                           realParField] = pChangeValue
+                                        if pd.isnull(allCountryData.loc[tIndex,realParField]):
+                                            allCountryData.loc[tIndex,realParField] = pChangeValue
                                     except:
                                         print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                               '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
