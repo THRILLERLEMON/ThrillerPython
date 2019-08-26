@@ -85,7 +85,7 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     returnmes = '单位特殊，未能转换！'
     # 不用转换
     if pOldUnit == pNeedUnit:
-        return pOldValue, '转换成功'
+        return float(pOldValue), '转换成功'
     # * → 万*
     if pNeedUnit == '万' + pOldUnit:
         try:
@@ -465,11 +465,11 @@ onetoN_Code = pd.read_excel(
     'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OnetoN_Code_2ED.xlsx', sheet_name="Code")
 
 
-findresult = allCountryData[allCountryData["Province_name"] == '山西省']
+findresultSP = allCountryData[allCountryData["Province_name"] == '山西省']
 
 
 # 循环每个县
-for tIndex, tRow in findresult.iterrows():
+for tIndex, tRow in findresultSP.iterrows():
     countryName = tRow["County_name"]
     thisCountryshortName = countryName[0:len(countryName) - 1]
     thisCountryCity = tRow["City_name"]
@@ -499,6 +499,9 @@ for tIndex, tRow in findresult.iterrows():
                         realParField = parsDic[pParStr] + '_' + timeYear
                         realParUnit = parsUni[pParStr]
                         pUnit = countryParsUnit[num]
+                        findresultSP = pUnit.find('及以前为')
+                        if findresultSP != -1:
+                            print('Warning! '+thisCountryCity+'的参数：'+ pParStr+'的单位是：'+pUnit+'；处理数据时CELL中没有标明单位的已经按照括号之前的单位处理,使用前请注意！')
                         pValue = thisSheet.loc[oIndex, pParIndex]
                         if pd.isnull(pValue):
                             continue
@@ -533,36 +536,45 @@ for tIndex, tRow in findresult.iterrows():
                                     continue
                                 nValue = nfindresult[countryPars.index[num]].values[0]
                                 # 单位时间段内不统一，是数字的特殊处理（直接跳出循环），不是数字的交给下文一样处理（不用跳出循环）
-                                findresult = pUnit.find('以前为')
-                                if findresult != -1:
+                                if findresultSP != -1:
                                     if is_number(str(nValue)):
+                                        # 例子：公顷（1992年及以前为万亩）
+                                        # 元数据描述不一定可信，此处的处理方式为，得到的值为数字，则直接按照括号前的单位处理，如果是“值+单位”的形式，则正常处理
+                                        # pbeforeYear1st = pUnit.split('年')[0]
+                                        # pbeforeYear=pbeforeYear1st[len(pbeforeYear1st)-4:len(pbeforeYear1st)]
+                                        # pbeforeUnit1st = pUnit.split('及以前为')[1]
+                                        # pbeforeUnit = pbeforeUnit1st.split('）')[0]
+                                        # if pbeforeUnit == pbeforeUnit1st:
+                                        #     pbeforeUnit=pbeforeUnit1st.split(')')[0]
                                         pUnitshort = pUnit.split('（')[0]
                                         if pUnitshort == pUnit:
                                             pUnitshort = pUnit.split('(')[0]
                                         if pUnitshort == pUnit:
-                                            print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                 nName) + '区县' + timeYear + '年的单位有误! 忽略这个值，请检查！')
                                             print('-------------------------')
-                                            continue
-                                        nChangeValue, nChangeMes = Changevalue(
-                                            str(nValue), pUnitshort, realParUnit)
-                                        if nChangeMes == '转换成功':
-                                            try:
-                                                urbanValue = urbanValue + nChangeValue
-                                            except:
-                                                print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
-                                                    nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
-                                                print(
-                                                    '-------------------------')
                                         else:
-                                            print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
-                                                  '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
-                                            print('单位未能转换，请手动转换!具体信息如下：')
-                                            print(nChangeMes)
-                                            print('得到的单位:'+pUnitshort)
-                                            print('应该的单位:' + str(realParUnit))
-                                            print('+++++++++++++++++++++++++')
-                                        continue
+                                            nChangeValue, nChangeMes = Changevalue(
+                                                str(nValue), pUnitshort, realParUnit)
+                                            if nChangeMes == '转换成功':
+                                                try:
+                                                    urbanValue = urbanValue + nChangeValue
+                                                except:
+                                                    print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                                        nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
+                                                    print(
+                                                        '-------------------------')
+                                            else:
+                                                print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                                      '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
+                                                print('单位未能转换，请手动转换!具体信息如下：')
+                                                print(nChangeMes)
+                                                print('得到的单位:'+pUnitshort)
+                                                print(
+                                                    '应该的单位:' + str(realParUnit))
+                                                print(
+                                                    '+++++++++++++++++++++++++')
+                                            continue
                                 # 不是数字，拆分，不需要考虑原本单位
                                 if not is_number(str(nValue)):
                                     # 拆分开值和单位
@@ -577,11 +589,11 @@ for tIndex, tRow in findresult.iterrows():
                                         try:
                                             urbanValue = urbanValue + nChangeValue
                                         except:
-                                            print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                 nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
                                             print('-------------------------')
                                     else:
-                                        print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                        print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
                                               '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
                                         print('单位未能转换，请手动转换!具体信息如下：')
                                         print(nChangeMes)
@@ -596,7 +608,7 @@ for tIndex, tRow in findresult.iterrows():
                                             urbanValue = urbanValue + \
                                                 float(nValue)
                                         except:
-                                            print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                 nName) + '区县' + timeYear + '年的值有误! 忽略这个值，请检查！')
                                             print('-------------------------')
                                     # 转换单位
@@ -607,12 +619,12 @@ for tIndex, tRow in findresult.iterrows():
                                             try:
                                                 urbanValue = urbanValue + nChangeValue
                                             except:
-                                                print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
+                                                print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr + '_时，出现问题，寻找到的' + str(
                                                     nName) + '区县' + timeYear + '年的值有误，忽略这个值，请检查！')
                                                 print(
                                                     '-------------------------')
                                         else:
-                                            print('在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'(城区)的_'+pParStr +
                                                   '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
                                             print('单位未能转换，请手动转换!具体信息如下：')
                                             print(nChangeMes)
@@ -629,36 +641,43 @@ for tIndex, tRow in findresult.iterrows():
                         pChangeValue = None
                         pChangeMes = None
                         # 单位时间段内不统一，是数字的特殊处理（直接跳出循环），不是数字的交给下文一样处理（不用跳出循环）
-                        pfindresult = pUnit.find('以前为')
-                        if pfindresult != -1:
+                        if findresultSP != -1:
                             if is_number(str(pValue)):
+                                # 例子：公顷（1992年及以前为万亩）
+                                # 元数据描述不一定可信，此处的处理方式为，得到的值为数字，则直接按照括号前的单位处理，如果是“值+单位”的形式，则正常处理
+                                # pbeforeYear1st = pUnit.split('年')[0]
+                                # pbeforeYear=pbeforeYear1st[len(pbeforeYear1st)-4:len(pbeforeYear1st)]
+                                # pbeforeUnit1st = pUnit.split('以前为')[1]
+                                # pbeforeUnit = pbeforeUnit1st.split('）')[0]
+                                # if pbeforeUnit == pbeforeUnit1st:
+                                #     pbeforeUnit=pbeforeUnit1st.split(')')[0]
                                 pUnitshort = pUnit.split('（')[0]
                                 if pUnitshort == pUnit:
                                     pUnitshort = pUnit.split('(')[0]
                                 if pUnitshort == pUnit:
-                                    print('在计算' + thisCountryCity + ocountryName + '的_' +
+                                    print('Error！在计算' + thisCountryCity + ocountryName + '的_' +
                                           pParStr + '_时，出现问题，寻找到的' + timeYear + '年的单位有误，忽略这个值，请检查！')
                                     print('-------------------------')
-                                    continue
-                                pChangeValue, pChangeMes = Changevalue(
-                                    str(pValue), pUnitshort, realParUnit)
-                                if pChangeMes == '转换成功':
-                                    try:
-                                        allCountryData.loc[tIndex,
-                                                           realParField] = pChangeValue
-                                    except:
-                                        print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
-                                              '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
-                                        print('-------------------------')
                                 else:
-                                    print('在计算'+thisCountryCity+ocountryName+'的_' +
-                                          pParStr + '_时，出现问题，寻找到的' + timeYear + '年的值有误！')
-                                    print('单位未能转换，请手动转换!具体信息如下：')
-                                    print(pChangeMes)
-                                    print('得到的单位:'+pUnit)
-                                    print('应该的单位:' + str(realParUnit))
-                                    print('+++++++++++++++++++++++++')
-                                continue
+                                    pChangeValue, pChangeMes = Changevalue(
+                                        str(pValue), pUnitshort, realParUnit)
+                                    if pChangeMes == '转换成功':
+                                        try:
+                                            allCountryData.loc[tIndex,
+                                                               realParField] = pChangeValue
+                                        except:
+                                            print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
+                                                  '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                            print('-------------------------')
+                                    else:
+                                        print('Error！在计算'+thisCountryCity+ocountryName+'的_' +
+                                              pParStr + '_时，出现问题，寻找到的' + timeYear + '年的值有误！')
+                                        print('单位未能转换，请手动转换!具体信息如下：')
+                                        print(pChangeMes)
+                                        print('得到的单位:'+pUnit)
+                                        print('应该的单位:' + str(realParUnit))
+                                        print('+++++++++++++++++++++++++')
+                                    continue
                         # 不是数字，拆分，不需要考虑原本单位
                         if not is_number(str(pValue)):
                             # 拆分开值和单位
@@ -674,11 +693,11 @@ for tIndex, tRow in findresult.iterrows():
                                     allCountryData.loc[tIndex,
                                                        realParField] = pChangeValue
                                 except:
-                                    print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
+                                    print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                           '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
                                     print('-------------------------')
                             else:
-                                print('在计算'+thisCountryCity+ocountryName+'的_' +
+                                print('Error！在计算'+thisCountryCity+ocountryName+'的_' +
                                       pParStr + '_时，出现问题，寻找到的' + timeYear + '年的值有误！')
                                 print('单位未能转换，请手动转换!具体信息如下：')
                                 print(pChangeMes)
@@ -693,7 +712,7 @@ for tIndex, tRow in findresult.iterrows():
                                     allCountryData.loc[tIndex,
                                                        realParField] = pValue
                                 except:
-                                    print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
+                                    print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                           '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
                                     print('-------------------------')
                             # 转换单位
@@ -709,7 +728,7 @@ for tIndex, tRow in findresult.iterrows():
                                               '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
                                         print('-------------------------')
                                 else:
-                                    print('在计算'+thisCountryCity+ocountryName+'的_' +
+                                    print('Error！在计算'+thisCountryCity+ocountryName+'的_' +
                                           pParStr + '_时，出现问题，寻找到的' + timeYear + '年的值有误！')
                                     print('单位未能转换，请手动转换!具体信息如下：')
                                     print(pChangeMes)
