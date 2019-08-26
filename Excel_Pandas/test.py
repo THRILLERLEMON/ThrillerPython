@@ -26,4 +26,6 @@ def GetValueandUnit(pStrVandU):
     except:
         return None, None
 
-print(GetValueandUnit('2562公顷'))
+saasas='.'
+print(is_number(saasas))
+print(GetValueandUnit(saasas))
