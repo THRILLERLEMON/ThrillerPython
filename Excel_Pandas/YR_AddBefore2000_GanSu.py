@@ -32,7 +32,7 @@ class Logger(object):
 
 printpath = os.path.abspath(os.path.dirname(__file__))
 type = sys.getfilesystemencoding()
-sys.stdout = Logger('OutLog_HeNan.txt')
+sys.stdout = Logger('OutLog_GanSu.txt')
 print(printpath)
 
 
@@ -121,6 +121,13 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 万* → 千*
+    if pOldUnit[0] == '万' and pNeedUnit[0] == '千':
+        try:
+            newValue = float(pOldValue) * 10
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
     # 百* → 万*
     if pOldUnit[0] == '百' and pNeedUnit[0] == '万':
         try:
@@ -163,10 +170,24 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 吨 → 公斤
+    if pOldUnit == '吨' and pNeedUnit == '公斤':
+        try:
+            newValue = float(pOldValue)*1000
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
     # 万亩 → 公顷
     if pOldUnit == '万亩' and pNeedUnit == '公顷':
         try:
             newValue = float(pOldValue)*666.7
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 万亩 → 千公顷
+    if pOldUnit == '万亩' and pNeedUnit == '千公顷':
+        try:
+            newValue = float(pOldValue)*0.6667
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
@@ -564,7 +585,6 @@ parsUni = {
     '#川地': '万亩',
     '#塬地': '万亩',
 }
-
 
 
 # Gansu
