@@ -278,6 +278,7 @@ parsDic = {
     '社会从业人数': '',
     '在岗职工平均工资': '',
     '单位GDP能耗': '',
+    '单位产值能耗': '单位GDP能耗',
     '单位工业增加值能耗': '',
     '#水田水浇地': '',
     '# 水田水浇地': '',
@@ -306,6 +307,7 @@ parsDic = {
     '企业数': '',
     '花椒产量': '',
     '工业企业产品销售收入': '',
+    '工业产品销售收入': '工业企业产品销售收入',
     '中药材面积': '',
     '中药材产量': '',
     '#退耕造林面积': '',
@@ -320,6 +322,22 @@ parsDic = {
     '#其他': '',
     '#原油': '',
     '#原油加工量': '',
+    '土地调查面积': '',
+    '农用地': '',
+    '建设用地': '',
+    '城镇从业人员': '',
+    '#国有单位': '',
+    '#集体单位': '',
+    '#其他单位': '',
+    '#私营和个体': '',
+    '乡村劳动力': '',
+    '#国有及国有控股企业': '',
+    '#集体企业': '',
+    '枸杞面积': '',
+    '枸杞总产量': '',
+    '内资企业数': '',
+    '港澳台投资企业数': '',
+    '#国有企业': '',
 }
 
 # 2 参数对应单位
@@ -419,6 +437,7 @@ parsUni = {
     '社会从业人数': '万人',
     '在岗职工平均工资': '元',
     '单位GDP能耗': '吨标准煤/万元',
+    '单位产值能耗': '吨标准煤/万元',
     '单位工业增加值能耗': '吨标准煤/万元',
     '#水田水浇地': '千公顷',
     '# 水田水浇地': '千公顷',
@@ -447,6 +466,7 @@ parsUni = {
     '企业数': '个',
     '花椒产量': '吨',
     '工业企业产品销售收入': '万元',
+    '工业产品销售收入': '万元',
     '中药材面积': '亩',
     '中药材产量': '公斤',
     '#退耕造林面积': '亩',
@@ -461,18 +481,34 @@ parsUni = {
     '#其他': '万元',
     '#原油': '万吨',
     '#原油加工量': '吨',
+    '土地调查面积': '万公顷',
+    '农用地': '万公顷',
+    '建设用地': '万公顷',
+    '城镇从业人员': '人',
+    '#国有单位': '人',
+    '#集体单位': '人',
+    '#其他单位': '人',
+    '#私营和个体': '人',
+    '乡村劳动力': '人',
+    '#国有及国有控股企业': '万元',
+    '#集体企业': '万元',
+    '枸杞面积': '公顷',
+    '枸杞总产量': '吨',
+    '内资企业数': '个',
+    '港澳台投资企业数': '个',
+    '#国有企业': '千元',
 }
 
 
-# shaanxi
-path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_Shaanxi'
+# Ningxia
+path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_Ningxia'
 allCountryData = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX.xlsx', sheet_name="Sheet1")
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX.xlsx', sheet_name="Sheet1")
 onetoN_Code = pd.read_excel(
     'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OnetoN_Code_2ED.xlsx', sheet_name="Code")
 
 
-findresultSP = allCountryData[allCountryData["Province_name"] == '陕西省']
+findresultSP = allCountryData[allCountryData["Province_name"] == '宁夏自治区']
 
 
 # 循环每个县
@@ -746,5 +782,5 @@ for tIndex, tRow in findresultSP.iterrows():
     print('##################################################')
     print('#endregion')
 allCountryData.to_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX.xlsx', encoding='gbk')
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX_NX.xlsx', encoding='gbk')
 print('Already Finish Work! Good! THRILLER柠檬！')
