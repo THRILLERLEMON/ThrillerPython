@@ -32,7 +32,7 @@ class Logger(object):
 
 printpath = os.path.abspath(os.path.dirname(__file__))
 type = sys.getfilesystemencoding()
-sys.stdout = Logger('OutLog.txt')
+sys.stdout = Logger('OutLog_HeNan.txt')
 print(printpath)
 
 
@@ -191,6 +191,13 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 担→吨
+    if pOldUnit == '担' and pNeedUnit == '吨':
+        try:
+            newValue = float(pOldValue)*0.05
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
     return None, returnmes
 
 
@@ -333,7 +340,7 @@ parsDic = {
     '人均公共绿地面积': '',
     '#国有经济': '',
     '##国有经济': '#国有经济',
-    '#国有': '#国有经济'',
+    '#国有': '#国有经济',
     '#集体经济': '',
     '##集体经济': '#集体经济',
     '#集体': '#集体经济',

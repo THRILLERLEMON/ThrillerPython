@@ -32,7 +32,7 @@ class Logger(object):
 
 printpath = os.path.abspath(os.path.dirname(__file__))
 type = sys.getfilesystemencoding()
-sys.stdout = Logger('OutLog.txt')
+sys.stdout = Logger('OutLog_ShanXi.txt')
 print(printpath)
 
 
@@ -312,7 +312,7 @@ parsDic = {
     '人均公共绿地面积': '',
     '#国有经济': '',
     '##国有经济': '#国有经济',
-    '#国有': '#国有经济'',
+    '#国有': '#国有经济', 
     '#集体经济': '',
     '##集体经济': '#集体经济',
     '#集体': '#集体经济',
