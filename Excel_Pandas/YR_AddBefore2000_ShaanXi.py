@@ -671,8 +671,9 @@ for tIndex, tRow in findresultSP.iterrows():
                                         pValue, pUnitshort, realParUnit)
                                     if pChangeMes == '转换成功':
                                         try:
-                                            if pd.isnull(allCountryData.loc[tIndex,realParField]):
-                                                allCountryData.loc[tIndex,realParField] = pChangeValue
+                                            if pd.isnull(allCountryData.loc[tIndex, realParField]):
+                                                allCountryData.loc[tIndex,
+                                                                   realParField] = pChangeValue
                                         except:
                                             print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                                   '_时，出现问题，寻找到的' + timeYear + '年的值有误，请检查！')
@@ -698,8 +699,9 @@ for tIndex, tRow in findresultSP.iterrows():
                                 nsplitValue, nsplitUnit, realParUnit)
                             if pChangeMes == '转换成功':
                                 try:
-                                    if pd.isnull(allCountryData.loc[tIndex,realParField]):
-                                        allCountryData.loc[tIndex,realParField] = pChangeValue
+                                    if pd.isnull(allCountryData.loc[tIndex, realParField]):
+                                        allCountryData.loc[tIndex,
+                                                           realParField] = pChangeValue
                                 except:
                                     print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                           '_时，出现问题，寻找到的' + timeYear + '年的值有误，请检查！')
@@ -717,8 +719,9 @@ for tIndex, tRow in findresultSP.iterrows():
                             # 不用转换单位
                             if realParUnit == pUnit:
                                 try:
-                                    if pd.isnull(allCountryData.loc[tIndex,realParField]):
-                                        allCountryData.loc[tIndex,realParField] = pChangeValue
+                                    if pd.isnull(allCountryData.loc[tIndex, realParField]):
+                                        allCountryData.loc[tIndex,
+                                                           realParField] = pChangeValue
                                 except:
                                     print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                           '_时，出现问题，寻找到的' + timeYear + '年的值有误，请检查！')
@@ -729,8 +732,9 @@ for tIndex, tRow in findresultSP.iterrows():
                                     pValue, pUnit, realParUnit)
                                 if pChangeMes == '转换成功':
                                     try:
-                                        if pd.isnull(allCountryData.loc[tIndex,realParField]):
-                                            allCountryData.loc[tIndex,realParField] = pChangeValue
+                                        if pd.isnull(allCountryData.loc[tIndex, realParField]):
+                                            allCountryData.loc[tIndex,
+                                                               realParField] = pChangeValue
                                     except:
                                         print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                               '_时，出现问题，寻找到的' + timeYear + '年的值有误，请检查！')
