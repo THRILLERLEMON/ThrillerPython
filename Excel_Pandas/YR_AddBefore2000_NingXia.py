@@ -121,6 +121,20 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 百* → 万*
+    if pOldUnit[0] == '百' and pNeedUnit[0] == '万':
+        try:
+            newValue = float(pOldValue) / 100
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 万* → 亿*
+    if pOldUnit[0] == '万' and pNeedUnit[0] == '亿':
+        try:
+            newValue = float(pOldValue) / 10000
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
     # 亿* → 万*
     if pOldUnit[0] == '亿' and pNeedUnit[0] == '万':
         try:
@@ -530,6 +544,8 @@ for tIndex, tRow in findresultSP.iterrows():
         # 循环这个市的每一个行（很多县）
         for oIndex, oRow in thisSheet.iterrows():
             ocountryName = oRow['Name-of-District-and-County']
+            if pd.isnull(ocountryName):
+                continue
             # 筛选出目标县的行数据
             if oIndex > 4 and thisCountryshortName == ocountryName[0:len(thisCountryshortName)]:
                 timeYear = str(oRow['Temporal_Period_Begin'])[0:4]
