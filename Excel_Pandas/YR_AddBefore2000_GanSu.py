@@ -567,15 +567,15 @@ parsUni = {
 
 
 
-# Henan
-path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_Henan'
+# Gansu
+path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_Gansu'
 allCountryData = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX_NX_NM.xlsx', sheet_name="Sheet1")
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX_NX_NM_HN.xlsx', sheet_name="Sheet1")
 onetoN_Code = pd.read_excel(
     'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OnetoN_Code_2ED.xlsx', sheet_name="Code")
 
 
-findresultSP = allCountryData[allCountryData["Province_name"] == '河南省']
+findresultSP = allCountryData[allCountryData["Province_name"] == '甘肃省']
 
 
 # 循环每个县
@@ -855,5 +855,5 @@ for tIndex, tRow in findresultSP.iterrows():
     print('##################################################')
     print('#endregion')
 allCountryData.to_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX_NX_NM_HN.xlsx', encoding='gbk')
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX_NX_NM_HN_GS.xlsx', encoding='gbk')
 print('Already Finish Work! Good! THRILLER柠檬！')
