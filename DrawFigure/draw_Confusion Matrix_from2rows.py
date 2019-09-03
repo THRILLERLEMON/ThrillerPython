@@ -1,5 +1,7 @@
 # -*-coding:utf-8-*-
 from sklearn.metrics import confusion_matrix
+from sklearn.metrics import classification_report
+from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -40,9 +42,12 @@ def plot_confusion_matrix(cm, title='Confusion Matrix', cmap=plt.cm.binary):
 
 
 cm = confusion_matrix(y_true, y_pred)
+print(cm)
+print(accuracy_score(y_true, y_pred))
+print(classification_report(y_true, y_pred,target_names=labels))
 np.set_printoptions(precision=2)
 cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-print(cm_normalized)
+# print(cm_normalized)
 plt.figure(figsize=(12, 8), dpi=120)
 
 ind_array = np.arange(len(labels))
