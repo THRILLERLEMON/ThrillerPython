@@ -4,6 +4,29 @@ from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import sys
+
+
+# 输出print内容
+class Logger(object):
+    def __init__(self, filename="Default.log"):
+        self.terminal = sys.stdout
+        self.log = open(filename, "a")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        pass
+
+
+printpath = os.path.abspath(os.path.dirname(__file__))
+type = sys.getfilesystemencoding()
+sys.stdout = Logger('OutLog_2018ALL.txt')
+print(printpath)
+
 
 # labels表示你不同类别的代号
 labels = [
@@ -24,8 +47,8 @@ labels = [
     'Barren']
 
 # y_true代表真实的label值 y_pred代表预测得到的lavel值
-y_true = np.loadtxt('C:/Users/thril/Desktop/True.txt')
-y_pred = np.loadtxt('C:/Users/thril/Desktop/Pred.txt')
+y_true = np.loadtxt('C:/Users/thril/Desktop/True_ALL.txt')
+y_pred = np.loadtxt('C:/Users/thril/Desktop/Pred_ALL.txt')
 
 tick_marks = np.array(range(len(labels))) + 0.5
 
@@ -37,14 +60,14 @@ def plot_confusion_matrix(cm, title='Confusion Matrix', cmap=plt.cm.binary):
     xlocations = np.array(range(len(labels)))
     plt.xticks(xlocations, labels, rotation=90)
     plt.yticks(xlocations, labels)
-    plt.ylabel('Pred')
-    plt.xlabel('True')
+    plt.ylabel('True_ALL')
+    plt.xlabel('Pred_ALL')
 
 
 cm = confusion_matrix(y_true, y_pred)
 print(cm)
 print(accuracy_score(y_true, y_pred))
-print(classification_report(y_true, y_pred,target_names=labels))
+print(classification_report(y_true, y_pred, target_names=labels))
 np.set_printoptions(precision=2)
 cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 # print(cm_normalized)
@@ -68,5 +91,6 @@ plt.gcf().subplots_adjust(bottom=0.15)
 
 plot_confusion_matrix(cm_normalized, title='Normalized Confusion Matrix')
 # show confusion matrix
-plt.savefig('C:/Users/thril/Desktop/confusion_matrix.png', format='png')
+plt.savefig(
+    'C:/Users/thril/Desktop/confusion_matrix_2018ALL.png', format='png')
 plt.show()
