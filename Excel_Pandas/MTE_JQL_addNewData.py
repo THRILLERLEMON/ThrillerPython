@@ -24,21 +24,19 @@ def addVarData(tarTable, varTablePath, sheetStr):
 
 oldtable = pd.read_excel(
     'E:\\OFFICE\\MTE_NEE_DATA\\GRA_Train_NEE_5.xlsx', sheet_name="All", encoding='gbk')
-addDataXlsPath = 'E:\\OFFICE\\MTE_NEE_DATA\\addNewData.xlsx'
+addDataXlsPath = 'E:\\OFFICE\\MTE_NEE_DATA\\AddNewData.xlsx'
 
 oldtable = addVarData(oldtable, addDataXlsPath, "GSOC")
-oldtable=addVarData(oldtable,addDataXlsPath,"curvature")
 oldtable=addVarData(oldtable,addDataXlsPath,"elevation")
 oldtable=addVarData(oldtable,addDataXlsPath,"slope")
 oldtable=addVarData(oldtable,addDataXlsPath,"tpi")
 oldtable=addVarData(oldtable,addDataXlsPath,"twi")
 oldtable=addVarData(oldtable,addDataXlsPath,"vbf")
 oldtable=addVarData(oldtable,addDataXlsPath,"Manure_Application")
-oldtable=addVarData(oldtable,addDataXlsPath,"NHx_N_Deposition")
 oldtable=addVarData(oldtable,addDataXlsPath,"Nfertilizer_Application")
-oldtable=addVarData(oldtable,addDataXlsPath,"NOy_N_Deposition")
+oldtable=addVarData(oldtable,addDataXlsPath,"N_Deposition")
 
 print(oldtable)
 oldtable.to_excel(
-    'E:\OFFICE\MTE_NEE_DATA/outexcel.xlsx', encoding='gbk')
+    'E:\OFFICE\MTE_NEE_DATA/NewTrainTable_All.xlsx', encoding='gbk')
 print('Already Finish Work! Good! THRILLER柠檬！')
