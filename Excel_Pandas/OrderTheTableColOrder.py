@@ -25,10 +25,10 @@ for i in range(len(col)):
     if col[i]:
         newtable.drop(labels=col.index[i], axis=1, inplace=True)
 countnumber = newtable.count()
-baifenbi = countnumber / 377
+baifenbi = countnumber / 379
 newtable = newtable.append(countnumber, ignore_index=True).append(
     baifenbi, ignore_index=True)
 print(newtable)
 
-newtable.to_excel('C:/Users/thril/Desktop/OutputAll.xlsx')
+newtable.to_excel('C:/Users/thril/Desktop/OutputAll_Ordered.xlsx')
 print('ok')

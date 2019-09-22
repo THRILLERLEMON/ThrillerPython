@@ -196,8 +196,9 @@ parsDic = {
     '城乡居民储蓄存款余额': '居民储蓄存款余额',
     '#乡村户数': '乡村户数',
     '#乡村人口数': '乡村人口',
-    '乡村人口': '乡村人口',
     '#乡村人口': '乡村人口',
+    '#农业人口数': '乡村人口',
+    '#农业人口': '乡村人口',
     '#农林牧渔业': '农林牧渔业从业人员数',
     '农林牧渔及服务业总产值': '农林牧渔服务业总产值',
     '#农业总产值': '农业产值',
@@ -312,7 +313,7 @@ parsDic = {
     '人均公共绿地面积': '',
     '#国有经济': '',
     '##国有经济': '#国有经济',
-    '#国有': '#国有经济', 
+    '#国有': '#国有经济',
     '#集体经济': '',
     '##集体经济': '#集体经济',
     '#集体': '#集体经济',
@@ -374,8 +375,9 @@ parsUni = {
     '城乡居民储蓄存款余额': '万元',
     '#乡村户数': '户',
     '#乡村人口数': '万人',
-    '乡村人口': '万人',
     '#乡村人口': '万人',
+    '#农业人口数': '万人',
+    '#农业人口': '万人',
     '#农林牧渔业': '人',
     '农林牧渔及服务业总产值': '万元',
     '#农业总产值': '万元',
@@ -535,7 +537,7 @@ parsUni = {
 # shanxi
 path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_Shanxi'
 allCountryData = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OutputAll删除秦州麦积.xlsx', sheet_name="Sheet1")
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OutputAll.xlsx', sheet_name="Sheet1")
 onetoN_Code = pd.read_excel(
     'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OnetoN_Code_2ED.xlsx', sheet_name="Code")
 
@@ -789,7 +791,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                 try:
                                     if pd.isnull(allCountryData.loc[tIndex, realParField]):
                                         allCountryData.loc[tIndex,
-                                                           realParField] = pChangeValue
+                                                           realParField] = pValue
                                 except:
                                     print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
                                           '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
