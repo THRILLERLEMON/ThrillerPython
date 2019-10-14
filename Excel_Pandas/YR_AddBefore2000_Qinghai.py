@@ -32,7 +32,7 @@ class Logger(object):
 
 printpath = os.path.abspath(os.path.dirname(__file__))
 type = sys.getfilesystemencoding()
-sys.stdout = Logger('OutLog_ShaanXi_repair.txt')
+sys.stdout = Logger('OutLog_Qinghai.txt')
 print(printpath)
 
 
@@ -128,17 +128,31 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
-    # 亿* → 万*
-    if pOldUnit[0] == '亿' and pNeedUnit[0] == '万':
+    # 万* → 千*
+    if pOldUnit[0] == '万' and pNeedUnit[0] == '千':
         try:
-            newValue = float(pOldValue)*10000
+            newValue = float(pOldValue) * 10
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 百* → 万*
+    if pOldUnit[0] == '百' and pNeedUnit[0] == '万':
+        try:
+            newValue = float(pOldValue) / 100
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
     # 万* → 亿*
     if pOldUnit[0] == '万' and pNeedUnit[0] == '亿':
         try:
-            newValue = float(pOldValue)/10000
+            newValue = float(pOldValue) / 10000
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 亿* → 万*
+    if pOldUnit[0] == '亿' and pNeedUnit[0] == '万':
+        try:
+            newValue = float(pOldValue)*10000
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
@@ -163,10 +177,24 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 吨 → 公斤
+    if pOldUnit == '吨' and pNeedUnit == '公斤':
+        try:
+            newValue = float(pOldValue)*1000
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
     # 万亩 → 公顷
     if pOldUnit == '万亩' and pNeedUnit == '公顷':
         try:
             newValue = float(pOldValue)*666.7
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 万亩 → 千公顷
+    if pOldUnit == '万亩' and pNeedUnit == '千公顷':
+        try:
+            newValue = float(pOldValue)*0.6667
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
@@ -193,6 +221,13 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return None, '数值转换失败，可能不是个数字，未能转换！'
     # 担→吨
     if pOldUnit == '担' and pNeedUnit == '吨':
+        try:
+            newValue = float(pOldValue)*0.05
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 市担→吨
+    if pOldUnit == '市担' and pNeedUnit == '吨':
         try:
             newValue = float(pOldValue)*0.05
             return newValue, '转换成功'
@@ -379,6 +414,8 @@ parsDic = {
     '#山地': '',
     '#川地': '',
     '#塬地': '',
+    '建成区面积': '',
+    '城镇在岗职工工资总额': '',
 }
 
 # 2 参数对应单位
@@ -558,18 +595,20 @@ parsUni = {
     '#山地': '万亩',
     '#川地': '万亩',
     '#塬地': '万亩',
+    '建成区面积': '平方公里',
+    '城镇在岗职工工资总额': '万元',
 }
 
 
-# shaanxi
-path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_Shaanxi'
+# Gansu
+path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_QingHai'
 allCountryData = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX.xlsx', sheet_name="Sheet1")
+    'C:\\Users\\thril\\Desktop\\OutputAll_Ordered_AddQinghai.xlsx', sheet_name="Sheet1")
 onetoN_Code = pd.read_excel(
     'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OnetoN_Code_2ED.xlsx', sheet_name="Code")
 
 
-findresultSP = allCountryData[allCountryData["Province_name"] == '陕西省']
+findresultSP = allCountryData[allCountryData["Province_name"] == '青海省']
 
 
 # 循环每个县
@@ -591,6 +630,8 @@ for tIndex, tRow in findresultSP.iterrows():
         # 循环这个市的每一个行（很多县）
         for oIndex, oRow in thisSheet.iterrows():
             ocountryName = oRow['Name-of-District-and-County']
+            if pd.isnull(ocountryName):
+                continue
             # 筛选出目标县的行数据
             if oIndex > 4 and thisCountryshortName == ocountryName[0:len(thisCountryshortName)]:
                 timeYear = str(oRow['Temporal_Period_Begin'])[0:4]
@@ -847,5 +888,5 @@ for tIndex, tRow in findresultSP.iterrows():
     print('##################################################')
     print('#endregion')
 allCountryData.to_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX.xlsx', encoding='gbk')
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterOther_QH.xlsx', encoding='gbk')
 print('Already Finish Work! Good! THRILLER柠檬！')
