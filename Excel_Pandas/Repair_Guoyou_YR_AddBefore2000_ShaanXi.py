@@ -32,7 +32,7 @@ class Logger(object):
 
 printpath = os.path.abspath(os.path.dirname(__file__))
 type = sys.getfilesystemencoding()
-sys.stdout = Logger('OutLog_ShanXi.txt')
+sys.stdout = Logger('OutLog_ShaanXi_repair.txt')
 print(printpath)
 
 
@@ -75,7 +75,7 @@ def GetValueandUnit(pStrVandU):
         filterResult = filter(is_number, pStrVandU)
         number = ''.join(list(filterResult))
         unit = pStrVandU.replace(number, '')
-        return float(number), unit
+        return float(number), unit.strip()
     except:
         return None, None
 
@@ -181,6 +181,20 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
     if pOldUnit == '万斤' and pNeedUnit == '吨':
         try:
             newValue = float(pOldValue)*5
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 人/公顷→人/平方公里
+    if pOldUnit == '人/公顷' and pNeedUnit == '人/平方公里':
+        try:
+            newValue = float(pOldValue)*100
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 担→吨
+    if pOldUnit == '担' and pNeedUnit == '吨':
+        try:
+            newValue = float(pOldValue)*0.05
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
@@ -547,16 +561,15 @@ parsUni = {
 }
 
 
-
-# shanxi
-path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_Shanxi'
+# shaanxi
+path = 'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\Data_Shaanxi'
 allCountryData = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OutputAll.xlsx', sheet_name="Sheet1")
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX.xlsx', sheet_name="Sheet1")
 onetoN_Code = pd.read_excel(
     'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\OnetoN_Code_2ED.xlsx', sheet_name="Code")
 
 
-findresultSP = allCountryData[allCountryData["Province_name"] == '山西省']
+findresultSP = allCountryData[allCountryData["Province_name"] == '陕西省']
 
 
 # 循环每个县
@@ -589,8 +602,8 @@ for tIndex, tRow in findresultSP.iterrows():
                         pParIndex = countryPars.index[num]
                         realParField = parsDic[pParStr] + '_' + timeYear
                         realParUnit = parsUni[pParStr]
-                        pUnit = countryParsUnit[num]
-                        findresultSP = pUnit.find('以前为')
+                        pUnit = str(countryParsUnit[num]).strip()
+                        findresultSP = pUnit.find('为')
                         if findresultSP != -1:
                             print('Warning! '+thisCountryCity+'的参数：' + pParStr +
                                   '的单位是：'+pUnit+'；处理数据时CELL中没有标明单位的已经按照括号之前的单位处理,使用前请注意！')
@@ -658,7 +671,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                                         '-------------------------')
                                             else:
                                                 print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr +
-                                                      '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
+                                                      '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！忽略这个值，请检查！')
                                                 print('单位未能转换，请手动转换!具体信息如下：')
                                                 print(nChangeMes)
                                                 print('得到的单位:'+pUnitshort)
@@ -686,7 +699,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                             print('-------------------------')
                                     else:
                                         print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr +
-                                              '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
+                                              '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！忽略这个值，请检查！')
                                         print('单位未能转换，请手动转换!具体信息如下：')
                                         print(nChangeMes)
                                         print('得到的单位:'+nsplitUnit)
@@ -717,7 +730,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                                     '-------------------------')
                                         else:
                                             print('Error！在计算'+thisCountryCity+ocountryName+'【城区】的_'+pParStr +
-                                                  '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！')
+                                                  '_时，出现问题，寻找到的' + str(nName) + '区县' + timeYear + '年的值有误！忽略这个值，请检查！')
                                             print('单位未能转换，请手动转换!具体信息如下：')
                                             print(nChangeMes)
                                             print(
@@ -748,7 +761,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                     pUnitshort = pUnit.split('(')[0]
                                 if pUnitshort == pUnit:
                                     print('Error！在计算' + thisCountryCity + ocountryName + '的_' +
-                                          pParStr + '_时，出现问题，寻找到的' + timeYear + '年的单位有误，忽略这个值，请检查！')
+                                          pParStr + '_时，出现问题，寻找到的' + timeYear + '年的单位有误，请检查！')
                                     print('-------------------------')
                                 else:
                                     pChangeValue, pChangeMes = Changevalue(
@@ -760,7 +773,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                                                    realParField] = pChangeValue
                                         except:
                                             print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
-                                                  '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                                  '_时，出现问题，寻找到的' + timeYear + '年的值有误，请检查！')
                                             print('-------------------------')
                                     else:
                                         print('Error！在计算'+thisCountryCity+ocountryName+'的_' +
@@ -788,7 +801,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                                            realParField] = pChangeValue
                                 except:
                                     print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
-                                          '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                          '_时，出现问题，寻找到的' + timeYear + '年的值有误，请检查！')
                                     print('-------------------------')
                             else:
                                 print('Error！在计算'+thisCountryCity+ocountryName+'的_' +
@@ -808,7 +821,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                                            realParField] = pValue
                                 except:
                                     print('Error！在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
-                                          '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                          '_时，出现问题，寻找到的' + timeYear + '年的值有误，请检查！')
                                     print('-------------------------')
                             # 转换单位
                             else:
@@ -821,7 +834,7 @@ for tIndex, tRow in findresultSP.iterrows():
                                                                realParField] = pChangeValue
                                     except:
                                         print('在计算'+thisCountryCity+ocountryName+'的_'+pParStr +
-                                              '_时，出现问题，寻找到的' + timeYear + '年的值有误，忽略这个值，请检查！')
+                                              '_时，出现问题，寻找到的' + timeYear + '年的值有误，请检查！')
                                         print('-------------------------')
                                 else:
                                     print('Error！在计算'+thisCountryCity+ocountryName+'的_' +
@@ -834,5 +847,5 @@ for tIndex, tRow in findresultSP.iterrows():
     print('##################################################')
     print('#endregion')
 allCountryData.to_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX.xlsx', encoding='gbk')
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX.xlsx', encoding='gbk')
 print('Already Finish Work! Good! THRILLER柠檬！')

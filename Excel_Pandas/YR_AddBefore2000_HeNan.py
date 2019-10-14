@@ -121,6 +121,13 @@ def Changevalue(pOldValue, pOldUnit, pNeedUnit):
             return newValue, '转换成功'
         except:
             return None, '数值转换失败，可能不是个数字，未能转换！'
+    # 千* → 亿*
+    if pOldUnit[0] == '千' and pNeedUnit[0] == '亿':
+        try:
+            newValue = float(pOldValue) / 100000
+            return newValue, '转换成功'
+        except:
+            return None, '数值转换失败，可能不是个数字，未能转换！'
     # 百* → 万*
     if pOldUnit[0] == '百' and pNeedUnit[0] == '万':
         try:
@@ -527,7 +534,7 @@ parsUni = {
     '人均公共绿地面积': '平方米',
     '#国有经济': '亿元',
     '##国有经济': '亿元',
-    '#国有': '万元',
+    '#国有': '亿元',
     '#集体经济': '亿元',
     '##集体经济': '亿元',
     '#集体': '万元',

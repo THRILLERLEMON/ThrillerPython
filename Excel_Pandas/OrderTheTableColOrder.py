@@ -10,11 +10,11 @@ def getNewpart(filename):
 
 
 oldtable = pd.read_excel(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX_NX_NM_HN_GS.xlsx', encoding='gbk')
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX.xlsx', encoding='gbk')
 
 firstpart = oldtable.iloc[:, 0:10]
 newpart = getNewpart(
-    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX_NX_NM_HN_GS.xlsx')
+    'D:\\OneDrive\\SharedFile\\EXCEL 数据处理\\EXCELwork201908_linux_2ED\\AfterSX_SaX.xlsx')
 
 newpartsort = newpart.sort_index(axis=1)
 newtable = pd.concat([firstpart, newpartsort], axis=1)
@@ -30,5 +30,5 @@ newtable = newtable.append(countnumber, ignore_index=True).append(
     baifenbi, ignore_index=True)
 print(newtable)
 
-newtable.to_excel('C:/Users/thril/Desktop/OutputAll_Ordered.xlsx')
+newtable.to_excel('C:/Users/thril/Desktop/shaanxi_Ordered.xlsx')
 print('ok')
