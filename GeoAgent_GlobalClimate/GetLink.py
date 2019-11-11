@@ -2,16 +2,23 @@
 # THRILLER柠檬
 # thrillerlemon@outlook.com
 
+# 📌对构建网络链接进行代码实现，打算计算出多个相关关系指标来进行关系的判定
+# ✅1、地理空间距离——————Done！
+# ✅2、Pearson相关性和显著性——————Done！
+# ✅3、互相关和由互相关计算得来的互相关权重；加入时间滞后——————Done！
+# ❎4、Mutual Information（互信息）——————Working...
+# 📌下一步就是对这些指标的阈值进行确定，进而筛选出冗余更小的连接
+
 import math
 import dit
 import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
 import scipy.stats as st
 from scipy import ndimage
 from scipy.stats import gaussian_kde
 from scipy.integrate import dblquad
-import matplotlib.pyplot as plt
-import networkx as nx
-import pandas as pd
 from geopy.distance import geodesic
 
 
