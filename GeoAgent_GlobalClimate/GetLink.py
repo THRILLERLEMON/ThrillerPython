@@ -11,6 +11,7 @@
 
 import math
 import dit
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -126,6 +127,7 @@ def correlation(Ti, Tj, dataNum):
 
 
 # ******Main******
+print (time.strftime('%H:%M:%S',time.localtime(time.time())))
 # Load Point info
 fnPoi = 'D:\OneDrive\SharedFile\草地MTE工作\GeoAgent_GlobalClimate\PointInfo.csv'
 dataPoi = np.loadtxt(fnPoi, delimiter=',', skiprows=1)
@@ -148,18 +150,20 @@ for iAgent in np.arange(0, agentNum):
     thisAgent = dataTem[iAgent, ...]
     otherAgent = np.delete(dataTem, iAgent, axis=0)
     labelOther = np.delete(labelData, iAgent, axis=0)
+    latOther = np.delete(latData, iAgent, axis=0)
+    lonOther = np.delete(lonData, iAgent, axis=0)
 
     for iOther in np.arange(0, agentNum - 1):
         dist = geodesic((latData[iAgent], lonData[iAgent]),
-                        (latData[iOther], lonData[iOther]))
+                        (latOther[iOther], lonOther[iOther]))
         [Rpear, Ppear, link_C, link_W, linkMI] = correlation(
             thisAgent, otherAgent[iOther, ...], dataNum)
         G.add_edge(labelData[iAgent], labelOther[iOther],
                    weight=link_W, crosscor=link_C)
         C_W.append([labelData[iAgent], labelOther[iOther],
-                    dist, Rpear, Ppear, link_C, link_W, linkMI])
-        print(labelData[iAgent], labelOther[iOther],
-              dist.km, Rpear, Ppear, link_C, link_W, linkMI)
+                    dist.km, Rpear, Ppear, link_C, link_W, linkMI])
+        # print(labelData[iAgent], labelOther[iOther],
+        #       dist.km, Rpear, Ppear, link_C, link_W, linkMI)
     # print(C_W)
 
     # test
@@ -171,4 +175,5 @@ for iAgent in np.arange(0, agentNum):
     print('ok a agent', iAgent)
 df = pd.DataFrame(C_W)
 df.to_csv('C:\\Users\\thril\\Desktop\\out.csv')
+print (time.strftime('%H:%M:%S',time.localtime(time.time())))
 print('GOOD!')
