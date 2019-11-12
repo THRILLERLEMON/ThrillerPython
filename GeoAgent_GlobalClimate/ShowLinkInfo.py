@@ -28,6 +28,32 @@ print('show plot')
 # plt.show()
 print (time.strftime('%H:%M:%S',time.localtime(time.time())))
 
+Rdes75 =Rpear.describe().loc['75%']
+Cdes75 =Cij.describe().loc['75%']
+Wdes75 =Wij.describe().loc['75%']
+Mdes75 =Miij.describe().loc['75%']
+print(Rdes75)
+print(Cdes75)
+print(Wdes75)
+print(Mdes75)
+
+
+showLinkInfo = LinkInfo.iloc[:, 3:7]
+boxLinkInfo = showLinkInfo.boxplot(sym = 'o',  # 异常点形状，参考marker
+               vert = True,  # 是否垂直
+               whis = 1.5,  # IQR，默认1.5，也可以设置区间比如[5,95]，代表强制上下边缘为数据95%和5%位置
+               patch_artist = True,  # 上下四分位框内是否填充，True为填充
+               meanline = False,showmeans=True,  # 是否有均值线及其形状
+               showbox = True,  # 是否显示箱线
+               showcaps = True,  # 是否显示边缘线
+               showfliers = True,  # 是否显示异常值
+               notch = False,  # 中间箱体是否缺口
+               return_type='dict'  # 返回类型为字典
+              ) 
+plt.title('boxplot')
+plt.show()
+
+
 fig, axs = plt.subplots(2, 2)
 kwargs = dict(histtype='stepfilled', alpha=0.3, density=True, bins=640,stacked =True)
 axs[0, 0].hist(Ppear, **kwargs)
@@ -40,11 +66,16 @@ axs[1, 1].hist(Miij, **kwargs)
 axs[1, 1].set_title('Miij')
 plt.show()
 
+
+
+
 plt.hexbin(Cij, Miij, bins=640, cmap='Blues')
 plt.xlabel('Cij')
 plt.ylabel('Miij')
 cb = plt.colorbar()
 cb.set_label('counts in bin')
+plt.vlines(Cdes75,0.1, 0.3, colors='k', label='Cdes75')
+plt.hlines(Mdes75,0.0, 1, colors='k', label='Mdes75')
 plt.show()
 
 plt.hexbin(Distance, Cij, bins=640, cmap='Blues')
@@ -60,3 +91,4 @@ plt.ylabel('Miij')
 cb = plt.colorbar()
 cb.set_label('counts in bin')
 plt.show()
+
