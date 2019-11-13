@@ -10,17 +10,18 @@
 # 📌下一步就是对这些指标的阈值进行确定，进而筛选出冗余更小的连接
 
 import math
-import dit
 import time
-import numpy as np
+
+import dit
 import matplotlib.pyplot as plt
 import networkx as nx
+import numpy as np
 import pandas as pd
 import scipy.stats as st
-from scipy import ndimage
-from scipy.stats import gaussian_kde
-from scipy.integrate import dblquad
 from geopy.distance import geodesic
+from scipy import ndimage
+from scipy.integrate import dblquad
+from scipy.stats import gaussian_kde
 
 
 def mutual_information_2d(x, y, binNum=64, sigma=1, normalized=False):
@@ -173,7 +174,34 @@ for iAgent in np.arange(0, agentNum):
     # nx.draw(G)
     # plt.show()
     print('ok a agent', iAgent)
-df = pd.DataFrame(C_W)
-df.to_csv('C:\\Users\\thril\\Desktop\\out.csv')
-print (time.strftime('%H:%M:%S',time.localtime(time.time())))
+allLinks = pd.DataFrame(C_W)
+allLinks.to_csv('C:\\Users\\thril\\Desktop\\allLinks.csv')
+
+pSource=allLinks.loc[:, "Source"]
+pTarget=allLinks.loc[:, "Target"]
+pDistance=allLinks.loc[:, "Distance"]
+pRpear=allLinks.loc[:, "Rpear"]
+pPpear=allLinks.loc[:, "Ppear"]
+pCij=allLinks.loc[:, "Cij"]
+pWij=allLinks.loc[:, "Wij"]
+pMiij = allLinks.loc[:, "Miij"]
+
+Cdes70 =pCij.describe(percentiles=[0.7]).loc['70%']
+Wdes70 =pWij.describe(percentiles=[0.7]).loc['70%']
+Mdes70 =pMiij.describe(percentiles=[0.7]).loc['70%']
+
+# Filter the Links
+# 1 Ppear<1e-10
+# 2 Cij>Cdes70
+# 3 Wij>Wdes70
+# 4 Miij>Mdes70
+filterLinks = allLinks[
+                (allLinks["Ppear"] < 1e-10)
+                & (allLinks["Cij"] > Cdes70)
+                & (allLinks["Wij"] > Wdes70)
+                & (allLinks["Miij"] > Mdes70)
+            ].copy()
+filterLinks.to_csv('C:\\Users\\thril\\Desktop\\filterLinks.csv')
+
+print(time.strftime('%H:%M:%S',time.localtime(time.time())))
 print('GOOD!')

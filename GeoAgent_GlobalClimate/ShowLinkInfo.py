@@ -3,20 +3,23 @@
 # thrillerlemon@outlook.com
 
 import time
-import pandas as pd
+
 import matplotlib.pyplot as plt
+import pandas as pd
 
-LinkInfo=pd.read_csv('D:\OneDrive\SharedFile\草地MTE工作\GeoAgent_GlobalClimate\LinkInfo.csv')
+allLinks=pd.read_csv('D:\OneDrive\SharedFile\草地MTE工作\GeoAgent_GlobalClimate\LinkInfo.csv')
 
 
-Source=LinkInfo.loc[:, "Source"]
-Target=LinkInfo.loc[:, "Target"]
-Distance=LinkInfo.loc[:, "Distance"]
-Rpear=LinkInfo.loc[:, "Rpear"]
-Ppear=LinkInfo.loc[:, "Ppear"]
-Cij=LinkInfo.loc[:, "Cij"]
-Wij=LinkInfo.loc[:, "Wij"]
-Miij=LinkInfo.loc[:, "Miij"]
+
+
+Source=allLinks.loc[:, "Source"]
+Target=allLinks.loc[:, "Target"]
+Distance=allLinks.loc[:, "Distance"]
+Rpear=allLinks.loc[:, "Rpear"]
+Ppear=allLinks.loc[:, "Ppear"]
+Cij=allLinks.loc[:, "Cij"]
+Wij=allLinks.loc[:, "Wij"]
+Miij=allLinks.loc[:, "Miij"]
 
 print('show plot')
 # plt.plot(Distance,Rpear,'o',label = "Rpear")
@@ -28,18 +31,31 @@ print('show plot')
 # plt.show()
 print (time.strftime('%H:%M:%S',time.localtime(time.time())))
 
-Rdes75 =Rpear.describe().loc['75%']
-Cdes75 =Cij.describe().loc['75%']
-Wdes75 =Wij.describe().loc['75%']
-Mdes75 =Miij.describe().loc['75%']
-print(Rdes75)
-print(Cdes75)
-print(Wdes75)
-print(Mdes75)
+Rdes70 =Rpear.describe(percentiles=[0.7]).loc['70%']
+Cdes70 =Cij.describe(percentiles=[0.7]).loc['70%']
+Wdes70 =Wij.describe(percentiles=[0.7]).loc['70%']
+Mdes70 =Miij.describe(percentiles=[0.7]).loc['70%']
 
 
-showLinkInfo = LinkInfo.iloc[:, 3:7]
-boxLinkInfo = showLinkInfo.boxplot(sym = 'o',  # 异常点形状，参考marker
+
+
+# Filter the Links
+# 1 Ppear<1e-10
+# 2 Cij>Cdes70
+# 3 Wij>Wdes70
+# 4 Miij>Mdes70
+filterLinks = allLinks[
+                (allLinks["Ppear"] < 1e-10)
+                & (allLinks["Cij"] > Cdes70)
+                & (allLinks["Wij"] > Wdes70)
+                & (allLinks["Miij"] > Mdes70)
+            ].copy()
+print(filterLinks)
+print(allLinks)
+filterLinks.to_csv('C:\\Users\\thril\\Desktop\\filterLinks.csv')
+
+showallLinks = allLinks.iloc[:, 3:7]
+boxallLinks = showallLinks.boxplot(sym = 'o',  # 异常点形状，参考marker
                vert = True,  # 是否垂直
                whis = 1.5,  # IQR，默认1.5，也可以设置区间比如[5,95]，代表强制上下边缘为数据95%和5%位置
                patch_artist = True,  # 上下四分位框内是否填充，True为填充
@@ -74,8 +90,8 @@ plt.xlabel('Cij')
 plt.ylabel('Miij')
 cb = plt.colorbar()
 cb.set_label('counts in bin')
-plt.vlines(Cdes75,0.1, 0.3, colors='k', label='Cdes75')
-plt.hlines(Mdes75,0.0, 1, colors='k', label='Mdes75')
+plt.vlines(Cdes70,0.1, 0.3, colors='k', label='Cdes75')
+plt.hlines(Mdes70,0.0, 1, colors='k', label='Mdes75')
 plt.show()
 
 plt.hexbin(Distance, Cij, bins=640, cmap='Blues')
@@ -91,4 +107,3 @@ plt.ylabel('Miij')
 cb = plt.colorbar()
 cb.set_label('counts in bin')
 plt.show()
-
