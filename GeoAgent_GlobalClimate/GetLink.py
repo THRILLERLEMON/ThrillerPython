@@ -6,8 +6,10 @@
 # ✅1、地理空间距离——————Done！
 # ✅2、Pearson相关性和显著性——————Done！
 # ✅3、互相关和由互相关计算得来的互相关权重；加入时间滞后——————Done！
-# ❎4、Mutual Information（互信息）——————Working...
-# 📌下一步就是对这些指标的阈值进行确定，进而筛选出冗余更小的连接
+# ✅4、Mutual Information（互信息）——————Done！
+# 📌对这些指标的阈值进行确定，进而筛选出冗余更小的连接
+# Filter the Links
+
 
 import math
 import time
@@ -23,6 +25,92 @@ from scipy import ndimage
 from scipy.integrate import dblquad
 from scipy.stats import gaussian_kde
 
+
+def main():
+    # ******Main******
+    print (time.strftime('%H:%M:%S',time.localtime(time.time())))
+    # Load Point info
+    fnPoi = 'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合模型\GeoAgent_GlobalClimate\PointInfo.csv'
+    dataPoi = np.loadtxt(fnPoi, delimiter=',', skiprows=1)
+
+    # Load Data
+    fnTem = 'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合模型\GeoAgent_GlobalClimate\GlobalClimateagentInfomean_2m_air_temperature8085.csv'
+    dataTem = np.loadtxt(fnTem, delimiter=',', skiprows=1)
+
+
+    labelData = dataPoi[..., 1].astype(np.int32)
+    lonData = dataPoi[..., 3]
+    latData = dataPoi[..., 2]
+    dataTem = np.delete(dataTem, 0, axis=1)
+    [agentNum, dataNum] = dataTem.shape
+
+    # correlation
+    C_W = []
+    G = nx.Graph()
+    for iAgent in np.arange(0, agentNum):
+        thisAgent = dataTem[iAgent, ...]
+        otherAgent = np.delete(dataTem, iAgent, axis=0)
+        labelOther = np.delete(labelData, iAgent, axis=0)
+        latOther = np.delete(latData, iAgent, axis=0)
+        lonOther = np.delete(lonData, iAgent, axis=0)
+
+        for iOther in np.arange(0, agentNum - 1):
+            dist = geodesic((latData[iAgent], lonData[iAgent]),
+                            (latOther[iOther], lonOther[iOther]))
+            [Rpear, Ppear, link_C, link_W, linkMI] = correlation(
+                thisAgent, otherAgent[iOther, ...], dataNum)
+            G.add_edge(labelData[iAgent], labelOther[iOther],
+                    weight=link_W, crosscor=link_C)
+            C_W.append([labelData[iAgent], labelOther[iOther],
+                        dist.km, Rpear, Ppear, link_C, link_W, linkMI])
+            # print(labelData[iAgent], labelOther[iOther],
+            #       dist.km, Rpear, Ppear, link_C, link_W, linkMI)
+        # print(C_W)
+
+        # test
+        # A = nx.adjacency_matrix(G)
+        # degree = nx.degree(G)
+        # print(degree)
+        # nx.draw(G)
+        # plt.show()
+        print('ok a agent', iAgent)
+    allLinks = pd.DataFrame(C_W)
+    allLinks.to_csv('C:\\Users\\thril\\Desktop\\allLinks.csv')
+
+    pSource=allLinks.loc[:, "Source"]
+    pTarget=allLinks.loc[:, "Target"]
+    pDistance=allLinks.loc[:, "Distance"]
+    pRpear=allLinks.loc[:, "Rpear"]
+    pPpear=allLinks.loc[:, "Ppear"]
+    pCij=allLinks.loc[:, "Cij"]
+    pWij=allLinks.loc[:, "Wij"]
+    pMiij = allLinks.loc[:, "Miij"]
+
+    Cdes70 =pCij.describe(percentiles=[0.7]).loc['70%']
+    Wdes70 =pWij.describe(percentiles=[0.7]).loc['70%']
+    Mdes70 =pMiij.describe(percentiles=[0.7]).loc['70%']
+
+    # Filter the Links
+    # 1 Ppear<1e-10
+    # 2 Cij>Cdes70
+    # 3 Wij>Wdes70
+    # 4 Miij>Mdes70
+    filterLinks = allLinks[
+                    (allLinks["Ppear"] < 1e-10)
+                    & (allLinks["Cij"] > Cdes70)
+                    & (allLinks["Wij"] > Wdes70)
+                    & (allLinks["Miij"] > Mdes70)
+                ].copy()
+    filterLinks.to_csv('C:\\Users\\thril\\Desktop\\filterLinks.csv')
+
+    print(time.strftime('%H:%M:%S',time.localtime(time.time())))
+    print('GOOD!')
+
+
+
+
+
+# ******SubFunction******
 
 def mutual_information_2d(x, y, binNum=64, sigma=1, normalized=False):
     # cite https://gist.github.com/GaelVaroquaux/ead9898bd3c973c40429
@@ -127,81 +215,6 @@ def correlation(Ti, Tj, dataNum):
     return Rpear, Ppear, Cij, Wij, MI
 
 
-# ******Main******
-print (time.strftime('%H:%M:%S',time.localtime(time.time())))
-# Load Point info
-fnPoi = 'D:\OneDrive\SharedFile\草地MTE工作\GeoAgent_GlobalClimate\PointInfo.csv'
-dataPoi = np.loadtxt(fnPoi, delimiter=',', skiprows=1)
-
-# Load Data
-fnTem = 'D:\OneDrive\SharedFile\草地MTE工作\GeoAgent_GlobalClimate\GlobalClimateagentInfomean_2m_air_temperature8085.csv'
-dataTem = np.loadtxt(fnTem, delimiter=',', skiprows=1)
-
-
-labelData = dataPoi[..., 1].astype(np.int32)
-lonData = dataPoi[..., 3]
-latData = dataPoi[..., 2]
-dataTem = np.delete(dataTem, 0, axis=1)
-[agentNum, dataNum] = dataTem.shape
-
-# correlation
-C_W = []
-G = nx.Graph()
-for iAgent in np.arange(0, agentNum):
-    thisAgent = dataTem[iAgent, ...]
-    otherAgent = np.delete(dataTem, iAgent, axis=0)
-    labelOther = np.delete(labelData, iAgent, axis=0)
-    latOther = np.delete(latData, iAgent, axis=0)
-    lonOther = np.delete(lonData, iAgent, axis=0)
-
-    for iOther in np.arange(0, agentNum - 1):
-        dist = geodesic((latData[iAgent], lonData[iAgent]),
-                        (latOther[iOther], lonOther[iOther]))
-        [Rpear, Ppear, link_C, link_W, linkMI] = correlation(
-            thisAgent, otherAgent[iOther, ...], dataNum)
-        G.add_edge(labelData[iAgent], labelOther[iOther],
-                   weight=link_W, crosscor=link_C)
-        C_W.append([labelData[iAgent], labelOther[iOther],
-                    dist.km, Rpear, Ppear, link_C, link_W, linkMI])
-        # print(labelData[iAgent], labelOther[iOther],
-        #       dist.km, Rpear, Ppear, link_C, link_W, linkMI)
-    # print(C_W)
-
-    # test
-    # A = nx.adjacency_matrix(G)
-    # degree = nx.degree(G)
-    # print(degree)
-    # nx.draw(G)
-    # plt.show()
-    print('ok a agent', iAgent)
-allLinks = pd.DataFrame(C_W)
-allLinks.to_csv('C:\\Users\\thril\\Desktop\\allLinks.csv')
-
-pSource=allLinks.loc[:, "Source"]
-pTarget=allLinks.loc[:, "Target"]
-pDistance=allLinks.loc[:, "Distance"]
-pRpear=allLinks.loc[:, "Rpear"]
-pPpear=allLinks.loc[:, "Ppear"]
-pCij=allLinks.loc[:, "Cij"]
-pWij=allLinks.loc[:, "Wij"]
-pMiij = allLinks.loc[:, "Miij"]
-
-Cdes70 =pCij.describe(percentiles=[0.7]).loc['70%']
-Wdes70 =pWij.describe(percentiles=[0.7]).loc['70%']
-Mdes70 =pMiij.describe(percentiles=[0.7]).loc['70%']
-
-# Filter the Links
-# 1 Ppear<1e-10
-# 2 Cij>Cdes70
-# 3 Wij>Wdes70
-# 4 Miij>Mdes70
-filterLinks = allLinks[
-                (allLinks["Ppear"] < 1e-10)
-                & (allLinks["Cij"] > Cdes70)
-                & (allLinks["Wij"] > Wdes70)
-                & (allLinks["Miij"] > Mdes70)
-            ].copy()
-filterLinks.to_csv('C:\\Users\\thril\\Desktop\\filterLinks.csv')
-
-print(time.strftime('%H:%M:%S',time.localtime(time.time())))
-print('GOOD!')
+# Run main
+if __name__ == "__main__":
+    main()
