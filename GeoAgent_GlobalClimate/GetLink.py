@@ -28,90 +28,126 @@ from scipy.stats import gaussian_kde
 
 def main():
     # ******Main******
-    print (time.strftime('%H:%M:%S',time.localtime(time.time())))
+    print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     # Load Point info
-    fnPoi = 'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合模型\GeoAgent_GlobalClimate\PointInfo.csv'
-    dataPoi = np.loadtxt(fnPoi, delimiter=',', skiprows=1)
+    fnPoi = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\PointInfo.csv'
+    dataPoi = pd.read_csv(fnPoi)
+    # set index for point info
+    idIndex = 'label'
+    lonIndex = 'longitude'
+    latIndex = 'latitude'
 
     # Load Data
-    fnTem = 'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合模型\GeoAgent_GlobalClimate\GlobalClimateagentInfomean_2m_air_temperature8085.csv'
-    dataTem = np.loadtxt(fnTem, delimiter=',', skiprows=1)
+    # Data like
+    # label  Data_Time1  Data_Time2  Data_Time3  Data_Time4 ...
+    # [int]  [double]    [double]    [double]    [double]
+    # 00000  0.001       0.002       0.67        1.34
+    # 00001  0.003       0.022       0.69        2.34
+    # ...    ...         ...         ...         ...
+    # This data must have the same index with pointInfo
+    fnTem = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfomean_2m_air_temperature8085.csv'
+    dataTem = pd.read_csv(fnTem)
+    fnPrs = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfosurface_pressure8085.csv'
+    dataPrs = pd.read_csv(fnPrs)
+    fnPre = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfototal_precipitation8085.csv'
+    dataPre = pd.read_csv(fnPre)
+
+    # geoLinks save all the Links
+    geoLinks = []
+    # Links have different types
+    # Type 0 Distance
+    # Type 1 Tem_sing
+
+    # temLinks = GetRsing(dataTem, linkType=1)
+    TEMPLinks = pd.read_csv('D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo.csv')
+    
+    poiPos = pd.DataFrame({'id': dataPoi.loc[:, idIndex], 'longitude': dataPoi.loc[:, lonIndex], 'latitude': dataPoi.loc[:, latIndex]})
+    
+    temLinks_Dis = GetDistance(TEMPLinks.head(10), poiPos)
+    
+    temLinks_Dis.to_csv('C:\\Users\\thril\\Desktop\\filterLinks.csv')
+    # G = nx.Graph()
+    # G.add_edge(labelData[iAgent], labelOther[iOther], weight=link_W, crosscor=link_C)
+    # test
+    # A = nx.adjacency_matrix(G)
+    # degree = nx.degree(G)
+    # print(degree)
+    # nx.draw(G)
+    # plt.show()
+    print(time.strftime('%H:%M:%S', time.localtime(time.time())))
+    print('GOOD!')
 
 
-    labelData = dataPoi[..., 1].astype(np.int32)
-    lonData = dataPoi[..., 3]
-    latData = dataPoi[..., 2]
-    dataTem = np.delete(dataTem, 0, axis=1)
-    [agentNum, dataNum] = dataTem.shape
+# ******SubFunction******
+def GetDistance(links, poiPosDF):
+    links['Distance'] = None
+    for lIndex, lRow in links.iterrows():
+        thisSou = lRow["Source"]
+        thisTar = lRow["Target"]
+        # souLon=poiPosDF[]
+        souPoi = poiPosDF[poiPosDF["id"] == thisSou].copy()
+        tarPoi = poiPosDF[poiPosDF["id"] == thisTar].copy()
+        dist = geodesic((souPoi.iloc[0]['latitude'], souPoi.iloc[0]['longitude']),
+                            (tarPoi.iloc[0]['latitude'], tarPoi.iloc[0]['longitude']))
+        links.loc[lIndex,'Distance'] = dist.km
+    # disLinks = []
+    # [agentNum, dataNum] = labelData.shape
+    # for iAgent in np.arange(0, agentNum):
+    #     labelOther = np.delete(labelData, iAgent, axis=0)
+    #     latOther = np.delete(latData, iAgent, axis=0)
+    #     lonOther = np.delete(lonData, iAgent, axis=0)
+    #     for iOther in np.arange(0, agentNum - 1):
+    #         dist = geodesic((latData[iAgent], lonData[iAgent]),
+    #                         (latOther[iOther], lonOther[iOther]))
+    #         disLinks.append(
+    #             [labelData[iAgent], labelOther[iOther], 0, dist.km])
+    # disLinks = pd.DataFrame(disLinks)
+    return links
 
-    # correlation
-    C_W = []
-    G = nx.Graph()
+
+def GetRsing(pureData, linkType):
+    pureDataValues = pureData.values
+    labelData=pureDataValues[...,0].astype(np.int32)
+    pureDataValues = np.delete(pureDataValues, 0, axis=1)
+    [agentNum, dataNum] = pureDataValues.shape
+    singLinks=[]
     for iAgent in np.arange(0, agentNum):
-        thisAgent = dataTem[iAgent, ...]
-        otherAgent = np.delete(dataTem, iAgent, axis=0)
+        thisAgent = pureDataValues[iAgent, ...]
+        otherAgent = np.delete(pureDataValues, iAgent, axis=0)
         labelOther = np.delete(labelData, iAgent, axis=0)
-        latOther = np.delete(latData, iAgent, axis=0)
-        lonOther = np.delete(lonData, iAgent, axis=0)
-
         for iOther in np.arange(0, agentNum - 1):
-            dist = geodesic((latData[iAgent], lonData[iAgent]),
-                            (latOther[iOther], lonOther[iOther]))
-            [Rpear, Ppear, link_C, link_W, linkMI] = correlation(
+            [Rpear, Ppear, link_C, link_W, linkMI] = sing_correlation(
                 thisAgent, otherAgent[iOther, ...], dataNum)
-            G.add_edge(labelData[iAgent], labelOther[iOther],
-                    weight=link_W, crosscor=link_C)
-            C_W.append([labelData[iAgent], labelOther[iOther],
-                        dist.km, Rpear, Ppear, link_C, link_W, linkMI])
-            # print(labelData[iAgent], labelOther[iOther],
-            #       dist.km, Rpear, Ppear, link_C, link_W, linkMI)
-        # print(C_W)
+            singLinks.append([labelData[iAgent], labelOther[iOther], Rpear, Ppear, link_C, link_W, linkMI])
+    singLinks = pd.DataFrame(singLinks)
 
-        # test
-        # A = nx.adjacency_matrix(G)
-        # degree = nx.degree(G)
-        # print(degree)
-        # nx.draw(G)
-        # plt.show()
-        print('ok a agent', iAgent)
-    allLinks = pd.DataFrame(C_W)
-    allLinks.to_csv('C:\\Users\\thril\\Desktop\\allLinks.csv')
+    pSource = singLinks.loc[:, "Source"]
+    pTarget = singLinks.loc[:, "Target"]
+    pRpear = singLinks.loc[:, "Rpear"]
+    pPpear = singLinks.loc[:, "Ppear"]
+    pCij = singLinks.loc[:, "Cij"]
+    pWij = singLinks.loc[:, "Wij"]
+    pMiij = singLinks.loc[:, "Miij"]
 
-    pSource=allLinks.loc[:, "Source"]
-    pTarget=allLinks.loc[:, "Target"]
-    pDistance=allLinks.loc[:, "Distance"]
-    pRpear=allLinks.loc[:, "Rpear"]
-    pPpear=allLinks.loc[:, "Ppear"]
-    pCij=allLinks.loc[:, "Cij"]
-    pWij=allLinks.loc[:, "Wij"]
-    pMiij = allLinks.loc[:, "Miij"]
-
-    Cdes70 =pCij.describe(percentiles=[0.7]).loc['70%']
-    Wdes70 =pWij.describe(percentiles=[0.7]).loc['70%']
-    Mdes70 =pMiij.describe(percentiles=[0.7]).loc['70%']
+    Cdes70 = pCij.describe(percentiles=[0.7]).loc['70%']
+    Wdes70 = pWij.describe(percentiles=[0.7]).loc['70%']
+    Mdes70 = pMiij.describe(percentiles=[0.7]).loc['70%']
 
     # Filter the Links
     # 1 Ppear<1e-10
     # 2 Cij>Cdes70
     # 3 Wij>Wdes70
     # 4 Miij>Mdes70
-    filterLinks = allLinks[
-                    (allLinks["Ppear"] < 1e-10)
-                    & (allLinks["Cij"] > Cdes70)
-                    & (allLinks["Wij"] > Wdes70)
-                    & (allLinks["Miij"] > Mdes70)
-                ].copy()
-    filterLinks.to_csv('C:\\Users\\thril\\Desktop\\filterLinks.csv')
-
-    print(time.strftime('%H:%M:%S',time.localtime(time.time())))
-    print('GOOD!')
+    filteredLinks = allLinks[
+        (allLinks["Ppear"] < 1e-10)
+        & (allLinks["Cij"] > Cdes70)
+        & (allLinks["Wij"] > Wdes70)
+        & (allLinks["Miij"] > Mdes70)
+    ].copy()
+    return filteredLinks
 
 
-
-
-
-# ******SubFunction******
-
+# ******Correlation Function******
 def mutual_information_2d(x, y, binNum=64, sigma=1, normalized=False):
     # cite https://gist.github.com/GaelVaroquaux/ead9898bd3c973c40429
     """
@@ -159,7 +195,7 @@ def mutual_information_2d(x, y, binNum=64, sigma=1, normalized=False):
     return mi
 
 
-def correlation(Ti, Tj, dataNum):
+def sing_correlation(Ti, Tj, dataNum):
     # ******Pearsonr
     Rpear, Ppear = st.pearsonr(Ti, Tj)
 

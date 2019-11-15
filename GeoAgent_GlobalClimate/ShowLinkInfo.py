@@ -7,7 +7,7 @@ import time
 import matplotlib.pyplot as plt
 import pandas as pd
 
-allLinks=pd.read_csv('D:\OneDrive\SharedFile\环境经济社会可持续发展耦合模型\GeoAgent_GlobalClimate\LinkInfo.csv')
+allLinks=pd.read_csv('D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo.csv')
 
 
 
