@@ -1,6 +1,8 @@
 # GeoAgentModel
+# 01BuildNetWork
 # THRILLER柠檬
 # thrillerlemon@outlook.com
+# 2019年11月1日
 
 # 📌对构建网络链接进行代码实现，打算计算出多个相关关系指标来进行关系的判定
 # ✅1、地理空间距离——————Done！
@@ -8,15 +10,11 @@
 # ✅3、互相关和由互相关计算得来的互相关权重；加入时间滞后——————Done！
 # ✅4、Mutual Information（互信息）——————Done！
 # 📌对这些指标的阈值进行确定，进而筛选出冗余更小的连接
-# Filter the Links
 
 
 import math
 import time
 
-import dit
-import matplotlib.pyplot as plt
-import networkx as nx
 import numpy as np
 import pandas as pd
 import scipy.stats as st
@@ -24,6 +22,13 @@ from geopy.distance import geodesic
 from scipy import ndimage
 from scipy.integrate import dblquad
 from scipy.stats import gaussian_kde
+
+# Input Data
+dictData = {
+    'Tem': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfomean_2m_air_temperature8085.csv',
+    'Prs': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfosurface_pressure8085.csv',
+    'Pre': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfototal_precipitation8085.csv'
+}
 
 
 def main():
@@ -47,38 +52,25 @@ def main():
     # 00001  0.003       0.022       0.69        2.34
     # ...    ...         ...         ...         ...
     # This data must have the same index with pointInfo
-    fnTem = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfomean_2m_air_temperature8085.csv'
-    dataTem = pd.read_csv(fnTem)
-    fnPrs = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfosurface_pressure8085.csv'
-    dataPrs = pd.read_csv(fnPrs)
-    fnPre = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfototal_precipitation8085.csv'
-    dataPre = pd.read_csv(fnPre)
 
-    # geoLinks save all the Links
-    geoLinks = []
-    # Links have different types
-    # Type 0 Distance*
-    # Type 1 Tem_sing
-    # Type 2 Prs2Tem_mult
-
-    Prs2Tem_mult = GetRmult(dataPrs, dataTem, linkType=2)
-    Prs2Tem_mult_Dis = GetDistance(Prs2Tem_mult, poiPos)
-    Prs2Tem_mult_Dis.to_csv('C:\\Users\\thril\\Desktop\\Prs2Tem_mult.csv')
-
-    # # Tem_sing = GetRsing(dataTem, linkType=1)
-    # TEMPLinks = pd.read_csv(
-    #     'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\LinkInfo.csv')
-    # Tem_sing_Dis = GetDistance(TEMPLinks.head(10), poiPos)
+    # Tem_sing = GetRsing('Tem')
+    # Tem_sing_Dis = GetDistance(TEMPLinks, poiPos)
     # Tem_sing_Dis.to_csv('C:\\Users\\thril\\Desktop\\Tem_sing_Dis.csv')
 
-    # G = nx.Graph()
-    # G.add_edge(labelData[iAgent], labelOther[iOther], weight=link_W, crosscor=link_C)
-    # test
-    # A = nx.adjacency_matrix(G)
-    # degree = nx.degree(G)
-    # print(degree)
-    # nx.draw(G)
-    # plt.show()
+    # Prs2Tem_mult = GetRmult('Prs','Tem')
+    # Prs2Tem_mult_Dis = GetDistance(Prs2Tem_mult, poiPos)
+    # Prs2Tem_mult_Dis.to_csv('C:\\Users\\thril\\Desktop\\Prs2Tem_mult_Dis.csv')
+
+    Tem_sing_Dis = pd.read_csv(
+        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Tem_sing_Dis.csv')
+    Prs2Tem_mult_Dis = pd.read_csv(
+        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Prs2Tem_mult_Dis.csv')
+
+    # geoLinks save all the Links
+    geoLinks = pd.concat([Tem_sing_Dis, Prs2Tem_mult_Dis], ignore_index=True)
+    geoLinks.to_csv(
+        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\geoLinks.csv')
+
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     print('GOOD!')
 
@@ -97,13 +89,14 @@ def GetDistance(links, poiPosDF):
     return links
 
 
-def GetRsing(data, linkType):
+def GetRsing(VarName):
+    data = pd.read_csv(dictData[VarName])
     dataValues = data.values
     labelData = dataValues[..., 0].astype(np.int32)
     dataValues = np.delete(dataValues, 0, axis=1)
     [agentNum, dataNum] = dataValues.shape
     singLinks = pd.DataFrame(
-        columns=('LinkType', 'Source', 'Target', 'Rpear', 'Ppear', 'Cij', 'Wij', 'MIij'))
+        columns=('VarSou', 'VarTar', 'Source', 'Target', 'Rpear', 'Ppear', 'Cij', 'Wij', 'MIij'))
     for iAgent in np.arange(0, agentNum):
         thisAgent = dataValues[iAgent, ...]
         otherAgent = np.delete(dataValues, iAgent, axis=0)
@@ -113,7 +106,8 @@ def GetRsing(data, linkType):
                 thisAgent, otherAgent[iOther, ...], dataNum)
             singLinks = singLinks.append(pd.DataFrame(
                 {
-                    'LinkType': [linkType],
+                    'VarSou': [VarName],
+                    'VarTar': [VarName],
                     'Source': [labelData[iAgent]],
                     'Target': [labelOther[iOther]],
                     'Rpear': [Rpear],
@@ -123,8 +117,6 @@ def GetRsing(data, linkType):
                     'MIij': [linkMI],
                 }), ignore_index=True)
 
-    pSource = singLinks.loc[:, "Source"]
-    pTarget = singLinks.loc[:, "Target"]
     pRpear = singLinks.loc[:, "Rpear"]
     pPpear = singLinks.loc[:, "Ppear"]
     pCij = singLinks.loc[:, "Cij"]
@@ -147,7 +139,9 @@ def GetRsing(data, linkType):
     return filteredLinks
 
 
-def GetRmult(dataSou, dataTar, linkType):
+def GetRmult(VarSouName, VarTarName):
+    dataSou = pd.read_csv(dictData[VarSouName])
+    dataTar = pd.read_csv(dictData[VarTarName])
     DataSouV = dataSou.values
     DataTarV = dataTar.values
     labelSou = DataSouV[..., 0].astype(np.int32)
@@ -156,7 +150,7 @@ def GetRmult(dataSou, dataTar, linkType):
     TarValues = np.delete(DataTarV, 0, axis=1)
     [agentNum, dataNum] = SouValues.shape
     multLinks = pd.DataFrame(
-        columns=('LinkType', 'Source', 'Target', 'Rpear', 'Ppear', 'Cij', 'Wij', 'MIij'))
+        columns=('VarSou', 'VarTar', 'Source', 'Target', 'Rpear', 'Ppear', 'Cij', 'Wij', 'MIij'))
     for iSou in np.arange(0, agentNum):
         thisSou = SouValues[iSou, ...]
         for iTar in np.arange(0, agentNum - 1):
@@ -164,7 +158,8 @@ def GetRmult(dataSou, dataTar, linkType):
                 thisSou, TarValues[iTar, ...], dataNum)
             multLinks = multLinks.append(pd.DataFrame(
                 {
-                    'LinkType': [linkType],
+                    'VarSou': [VarSouName],
+                    'VarTar': [VarTarName],
                     'Source': [labelSou[iSou]],
                     'Target': [labelTar[iTar]],
                     'Rpear': [Rpear],
@@ -174,8 +169,6 @@ def GetRmult(dataSou, dataTar, linkType):
                     'MIij': [linkMI],
                 }), ignore_index=True)
 
-    pSource = multLinks.loc[:, "Source"]
-    pTarget = multLinks.loc[:, "Target"]
     pRpear = multLinks.loc[:, "Rpear"]
     pPpear = multLinks.loc[:, "Ppear"]
     pCij = multLinks.loc[:, "Cij"]

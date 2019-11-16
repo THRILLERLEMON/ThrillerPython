@@ -1,13 +1,15 @@
 # GeoAgentModel
+# 02AnalyzeNetwork
 # THRILLER柠檬
 # thrillerlemon@outlook.com
+# 2019年11月6日
 
 import time
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
-allLinks=pd.read_csv('D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo.csv')
+allLinks=pd.read_csv('D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\geoLinks.csv')
 
 
 
@@ -19,7 +21,7 @@ Rpear=allLinks.loc[:, "Rpear"]
 Ppear=allLinks.loc[:, "Ppear"]
 Cij=allLinks.loc[:, "Cij"]
 Wij=allLinks.loc[:, "Wij"]
-Miij=allLinks.loc[:, "Miij"]
+MIij=allLinks.loc[:, "MIij"]
 
 print('show plot')
 # plt.plot(Distance,Rpear,'o',label = "Rpear")
@@ -48,7 +50,7 @@ filterLinks = allLinks[
                 (allLinks["Ppear"] < 1e-10)
                 & (allLinks["Cij"] > Cdes70)
                 & (allLinks["Wij"] > Wdes70)
-                & (allLinks["Miij"] > Mdes70)
+                & (allLinks["MIij"] > Mdes70)
             ].copy()
 print(filterLinks)
 print(allLinks)
@@ -79,7 +81,7 @@ axs[0, 1].set_title('Cij')
 axs[1, 0].hist(Wij, **kwargs)
 axs[1, 0].set_title('Wij')
 axs[1, 1].hist(Miij, **kwargs)
-axs[1, 1].set_title('Miij')
+axs[1, 1].set_title('MIij')
 plt.show()
 
 
@@ -87,7 +89,7 @@ plt.show()
 
 plt.hexbin(Cij, Miij, bins=640, cmap='Blues')
 plt.xlabel('Cij')
-plt.ylabel('Miij')
+plt.ylabel('MIij')
 cb = plt.colorbar()
 cb.set_label('counts in bin')
 plt.vlines(Cdes70,0.1, 0.3, colors='k', label='Cdes75')
@@ -103,7 +105,7 @@ plt.show()
 
 plt.hexbin(Distance, Miij, bins=640, cmap='Blues')
 plt.xlabel('Distance')
-plt.ylabel('Miij')
+plt.ylabel('MIij')
 cb = plt.colorbar()
 cb.set_label('counts in bin')
 plt.show()

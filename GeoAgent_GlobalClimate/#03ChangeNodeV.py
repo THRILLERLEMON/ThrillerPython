@@ -1,0 +1,44 @@
+# GeoAgentModel
+# 03ChangeNodeValue
+# THRILLER柠檬
+# thrillerlemon@outlook.com
+# 2019年11月11日
+
+import time
+
+import pandas as pd
+import numpy as np
+
+# Input Data
+dictData = {
+    'Tem': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfomean_2m_air_temperature8085.csv',
+    'Prs': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfosurface_pressure8085.csv',
+    'Pre': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfototal_precipitation8085.csv'
+}
+
+
+
+def main():
+    # ******Main******
+    print(time.strftime('%H:%M:%S', time.localtime(time.time())))
+    allLinks = pd.read_csv(
+        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\geoLinks.csv', index_col=0, header=0)
+    changeNodeID = 91199060
+    changeNodeValue(allLinks,changeNodeID,'PercentChange',120)
+
+    print(time.strftime('%H:%M:%S', time.localtime(time.time())))
+
+
+# ******SubFunction******
+def changeNodeValue(links, nodeid, changeType, changePar):
+    linksOfNode = links[(links["Source"] == nodeid) | (links["Target"] == nodeid)]
+    print(linksOfNode)
+    linksOfNode.sort_values(by="Cij",inplace=True,ascending=False)
+    print(linksOfNode)
+    print('over test')
+    pass
+
+
+# Run main
+if __name__ == "__main__":
+    main()
