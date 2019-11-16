@@ -36,6 +36,8 @@ def main():
     idIndex = 'label'
     lonIndex = 'longitude'
     latIndex = 'latitude'
+    poiPos = pd.DataFrame(
+        {'id': dataPoi.loc[:, idIndex], 'longitude': dataPoi.loc[:, lonIndex], 'latitude': dataPoi.loc[:, latIndex]})
 
     # Load Data
     # Data like
@@ -55,17 +57,20 @@ def main():
     # geoLinks save all the Links
     geoLinks = []
     # Links have different types
-    # Type 0 Distance
+    # Type 0 Distance*
     # Type 1 Tem_sing
+    # Type 2 Prs2Tem_mult
 
-    # temLinks = GetRsing(dataTem, linkType=1)
-    TEMPLinks = pd.read_csv('D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo.csv')
-    
-    poiPos = pd.DataFrame({'id': dataPoi.loc[:, idIndex], 'longitude': dataPoi.loc[:, lonIndex], 'latitude': dataPoi.loc[:, latIndex]})
-    
-    temLinks_Dis = GetDistance(TEMPLinks.head(10), poiPos)
-    
-    temLinks_Dis.to_csv('C:\\Users\\thril\\Desktop\\filterLinks.csv')
+    Prs2Tem_mult = GetRmult(dataPrs, dataTem, linkType=2)
+    Prs2Tem_mult_Dis = GetDistance(Prs2Tem_mult, poiPos)
+    Prs2Tem_mult_Dis.to_csv('C:\\Users\\thril\\Desktop\\Prs2Tem_mult.csv')
+
+    # # Tem_sing = GetRsing(dataTem, linkType=1)
+    # TEMPLinks = pd.read_csv(
+    #     'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\LinkInfo.csv')
+    # Tem_sing_Dis = GetDistance(TEMPLinks.head(10), poiPos)
+    # Tem_sing_Dis.to_csv('C:\\Users\\thril\\Desktop\\Tem_sing_Dis.csv')
+
     # G = nx.Graph()
     # G.add_edge(labelData[iAgent], labelOther[iOther], weight=link_W, crosscor=link_C)
     # test
@@ -84,42 +89,39 @@ def GetDistance(links, poiPosDF):
     for lIndex, lRow in links.iterrows():
         thisSou = lRow["Source"]
         thisTar = lRow["Target"]
-        # souLon=poiPosDF[]
         souPoi = poiPosDF[poiPosDF["id"] == thisSou].copy()
         tarPoi = poiPosDF[poiPosDF["id"] == thisTar].copy()
         dist = geodesic((souPoi.iloc[0]['latitude'], souPoi.iloc[0]['longitude']),
-                            (tarPoi.iloc[0]['latitude'], tarPoi.iloc[0]['longitude']))
-        links.loc[lIndex,'Distance'] = dist.km
-    # disLinks = []
-    # [agentNum, dataNum] = labelData.shape
-    # for iAgent in np.arange(0, agentNum):
-    #     labelOther = np.delete(labelData, iAgent, axis=0)
-    #     latOther = np.delete(latData, iAgent, axis=0)
-    #     lonOther = np.delete(lonData, iAgent, axis=0)
-    #     for iOther in np.arange(0, agentNum - 1):
-    #         dist = geodesic((latData[iAgent], lonData[iAgent]),
-    #                         (latOther[iOther], lonOther[iOther]))
-    #         disLinks.append(
-    #             [labelData[iAgent], labelOther[iOther], 0, dist.km])
-    # disLinks = pd.DataFrame(disLinks)
+                        (tarPoi.iloc[0]['latitude'], tarPoi.iloc[0]['longitude']))
+        links.loc[lIndex, 'Distance'] = dist.km
     return links
 
 
-def GetRsing(pureData, linkType):
-    pureDataValues = pureData.values
-    labelData=pureDataValues[...,0].astype(np.int32)
-    pureDataValues = np.delete(pureDataValues, 0, axis=1)
-    [agentNum, dataNum] = pureDataValues.shape
-    singLinks=[]
+def GetRsing(data, linkType):
+    dataValues = data.values
+    labelData = dataValues[..., 0].astype(np.int32)
+    dataValues = np.delete(dataValues, 0, axis=1)
+    [agentNum, dataNum] = dataValues.shape
+    singLinks = pd.DataFrame(
+        columns=('LinkType', 'Source', 'Target', 'Rpear', 'Ppear', 'Cij', 'Wij', 'MIij'))
     for iAgent in np.arange(0, agentNum):
-        thisAgent = pureDataValues[iAgent, ...]
-        otherAgent = np.delete(pureDataValues, iAgent, axis=0)
+        thisAgent = dataValues[iAgent, ...]
+        otherAgent = np.delete(dataValues, iAgent, axis=0)
         labelOther = np.delete(labelData, iAgent, axis=0)
         for iOther in np.arange(0, agentNum - 1):
-            [Rpear, Ppear, link_C, link_W, linkMI] = sing_correlation(
+            [Rpear, Ppear, link_C, link_W, linkMI] = correlation(
                 thisAgent, otherAgent[iOther, ...], dataNum)
-            singLinks.append([labelData[iAgent], labelOther[iOther], Rpear, Ppear, link_C, link_W, linkMI])
-    singLinks = pd.DataFrame(singLinks)
+            singLinks = singLinks.append(pd.DataFrame(
+                {
+                    'LinkType': [linkType],
+                    'Source': [labelData[iAgent]],
+                    'Target': [labelOther[iOther]],
+                    'Rpear': [Rpear],
+                    'Ppear': [Ppear],
+                    'Cij': [link_C],
+                    'Wij': [link_W],
+                    'MIij': [linkMI],
+                }), ignore_index=True)
 
     pSource = singLinks.loc[:, "Source"]
     pTarget = singLinks.loc[:, "Target"]
@@ -127,27 +129,77 @@ def GetRsing(pureData, linkType):
     pPpear = singLinks.loc[:, "Ppear"]
     pCij = singLinks.loc[:, "Cij"]
     pWij = singLinks.loc[:, "Wij"]
-    pMiij = singLinks.loc[:, "Miij"]
-
+    pMiij = singLinks.loc[:, "MIij"]
     Cdes70 = pCij.describe(percentiles=[0.7]).loc['70%']
     Wdes70 = pWij.describe(percentiles=[0.7]).loc['70%']
     Mdes70 = pMiij.describe(percentiles=[0.7]).loc['70%']
-
     # Filter the Links
     # 1 Ppear<1e-10
     # 2 Cij>Cdes70
     # 3 Wij>Wdes70
     # 4 Miij>Mdes70
-    filteredLinks = allLinks[
-        (allLinks["Ppear"] < 1e-10)
-        & (allLinks["Cij"] > Cdes70)
-        & (allLinks["Wij"] > Wdes70)
-        & (allLinks["Miij"] > Mdes70)
+    filteredLinks = singLinks[
+        (singLinks["Ppear"] < 1e-10)
+        & (singLinks["Cij"] > Cdes70)
+        & (singLinks["Wij"] > Wdes70)
+        & (singLinks["MIij"] > Mdes70)
     ].copy()
     return filteredLinks
 
 
+def GetRmult(dataSou, dataTar, linkType):
+    DataSouV = dataSou.values
+    DataTarV = dataTar.values
+    labelSou = DataSouV[..., 0].astype(np.int32)
+    labelTar = DataTarV[..., 0].astype(np.int32)
+    SouValues = np.delete(DataSouV, 0, axis=1)
+    TarValues = np.delete(DataTarV, 0, axis=1)
+    [agentNum, dataNum] = SouValues.shape
+    multLinks = pd.DataFrame(
+        columns=('LinkType', 'Source', 'Target', 'Rpear', 'Ppear', 'Cij', 'Wij', 'MIij'))
+    for iSou in np.arange(0, agentNum):
+        thisSou = SouValues[iSou, ...]
+        for iTar in np.arange(0, agentNum - 1):
+            [Rpear, Ppear, link_C, link_W, linkMI] = correlation(
+                thisSou, TarValues[iTar, ...], dataNum)
+            multLinks = multLinks.append(pd.DataFrame(
+                {
+                    'LinkType': [linkType],
+                    'Source': [labelSou[iSou]],
+                    'Target': [labelTar[iTar]],
+                    'Rpear': [Rpear],
+                    'Ppear': [Ppear],
+                    'Cij': [link_C],
+                    'Wij': [link_W],
+                    'MIij': [linkMI],
+                }), ignore_index=True)
+
+    pSource = multLinks.loc[:, "Source"]
+    pTarget = multLinks.loc[:, "Target"]
+    pRpear = multLinks.loc[:, "Rpear"]
+    pPpear = multLinks.loc[:, "Ppear"]
+    pCij = multLinks.loc[:, "Cij"]
+    pWij = multLinks.loc[:, "Wij"]
+    pMiij = multLinks.loc[:, "MIij"]
+    Cdes70 = pCij.describe(percentiles=[0.7]).loc['70%']
+    Wdes70 = pWij.describe(percentiles=[0.7]).loc['70%']
+    Mdes70 = pMiij.describe(percentiles=[0.7]).loc['70%']
+    # Filter the Links
+    # 1 Ppear<1e-10
+    # 2 Cij>Cdes70
+    # 3 Wij>Wdes70
+    # 4 Miij>Mdes70
+    filteredLinks = multLinks[
+        (multLinks["Ppear"] < 1e-10)
+        & (multLinks["Cij"] > Cdes70)
+        & (multLinks["Wij"] > Wdes70)
+        & (multLinks["MIij"] > Mdes70)
+    ].copy()
+    return filteredLinks
+
 # ******Correlation Function******
+
+
 def mutual_information_2d(x, y, binNum=64, sigma=1, normalized=False):
     # cite https://gist.github.com/GaelVaroquaux/ead9898bd3c973c40429
     """
@@ -195,7 +247,7 @@ def mutual_information_2d(x, y, binNum=64, sigma=1, normalized=False):
     return mi
 
 
-def sing_correlation(Ti, Tj, dataNum):
+def correlation(Ti, Tj, dataNum):
     # ******Pearsonr
     Rpear, Ppear = st.pearsonr(Ti, Tj)
 
