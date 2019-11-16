@@ -53,16 +53,23 @@ def main():
     # ...    ...         ...         ...         ...
     # This data must have the same index with pointInfo
 
-    kindsLinks=[]
+    kindsLinks = []
+    keyIndex = 0
     for key in dictData:
+        secKeyIndex = 0
         for secKey in dictData:
             if key == secKey:
                 rSing = GetRsing(key)
                 kindsLinks.append(rSing)
+                print('rSing', key)
             else:
+                if secKeyIndex < keyIndex:
+                    continue
                 rMult = GetRmult(key, secKey)
-                kindsLinks.append(kindsLinks)
-
+                kindsLinks.append(rMult)
+                print('rMult', key, secKey)
+            secKeyIndex = secKeyIndex+1
+        keyIndex = keyIndex + 1
     # Tem_sing = GetRsing('Tem')
     # Tem_sing_Dis = GetDistance(TEMPLinks, poiPos)
     # Tem_sing_Dis.to_csv('C:\\Users\\thril\\Desktop\\Tem_sing_Dis.csv')
@@ -71,7 +78,7 @@ def main():
     # Prs2Tem_mult_Dis = GetDistance(Prs2Tem_mult, poiPos)
     # Prs2Tem_mult_Dis.to_csv('C:\\Users\\thril\\Desktop\\Prs2Tem_mult_Dis.csv')
     # kindsLinks =[Tem_sing_Dis, Prs2Tem_mult_Dis]
-    
+
     # Tem_sing_Dis = pd.read_csv(
     #     'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Tem_sing_Dis.csv')
     # Prs2Tem_mult_Dis = pd.read_csv(
@@ -80,7 +87,7 @@ def main():
     # geoLinks save all the Links
     geoLinks = pd.concat(kindsLinks, ignore_index=True)
     geoLinks.to_csv(
-        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\geoLinks.csv')
+        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\geoLinks1116.csv')
 
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     print('GOOD!')
