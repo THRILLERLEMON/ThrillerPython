@@ -53,6 +53,16 @@ def main():
     # ...    ...         ...         ...         ...
     # This data must have the same index with pointInfo
 
+    kindsLinks=[]
+    for key in dictData:
+        for secKey in dictData:
+            if key == secKey:
+                rSing = GetRsing(key)
+                kindsLinks.append(rSing)
+            else:
+                rMult = GetRmult(key, secKey)
+                kindsLinks.append(kindsLinks)
+
     # Tem_sing = GetRsing('Tem')
     # Tem_sing_Dis = GetDistance(TEMPLinks, poiPos)
     # Tem_sing_Dis.to_csv('C:\\Users\\thril\\Desktop\\Tem_sing_Dis.csv')
@@ -60,14 +70,15 @@ def main():
     # Prs2Tem_mult = GetRmult('Prs','Tem')
     # Prs2Tem_mult_Dis = GetDistance(Prs2Tem_mult, poiPos)
     # Prs2Tem_mult_Dis.to_csv('C:\\Users\\thril\\Desktop\\Prs2Tem_mult_Dis.csv')
-
-    Tem_sing_Dis = pd.read_csv(
-        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Tem_sing_Dis.csv')
-    Prs2Tem_mult_Dis = pd.read_csv(
-        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Prs2Tem_mult_Dis.csv')
+    # kindsLinks =[Tem_sing_Dis, Prs2Tem_mult_Dis]
+    
+    # Tem_sing_Dis = pd.read_csv(
+    #     'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Tem_sing_Dis.csv')
+    # Prs2Tem_mult_Dis = pd.read_csv(
+    #     'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Prs2Tem_mult_Dis.csv')
 
     # geoLinks save all the Links
-    geoLinks = pd.concat([Tem_sing_Dis, Prs2Tem_mult_Dis], ignore_index=True)
+    geoLinks = pd.concat(kindsLinks, ignore_index=True)
     geoLinks.to_csv(
         'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\geoLinks.csv')
 
