@@ -14,20 +14,24 @@
 
 import math
 import time
+import threading
 
 import numpy as np
 import pandas as pd
 import scipy.stats as st
+import multiprocessing
 from geopy.distance import geodesic
 from scipy import ndimage
 from scipy.integrate import dblquad
 from scipy.stats import gaussian_kde
+from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 
 # Input Data
 dictData = {
-    'Tem': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfomean_2m_air_temperature8085.csv',
-    'Prs': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfosurface_pressure8085.csv',
-    'Pre': 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimateagentInfototal_precipitation8085.csv'
+    'Tem': 'C:\\Users\\Administrator\\Desktop\\JQL\\GlobalClimateagentInfomean_2m_air_temperature8085.csv',
+    'Prs': 'C:\\Users\\Administrator\\Desktop\\JQL\\GlobalClimateagentInfosurface_pressure8085.csv',
+    'Pre': 'C:\\Users\\Administrator\\Desktop\\JQL\\GlobalClimateagentInfototal_precipitation8085.csv'
 }
 
 
@@ -35,7 +39,7 @@ def main():
     # ******Main******
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     # Load Point info
-    fnPoi = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\PointInfo.csv'
+    fnPoi = 'C:\\Users\\Administrator\\Desktop\\JQL\\PointInfo.csv'
     dataPoi = pd.read_csv(fnPoi)
     # set index for point info
     idIndex = 'label'
@@ -53,23 +57,34 @@ def main():
     # ...    ...         ...         ...         ...
     # This data must have the same index with pointInfo
 
-    kindsLinks = []
+    newPool = multiprocessing.Pool(10)
+    q = multiprocessing.Queue()
+    jobs = []
+
     keyIndex = 0
     for key in dictData:
         secKeyIndex = 0
         for secKey in dictData:
             if key == secKey:
-                rSing = GetRsing(key)
-                kindsLinks.append(rSing)
+                p = newPool.apply_async(GetRsing, args=(key,))
+                jobs.append(p)
                 print('rSing', key)
             else:
                 if secKeyIndex < keyIndex:
                     continue
-                rMult = GetRmult(key, secKey)
-                kindsLinks.append(rMult)
+                p = newPool.apply_async(GetRmult, args=(key, secKey))
+                jobs.append(p)
                 print('rMult', key, secKey)
             secKeyIndex = secKeyIndex+1
         keyIndex = keyIndex + 1
+    newPool.close()
+    newPool.join()
+    kindsLinks = []
+    for j in jobs:
+        kindsLinks.append(j.get())
+    print(kindsLinks)
+    print('already com link over')
+
     # Tem_sing = GetRsing('Tem')
     # Tem_sing_Dis = GetDistance(TEMPLinks, poiPos)
     # Tem_sing_Dis.to_csv('C:\\Users\\thril\\Desktop\\Tem_sing_Dis.csv')
@@ -86,8 +101,9 @@ def main():
 
     # geoLinks save all the Links
     geoLinks = pd.concat(kindsLinks, ignore_index=True)
+    print('already concat pd')
     geoLinks.to_csv(
-        'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\geoLinks1116.csv')
+        'C:\\Users\\Administrator\\Desktop\\JQL\\geoLinks1117FatThread.csv')
 
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     print('GOOD!')
@@ -154,6 +170,7 @@ def GetRsing(VarName):
         & (singLinks["Wij"] > Wdes70)
         & (singLinks["MIij"] > Mdes70)
     ].copy()
+    print('Over a Rsing')
     return filteredLinks
 
 
@@ -206,8 +223,8 @@ def GetRmult(VarSouName, VarTarName):
         & (multLinks["Wij"] > Wdes70)
         & (multLinks["MIij"] > Mdes70)
     ].copy()
+    print('Over a Rmult')
     return filteredLinks
-
 # ******Correlation Function******
 
 
