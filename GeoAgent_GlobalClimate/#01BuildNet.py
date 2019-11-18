@@ -14,8 +14,6 @@
 
 import math
 import time
-import threading
-
 import numpy as np
 import pandas as pd
 import scipy.stats as st
@@ -24,8 +22,6 @@ from geopy.distance import geodesic
 from scipy import ndimage
 from scipy.integrate import dblquad
 from scipy.stats import gaussian_kde
-from concurrent.futures import ProcessPoolExecutor
-from concurrent.futures import ThreadPoolExecutor
 
 # Input Data
 dictData = {
@@ -75,7 +71,7 @@ def main():
                 p = newPool.apply_async(GetRmult, args=(key, secKey))
                 jobs.append(p)
                 print('rMult', key, secKey)
-            secKeyIndex = secKeyIndex+1
+            secKeyIndex = secKeyIndex + 1
         keyIndex = keyIndex + 1
     newPool.close()
     newPool.join()
@@ -169,7 +165,7 @@ def GetRsing(VarName):
         & (singLinks["Cij"] > Cdes70)
         & (singLinks["Wij"] > Wdes70)
         & (singLinks["MIij"] > Mdes70)
-    ].copy()
+        ].copy()
     print('Over a Rsing')
     return filteredLinks
 
@@ -222,9 +218,11 @@ def GetRmult(VarSouName, VarTarName):
         & (multLinks["Cij"] > Cdes70)
         & (multLinks["Wij"] > Wdes70)
         & (multLinks["MIij"] > Mdes70)
-    ].copy()
+        ].copy()
     print('Over a Rmult')
     return filteredLinks
+
+
 # ******Correlation Function******
 
 
