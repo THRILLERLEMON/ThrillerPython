@@ -53,8 +53,7 @@ def main():
     # ...    ...         ...         ...         ...
     # This data must have the same index with pointInfo
 
-    newPool = multiprocessing.Pool(10)
-    q = multiprocessing.Queue()
+    newPool = multiprocessing.Pool()
     jobs = []
 
     keyIndex = 0
