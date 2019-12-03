@@ -1,8 +1,8 @@
-# GEE LC YearsChangeTop10Kinds
+# GEE LC YearsChangeKinds for network
 # Get top 10 changes
 # THRILLER柠檬
 # thrillerlemon@outlook.com
-# 2019年11月27日
+# 2019年12月3日
 
 import time
 import numpy as np
@@ -30,52 +30,37 @@ def main():
         701: 'Desert',
         702: 'Barren',
     }
-    # 86-18 top 10 kinds
-    change33Years = pd.read_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnHex(86-18)\\KindChangeArea1986_2018.csv')
-    change33Top10 = change33Years.sort_values(by='ChangeArea', ascending=False).head(10)
-    sourceLabel = change33Top10['Source'].map(mapList)
-    targetLabel = change33Top10['Target'].map(mapList)
-    change33Top10['SourceLabel'] = sourceLabel
-    change33Top10['TargetLabel'] = targetLabel
-    changeTop10Kinds = change33Top10['SourceLabel'] + ' to ' + change33Top10['TargetLabel']
-    changeTop10Kinds = changeTop10Kinds.append(pd.Series(['Other change types']), ignore_index=True)
-
-    YearsTop10=pd.DataFrame({'Type': changeTop10Kinds})
     # Years
     fnPath = 'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTime\\Years\\'
     fnHead = 'KindChangeArea'
     fnTail = '.csv'
-    for year in np.arange(1987, 2019):
+    # first year to set index
+    thisYearData1987 = pd.read_csv(fnPath + fnHead + str(1987) + fnTail)
+    sourceLabel1987 = thisYearData1987['Source'].map(mapList)
+    targetLabel1987 = thisYearData1987['Target'].map(mapList)
+    thisYearData1987['SourceLabel'] = sourceLabel1987
+    thisYearData1987['TargetLabel'] = targetLabel1987
+    thisYearData1987['ChangeLabel'] = thisYearData1987['SourceLabel'] + ' to ' + thisYearData1987['TargetLabel']
+    thisYearData1987.index = thisYearData1987['ChangeLabel']
+    thisYearData1987 = thisYearData1987.drop(['system:index','.geo','SourceLabel','TargetLabel','ChangeArea','ChangeLabel'], axis=1)
+    thisYearData1987.rename(columns={'ChangeRate':str(1987)},inplace=True)
+    thisYearData1987 = thisYearData1987[['Source','Target','1987']]
+
+    for year in np.arange(1988, 2019):
         thisYearData = pd.read_csv(fnPath + fnHead + str(year) + fnTail)
-        sortData = thisYearData.sort_values(by='ChangeArea', ascending=False)
-        sourceLabel = sortData['Source'].map(mapList)
-        targetLabel = sortData['Target'].map(mapList)
-        sortData['SourceLabel'] = sourceLabel
-        sortData['TargetLabel'] = targetLabel
-        sortData['ChangeLabel'] = sortData['SourceLabel'] + ' to ' + sortData['TargetLabel']
-        totalCA=sortData['ChangeArea'].sum()
-        totalTop10=0
-        kindsValues = []
-        for k in np.arange(0, 10):
-            kind = changeTop10Kinds[k]
-            thisYearKindV = sortData[(sortData['ChangeLabel'] == kind)]['ChangeArea'].values[0]
-            # changeTop10Kinds.loc[changeTop10Kinds[k].index, year] = thisYearKindV
-            kindsValues.append(thisYearKindV)
-            totalTop10=totalTop10+thisYearKindV
-            # print(changeTop10Kinds)
-        kindsValues.append(totalCA-totalTop10)
-        YearsTop10[str(year)]= pd.Series(kindsValues)
-        # thisYearTop10 = pd.DataFrame({'Type': changeTop10Kinds, str(year): pd.Series(kindsValues)})
-        print('finish a year')
-    YearsTop10.index=YearsTop10['Type']
-    YearsTop10=YearsTop10.drop(['Type'],axis=1)
-    YearsTop10T=pd.DataFrame(YearsTop10.values.T, index=YearsTop10.columns, columns=YearsTop10.index)
-    print(YearsTop10T)
-    YearsTop10T.plot.bar(stacked=True, title='Top 10 Change Type')
-    plt.tight_layout()
-    plt.show()
-
-
+        sourceLabel = thisYearData['Source'].map(mapList)
+        targetLabel = thisYearData['Target'].map(mapList)
+        thisYearData['SourceLabel'] = sourceLabel
+        thisYearData['TargetLabel'] = targetLabel
+        thisYearData['ChangeLabel'] = thisYearData['SourceLabel'] + ' to ' + thisYearData['TargetLabel']
+        thisYearData.index = thisYearData['ChangeLabel']
+        thisYearData = thisYearData.drop(
+            ['system:index', '.geo', 'SourceLabel', 'TargetLabel', 'ChangeArea', 'ChangeLabel'], axis=1)
+        thisYearData.rename(columns={'ChangeRate': str(year)}, inplace=True)
+        thisYearData1987 = pd.merge(thisYearData1987, thisYearData, how='outer', on=['Source','Target'])
+    thisYearData1987=thisYearData1987.fillna(0)
+    print(thisYearData1987)
+    thisYearData1987.to_csv(
+        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTime\\Years\\YearsChangeTypeValue.csv')
 if __name__ == '__main__':
     main()
