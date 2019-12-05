@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+# @Time    : 2019/11/1 00:00
+# @Author  : THRILLER柠檬
+# @Email   : thrillerlemon@outlook.com
+# @File    : #01BuildNet.py
+# @Software: PyCharm
 # GeoAgentModel
 # 01BuildNetWork
-# THRILLER柠檬
-# thrillerlemon@outlook.com
-# 2019年11月1日
+
 
 # 📌对构建网络链接进行代码实现，打算计算出多个相关关系指标来进行关系的判定
 # ✅1、地理空间距离——————Done！

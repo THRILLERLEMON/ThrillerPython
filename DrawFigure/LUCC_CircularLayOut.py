@@ -17,6 +17,7 @@ warnings.filterwarnings("ignore", category=matplotlib.cbook.mplDeprecation)
 
 def main():
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
+
     labelMapList = {
         101: 'DBF',
         102: 'ENF',

@@ -1,8 +1,12 @@
+# -*- coding: utf-8 -*-
+# @Time    : 2019/11/11 00:00
+# @Author  : THRILLER柠檬
+# @Email   : thrillerlemon@outlook.com
+# @File    : #03ChangeNodeV.py
+# @Software: PyCharm
 # GeoAgentModel
 # 03ChangeNodeValue
-# THRILLER柠檬
-# thrillerlemon@outlook.com
-# 2019年11月11日
+
 
 import time
 

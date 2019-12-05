@@ -1,8 +1,11 @@
+# -*- coding: utf-8 -*-
+# @Time    : 2019/11/6 00:00
+# @Author  : THRILLER柠檬
+# @Email   : thrillerlemon@outlook.com
+# @File    : #02AnalyzeNet.py
+# @Software: PyCharm
 # GeoAgentModel
 # 02AnalyzeNetwork
-# THRILLER柠檬
-# thrillerlemon@outlook.com
-# 2019年11月6日
 
 import time
 
