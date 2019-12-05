@@ -91,7 +91,6 @@ def main():
         # plt.show()
         plt.savefig(str(year) + ".png")
         print('draw a year')
-    #
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
 
 

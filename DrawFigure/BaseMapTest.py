@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+# @Time    : 2019/12/5 15:20
+# @Author  : THRILLER柠檬
+# @Email   : thrillerlemon@outlook.com
+# @File    : BaseMapTest.py
+# @Software: PyCharm
+
 import networkx as nx
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap as Basemap

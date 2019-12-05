@@ -47,7 +47,6 @@ def main():
     latIndex = 'latitude'
     poiPos = pd.DataFrame(
         {'id': dataPoi.loc[:, idIndex], 'longitude': dataPoi.loc[:, lonIndex], 'latitude': dataPoi.loc[:, latIndex]})
-
     # Load Data
     # Data like
     # label  Data_Time1  Data_Time2  Data_Time3  Data_Time4 ...
