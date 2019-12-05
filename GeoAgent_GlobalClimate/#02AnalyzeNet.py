@@ -10,10 +10,10 @@
 import time
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import networkx as nx
 from mpl_toolkits.basemap import Basemap as Basemap
-import numpy as np
 
 
 def main():
@@ -21,17 +21,17 @@ def main():
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     allLinks = pd.read_csv(
         'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\geoLinks1118.csv', index_col=0, header=0)
-    print(allLinks)
-    temNetData = allLinks[(allLinks["VarSou"] == 'Tem') & (allLinks["VarTar"] == 'Tem')]
-    temNetG = buildNetWork(temNetData, 'Wij')
+    # print(allLinks)
+    temNetG = buildNetWork(allLinks, 'Tem', 'Tem', 'Cij')
     drawNetWorkOnMap(temNetG)
 
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
 
 
 # SubFunction
-def buildNetWork(netWorkDF, weightQuota):
-    G = nx.Graph()
+def buildNetWork(allLinksData, VarSou, VarTar, weightQuota):
+    netWorkDF = allLinksData[(allLinksData["VarSou"] == VarSou) & (allLinksData["VarTar"] == VarTar)]
+    G = nx.DiGraph(VarSou=VarSou, VarTar=VarTar)
     for lIndex, lRow in netWorkDF.iterrows():
         thisSou = lRow["Source"]
         # thisSou = lRow["Source"].astype(np.int32)
@@ -62,16 +62,6 @@ def drawNetWorkOnMap(netWorkG):
     geoAgentInfopath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\PointInfo.csv'
     geoAgentInfo = pd.read_csv(geoAgentInfopath, index_col=0, header=0)
     # Now draw the map
-    pos = {}
-    for lIndex, lRow in geoAgentInfo.iterrows():
-        thisPoint = lRow['label']
-        # convert lat and lon to map projection
-        mx, my = worldMap(lRow['longitude'], lRow['latitude'])
-        pos[thisPoint] = (mx, my)
-    nx.draw_networkx_edges(netWorkG, pos, width=[float(d['weight'] * 0.5) for (u, v, d) in netWorkG.edges(data=True)],
-                           edge_color='r', arrowsize=2, connectionstyle="arc3,rad=0.2")
-    nx.draw_networkx_nodes(netWorkG, pos, node_size=100, node_color='g')
-    # nx.draw_networkx_labels(netWorkG, pos, font_size=11, font_family='Times New Roman', font_color='k')
     # worldMap.drawcountries(linewidth=0.5)
     # worldMap.drawstates()
     # worldMap.drawcoastlines(linewidth=0.5)
@@ -83,7 +73,28 @@ def drawNetWorkOnMap(netWorkG):
     # worldMap.drawmeridians(np.arange(-180., 181., 30.))
     worldMap.readshapefile(geoAgentSHPpath, 'GeoAgent', linewidth=0.5)
     # worldMap.bluemarble()
-    plt.title('World Climate NetWork By THRILLER')
+    plt.title('NetWork ' + netWorkG.graph['VarSou'] + ' to ' + netWorkG.graph['VarTar'] + ' By THRILLER')
+
+    pos = {}
+    for lIndex, lRow in geoAgentInfo.iterrows():
+        thisPoint = lRow['label']
+        # convert lat and lon to map projection
+        mx, my = worldMap(lRow['longitude'], lRow['latitude'])
+        pos[thisPoint] = (mx, my)
+
+    nx.draw_networkx_edges(netWorkG, pos, width=0.5,
+                           edge_color=[float(d['weight']) for (u, v, d) in netWorkG.edges(data=True)],
+                           alpha=[float(d['weight']) for (u, v, d) in netWorkG.edges(data=True)],
+                           edge_cmap=plt.cm.Blues, arrows=False, connectionstyle="arc3,rad=0.1")
+
+    nx.draw_networkx_nodes(netWorkG, pos, node_size=[netWorkG.degree(n) * 1.7 for n in netWorkG],
+                           node_color='k')
+    nx.draw_networkx_nodes(netWorkG, pos, node_size=[netWorkG.degree(n) * 1.5 for n in netWorkG],
+                           node_color=[netWorkG.degree(n) for n in netWorkG], cmap=plt.cm.Oranges)
+    # nx.draw_networkx_labels(netWorkG, pos, font_size=11, font_family='Times New Roman', font_color='k')
+
+    # max windows
+    plt.get_current_fig_manager().window.showMaximized()
     plt.show()
 
 
