@@ -78,12 +78,52 @@ import numpy as np
 # elist = [('a', 'b', 5.0), ('b', 'c', 3.0), ('a', 'c', 1.0), ('c', 'd', 7.3)]
 # G.add_weighted_edges_from(elist)
 
-import matplotlib.pyplot as plt
-import networkx as nx
+# import matplotlib.pyplot as plt
+# import networkx as nx
+#
+# G = nx.star_graph(20)
+# pos = nx.spring_layout(G)
+# colors = range(20)
+# nx.draw(G, pos, node_color='#A0CBE2', edge_color=colors,
+#         width=4, edge_cmap=plt.cm.Blues, with_labels=False)
+# plt.show()
 
-G = nx.star_graph(20)
-pos = nx.spring_layout(G)
-colors = range(20)
-nx.draw(G, pos, node_color='#A0CBE2', edge_color=colors,
-        width=4, edge_cmap=plt.cm.Blues, with_labels=False)
-plt.show()
+import networkx as nx
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+import numpy as np
+import random
+import pickle
+
+
+def gen_random_3d_graph(n_nodes, radius):
+    pos = {i: (random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)) for i in range(n_nodes)}
+    graph = nx.random_geometric_graph(n_nodes, radius, pos=pos)
+    return graph
+
+
+def plot_3d_network(graph, angle):
+    pos = nx.get_node_attributes(graph, 'pos')
+
+    with plt.style.context("bmh"):
+        fig = plt.figure(figsize=(10, 7))
+        ax = Axes3D(fig)
+        for key, value in pos.items():
+            xi = value[0]
+            yi = value[1]
+            zi = value[2]
+
+            ax.scatter(xi, yi, zi, edgecolor='b', alpha=0.9)
+            for i, j in enumerate(graph.edges()):
+                x = np.array((pos[j[0]][0], pos[j[1]][0]))
+                y = np.array((pos[j[0]][1], pos[j[1]][1]))
+                z = np.array((pos[j[0]][2], pos[j[1]][2]))
+                ax.plot(x, y, z, c='black', alpha=0.9)
+    ax.view_init(30, angle)
+    pickle.dump(fig, open('FigureObject.fig.pickle', 'wb'))
+    plt.show()
+
+
+if __name__ == '__main__':
+    graph01 = gen_random_3d_graph(15, 0.6)
+    plot_3d_network(graph01, 0)
