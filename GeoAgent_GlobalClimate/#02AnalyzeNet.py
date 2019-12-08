@@ -37,20 +37,8 @@ def main():
     allNodes = pd.read_csv(geoAgentInfopath, header=0, dtype={'label': np.int32})
     # print(allLinks)
 
-    NetG1 = buildNetWork_2Var(
-        allNodesData=allNodes,
-        allLinksData=allLinks,
-        VarSou='Prs',
-        VarTar='Pre',
-        weightQuota='Cij')
-    NetG2 = buildNetWork_2Var(
-        allNodesData=allNodes,
-        allLinksData=allLinks,
-        VarSou='Pre',
-        VarTar='Pre',
-        weightQuota='Cij')
     # draw2NetWorkOn3DMaps(NetG1,NetG2, geoAgentSHPpath, 'weight', 'tem_skew_mean')
-    draw3DNetWork_2difVar(NetG1, geoAgentSHPpath, 'Prs', 'Pre')
+    draw3DNetWork_2difVar(allNodes, allLinks, geoAgentSHPpath, 'Prs', 'Pre', 'Cij')
     # varList = {'Tem', 'Prs', 'Pre'}
     # for var in varList:
     #     for secvar in varList:
@@ -186,10 +174,20 @@ def draw2NetWorkOn3DMaps(netWorkG1, netWorkG2, geoAgentShpPath, edgeColorF, node
     plt.show()
 
 
-def draw3DNetWork_2difVar(netWorkG, geoAgentShpPath, SouVar, TarVar):
+def draw3DNetWork_2difVar(allNodesData, allLinksData, geoAgentShpPath, SouVar, TarVar, weightQuota):
     fig = plt.figure(figsize=(10, 10), dpi=200)
     ax = Axes3D(fig, xlim=[-180, 180], ylim=[-90, 90])
     ax.set_zlim(bottom=0)
+
+    # drwa background
+    soup = Rectangle((-180, -90), 360, 180, color='#EA8512', ec='#FE8800', alpha=0.5)
+    ax.add_patch(soup)
+    art3d.pathpatch_2d_to_3d(soup, z=0, zdir="z")
+    ax.text(-180, -90, 0, SouVar, color='k')
+    tarp = Rectangle((-180, -90), 360, 180, color='#2D43CC', ec='#0122F9', alpha=0.5)
+    ax.add_patch(tarp)
+    art3d.pathpatch_2d_to_3d(tarp, z=0.5, zdir="z")
+    ax.text(-180, -90, 0.5, TarVar, color='k')
     target_projection = ccrs.PlateCarree()
     feature = ShapelyFeature(Reader(geoAgentShpPath).geometries(), ccrs.PlateCarree())
     geoms = feature.geometries()
@@ -200,26 +198,84 @@ def draw3DNetWork_2difVar(netWorkG, geoAgentShpPath, SouVar, TarVar):
         vertices = [vertex for vertex, _ in path.iter_segments()]
         vertices = np.asarray(vertices)
         segments.append(vertices)
-    lc = LineCollection(segments, color='black', linewidths=0.1)
+    lc = LineCollection(segments, color='#FE8800', linewidths=0.1)
+    lc2 = LineCollection(segments, color='#0122F9', linewidths=0.1)
     ax.add_collection3d(lc, 0)
+    ax.add_collection3d(lc2, 0.5)
 
+    # draw Sou net
+    NetGS = buildNetWork_2Var(
+        allNodesData=allNodesData,
+        allLinksData=allLinksData,
+        VarSou=SouVar,
+        VarTar=SouVar,
+        weightQuota=weightQuota)
+    posS = {}
+    for n, d in NetGS.nodes(data=True):
+        # transform lon & lat
+        mx, my = target_projection.transform_point(d['longitude'], d['latitude'], ccrs.PlateCarree())
+        posS[n] = (mx, my)
+    NetedgesS = nx.draw_networkx_edges(NetGS, posS, width=0.5, alpha=0.7, arrows=False, edge_color='#F95301')
+    ax.add_collection3d(NetedgesS, 0)
+    # first draw point's edge in black to set Point edge
+    # nx.draw_networkx_nodes(netWorkG, pos, ax=ax, node_size=[netWorkG.degree(n) * 1.4 for n in netWorkG],
+    #                        node_color='k')
+    nx.draw_networkx_nodes(NetGS, posS, node_size=[NetGS.degree(n) * 0.5 for n in NetGS],
+                           node_color='#F95301')
+
+    ### draw Tar net
+    NetGT = buildNetWork_2Var(
+        allNodesData=allNodesData,
+        allLinksData=allLinksData,
+        VarSou=TarVar,
+        VarTar=TarVar,
+        weightQuota=weightQuota)
+    posTall = {}
+    for n, d in NetGT.nodes(data=True):
+        # transform lon & lat
+        mx, my = target_projection.transform_point(d['longitude'], d['latitude'], ccrs.PlateCarree())
+        posTall[n] = (mx, my)
+    NetedgesT = nx.draw_networkx_edges(NetGT, posTall, width=0.5, alpha=0.7, arrows=False, edge_color='#0122F9')
+    ax.add_collection3d(NetedgesT, 0.5)
+    posT = {}
+    Tdegeq0 = []
+    for an in NetGT:
+        if NetGT.degree(an) == 0:
+            Tdegeq0.append(an)
+    NetGT.remove_nodes_from(Tdegeq0)
+    for n, d in NetGT.nodes(data=True):
+        # transform lon & lat
+        mx, my = target_projection.transform_point(d['longitude'], d['latitude'], ccrs.PlateCarree())
+        posT[n] = (mx, my, 0.5, NetGT.degree(n))
+
+    for key, value in posT.items():
+        xi = value[0]
+        yi = value[1]
+        zi = value[2]
+        ax.scatter(xi, yi, zi, alpha=0.8, c='#0122F9', linewidths=value[3] * 0.5)
+
+    ### draw ST net
+    NetGST = buildNetWork_2Var(
+        allNodesData=allNodesData,
+        allLinksData=allLinksData,
+        VarSou=SouVar,
+        VarTar=TarVar,
+        weightQuota=weightQuota)
     pos = {}
     # delete nodes which degree eq 0
     degeq0 = []
-    for an in netWorkG:
-        if netWorkG.degree(an) == 0:
+    for an in NetGST:
+        if NetGST.degree(an) == 0:
             degeq0.append(an)
-    netWorkG.remove_nodes_from(degeq0)
-
-    for n, d in netWorkG.nodes(data=True):
+    NetGST.remove_nodes_from(degeq0)
+    for n, d in NetGST.nodes(data=True):
         # transform lon & lat
         mx, my = target_projection.transform_point(d['longitude'], d['latitude'], ccrs.PlateCarree())
         # pos[n] = (mx, my, 0.2)
-        if netWorkG.in_degree(n) == 0:
+        if NetGST.in_degree(n) == 0:
             pos[n] = (mx, my, 0)
         else:
             pos[n] = (mx, my, 0.5)
-
     for key, value in pos.items():
         xi = value[0]
         yi = value[1]
@@ -229,27 +285,17 @@ def draw3DNetWork_2difVar(netWorkG, geoAgentShpPath, SouVar, TarVar):
         else:
             ax.scatter(xi, yi, zi, alpha=0.8, c='#F95301')
 
-    for u, v, d in netWorkG.edges(data=True):
+    for u, v, d in NetGST.edges(data=True):
         if d['Source'] == d['Target']:
             x = np.array((pos[u][0], pos[v][0]))
             y = np.array((pos[u][1], pos[v][1]))
             z = np.array((0, 0.5))
-            ax.plot(x, y, z, c='black', alpha=0.6)
+            ax.plot(x, y, z, c='g', alpha=0.6, linewidth=0.5)
             ax.scatter(pos[u][0], pos[u][1], 0, alpha=0.8, c='#F95301')
         x = np.array((pos[u][0], pos[v][0]))
         y = np.array((pos[u][1], pos[v][1]))
         z = np.array((pos[u][2], pos[v][2]))
-        ax.plot(x, y, z, c='black', alpha=0.6)
-
-    soup = Rectangle((-180, -90), 360, 180, color='#EA8512', ec='#FE8800', alpha=0.5)
-    ax.add_patch(soup)
-    art3d.pathpatch_2d_to_3d(soup, z=0, zdir="z")
-    ax.text(-180, -90, 0, SouVar, color='k')
-
-    tarp = Rectangle((-180, -90), 360, 180, color='#2D43CC', ec='#0122F9', alpha=0.5)
-    ax.add_patch(tarp)
-    art3d.pathpatch_2d_to_3d(tarp, z=0.5, zdir="z")
-    ax.text(-180, -90, 0.5, TarVar, color='k')
+        ax.plot(x, y, z, c='g', alpha=0.6, linewidth=0.5)
 
     ax.set_xlabel('longitude')
     ax.set_ylabel('latitude')
