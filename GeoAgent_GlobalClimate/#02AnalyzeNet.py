@@ -32,27 +32,28 @@ def main():
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     geoAgentSHPpath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimate_SHPGeoAgent.shp'
     geoAgentInfopath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\PointInfo.csv'
-    geoLinkspath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\geoLinks1118.csv'
+    geoLinkspath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\geoLinks1209FatThreadFiltered_Dis.csv'
     allLinks = pd.read_csv(geoLinkspath, index_col=0, header=0, dtype={'Source': np.int32, 'Target': np.int32})
     allNodes = pd.read_csv(geoAgentInfopath, header=0, dtype={'label': np.int32})
     # print(allLinks)
 
-    draw3DNetWork_2difVar(allNodes, allLinks, geoAgentSHPpath, 'Prs', 'Pre', 'Cij')
-    # varList = {'Tem', 'Prs', 'Pre'}
-    # for var in varList:
-    #     for secvar in varList:
-    #         NetG = build2VarNetWork(
-    #             allNodesData=allNodes,
-    #             allLinksData=allLinks,
-    #             VarSou=var,
-    #             VarTar=secvar,
-    #             weightQuota='Cij')
-    #         draw2DNetWorkOnMap(
-    #             showOrSave='save',
-    #             netWorkG=NetG,
-    #             geoAgentShpPath=geoAgentSHPpath,
-    #             edgeColorF='weight',
-    #             nodeColorF='tem_skew_mean')
+    # draw3DNetWork_2difVar(allNodes, allLinks, geoAgentSHPpath, 'Tem', 'Pre', 'Cij')
+
+    varList = {'Tem', 'Prs', 'Pre'}
+    for var in varList:
+        for secvar in varList:
+            NetG = buildNetWork_2Var(
+                allNodesData=allNodes,
+                allLinksData=allLinks,
+                VarSou=var,
+                VarTar=secvar,
+                weightQuota='Cij')
+            draw2DNetWork_2Var(
+                showOrSave='save',
+                netWorkG=NetG,
+                geoAgentShpPath=geoAgentSHPpath,
+                edgeColorF='weight',
+                nodeColorF='tem_skew_mean')
 
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
 

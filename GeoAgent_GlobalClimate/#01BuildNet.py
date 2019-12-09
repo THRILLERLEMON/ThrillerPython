@@ -99,6 +99,26 @@ def main():
     print('GOOD!')
 
 
+def mainSec():
+    # Load Point info
+    fnPoi = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\PointInfo.csv'
+    dataPoi = pd.read_csv(fnPoi)
+    # set index for point info
+    idIndex = 'label'
+    lonIndex = 'longitude'
+    latIndex = 'latitude'
+    poiPos = pd.DataFrame(
+        {'id': dataPoi.loc[:, idIndex], 'longitude': dataPoi.loc[:, lonIndex], 'latitude': dataPoi.loc[:, latIndex]})
+    # Filter links and add distance
+    geoLinkspath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\geoLinks1209FatThread.csv'
+    geoLinks = pd.read_csv(geoLinkspath, index_col=0, header=0, dtype={'Source': np.int32, 'Target': np.int32})
+    geoLinksFilt = FilterLinks(geoLinks)
+    geoLinksFilt_Dis = GetDistance(geoLinksFilt, poiPos)
+    geoLinksFilt_Dis.to_csv(
+        'C:\\Users\\thril\\Desktop\\geoLinks1209FatThreadFiltered_Dis.csv')
+    print('already filter links & add distance')
+
+
 # ******SubFunction******
 
 def Normalize(data):
@@ -221,14 +241,14 @@ def FilterLinks(Links):
     pCij = Links.loc[:, "Cij"]
     pWij = Links.loc[:, "Wij"]
     pMiij = Links.loc[:, "MIij"]
-    Cdes = pCij.describe(percentiles=[0.8]).loc['80%']
-    Wdes = pWij.describe(percentiles=[0.8]).loc['80%']
-    Mdes = pMiij.describe(percentiles=[0.8]).loc['80%']
+    Cdes = pCij.describe(percentiles=[0.6]).loc['60%']
+    Wdes = pWij.describe(percentiles=[0.6]).loc['60%']
+    Mdes = pMiij.describe(percentiles=[0.6]).loc['60%']
     # Filter the Links
     # 1 Ppear<1e-10
-    # 2 Cij>Cdes80
-    # 3 Wij>Wdes80
-    # 4 Miij>Mdes80
+    # 2 Cij>Cdes60
+    # 3 Wij>Wdes60
+    # 4 Miij>Mdes60
     filteredLinks = Links[
         (Links["Ppear"] < 1e-10)
         & (Links["Cij"] > Cdes)
@@ -345,4 +365,5 @@ def correlation(Ti, Tj, dataNum):
 
 # Run main
 if __name__ == "__main__":
-    main()
+    # main()
+    mainSec()
