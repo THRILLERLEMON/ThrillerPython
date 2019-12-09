@@ -29,9 +29,9 @@ from scipy.stats import gaussian_kde
 
 # Input Data
 dictData = {
-    'Tem': 'C:\\Users\\Administrator\\Desktop\\JQL\\GlobalClimateagentInfomean_2m_air_temperature8085.csv',
-    'Prs': 'C:\\Users\\Administrator\\Desktop\\JQL\\GlobalClimateagentInfosurface_pressure8085.csv',
-    'Pre': 'C:\\Users\\Administrator\\Desktop\\JQL\\GlobalClimateagentInfototal_precipitation8085.csv'
+    'Tem': 'C:\\Users\\Administrator\\Desktop\\JQL_FAT\\GlobalClimateagentInfomean_2m_air_temperature8085.csv',
+    'Prs': 'C:\\Users\\Administrator\\Desktop\\JQL_FAT\\GlobalClimateagentInfosurface_pressure8085.csv',
+    'Pre': 'C:\\Users\\Administrator\\Desktop\\JQL_FAT\\GlobalClimateagentInfototal_precipitation8085.csv'
 }
 
 
@@ -39,7 +39,7 @@ def main():
     # ******Main******
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     # Load Point info
-    fnPoi = 'C:\\Users\\Administrator\\Desktop\\JQL\\PointInfo.csv'
+    fnPoi = 'C:\\Users\\Administrator\\Desktop\\JQL_FAT\\PointInfo.csv'
     dataPoi = pd.read_csv(fnPoi)
     # set index for point info
     idIndex = 'label'
@@ -83,32 +83,43 @@ def main():
     print(kindsLinks)
     print('already com link over')
 
-    # Tem_sing = GetRsing('Tem')
-    # Tem_sing_Dis = GetDistance(TEMPLinks, poiPos)
-    # Tem_sing_Dis.to_csv('C:\\Users\\thril\\Desktop\\Tem_sing_Dis.csv')
-
-    # Prs2Tem_mult = GetRmult('Prs','Tem')
-    # Prs2Tem_mult_Dis = GetDistance(Prs2Tem_mult, poiPos)
-    # Prs2Tem_mult_Dis.to_csv('C:\\Users\\thril\\Desktop\\Prs2Tem_mult_Dis.csv')
-    # kindsLinks =[Tem_sing_Dis, Prs2Tem_mult_Dis]
-
-    # Tem_sing_Dis = pd.read_csv(
-    #     'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Tem_sing_Dis.csv')
-    # Prs2Tem_mult_Dis = pd.read_csv(
-    #     'D:\OneDrive\SharedFile\环境经济社会可持续发展耦合网络模型\GeoAgent_GlobalClimate\LinkInfo_Fig\Prs2Tem_mult_Dis.csv')
-
     # geoLinks save all the Links
     geoLinks = pd.concat(kindsLinks, ignore_index=True)
     print('already concat pd')
     geoLinks.to_csv(
-        'C:\\Users\\Administrator\\Desktop\\JQL\\geoLinks1117FatThread.csv')
+        'C:\\Users\\Administrator\\Desktop\\JQL_FAT\\geoLinks1209FatThread.csv')
+    # Filter links and add distance
+    geoLinksFilt = FilterLinks(geoLinks)
+    geoLinksFilt_Dis = GetDistance(geoLinksFilt, poiPos)
+    geoLinksFilt_Dis.to_csv(
+        'C:\\Users\\Administrator\\Desktop\\JQL_FAT\\geoLinks1209FatThreadFiltered_Dis.csv')
+    print('already filter links & add distance')
 
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     print('GOOD!')
 
 
 # ******SubFunction******
+
+def Normalize(data):
+    """
+    normalize data to -1~1
+    @param data:
+    @return: nomalized data
+    """
+    m = np.mean(data)
+    mx = max(data)
+    mn = min(data)
+    return (data - m) / (mx - mn)
+
+
 def GetDistance(links, poiPosDF):
+    """
+    get distance on earth
+    @param links: links
+    @param poiPosDF: point info
+    @return:
+    """
     links['Distance'] = None
     for lIndex, lRow in links.iterrows():
         thisSou = lRow["Source"]
@@ -122,16 +133,22 @@ def GetDistance(links, poiPosDF):
 
 
 def GetRsing(VarName):
+    """
+    get edgeLinks in same var Layer
+    @param VarName: var name in data dict
+    @return:
+    """
     data = pd.read_csv(dictData[VarName])
     dataValues = data.values
     labelData = dataValues[..., 0].astype(np.int32)
     dataValues = np.delete(dataValues, 0, axis=1)
     [agentNum, dataNum] = dataValues.shape
+    dataValuesNor = Normalize(dataValues)
     singLinks = pd.DataFrame(
         columns=('VarSou', 'VarTar', 'Source', 'Target', 'Rpear', 'Ppear', 'Cij', 'Wij', 'MIij'))
     for iAgent in np.arange(0, agentNum):
-        thisAgent = dataValues[iAgent, ...]
-        otherAgent = np.delete(dataValues, iAgent, axis=0)
+        thisAgent = dataValuesNor[iAgent, ...]
+        otherAgent = np.delete(dataValuesNor, iAgent, axis=0)
         labelOther = np.delete(labelData, iAgent, axis=0)
         for iOther in np.arange(0, agentNum - 1):
             [Rpear, Ppear, link_C, link_W, linkMI] = correlation(
@@ -148,31 +165,17 @@ def GetRsing(VarName):
                     'Wij': [link_W],
                     'MIij': [linkMI],
                 }), ignore_index=True)
-
-    pRpear = singLinks.loc[:, "Rpear"]
-    pPpear = singLinks.loc[:, "Ppear"]
-    pCij = singLinks.loc[:, "Cij"]
-    pWij = singLinks.loc[:, "Wij"]
-    pMiij = singLinks.loc[:, "MIij"]
-    Cdes70 = pCij.describe(percentiles=[0.7]).loc['70%']
-    Wdes70 = pWij.describe(percentiles=[0.7]).loc['70%']
-    Mdes70 = pMiij.describe(percentiles=[0.7]).loc['70%']
-    # Filter the Links
-    # 1 Ppear<1e-10
-    # 2 Cij>Cdes70
-    # 3 Wij>Wdes70
-    # 4 Miij>Mdes70
-    filteredLinks = singLinks[
-        (singLinks["Ppear"] < 1e-10)
-        & (singLinks["Cij"] > Cdes70)
-        & (singLinks["Wij"] > Wdes70)
-        & (singLinks["MIij"] > Mdes70)
-        ].copy()
     print('Over a Rsing')
-    return filteredLinks
+    return singLinks
 
 
 def GetRmult(VarSouName, VarTarName):
+    """
+    get edgeLinks in 2 diferent var Layer
+    @param VarSouName: source var name in data dict
+    @param VarTarName: target var name in data dict
+    @return:
+    """
     dataSou = pd.read_csv(dictData[VarSouName])
     dataTar = pd.read_csv(dictData[VarTarName])
     DataSouV = dataSou.values
@@ -181,14 +184,16 @@ def GetRmult(VarSouName, VarTarName):
     labelTar = DataTarV[..., 0].astype(np.int32)
     SouValues = np.delete(DataSouV, 0, axis=1)
     TarValues = np.delete(DataTarV, 0, axis=1)
+    SouValuesNor = Normalize(SouValues)
+    TarValuesNor = Normalize(TarValues)
     [agentNum, dataNum] = SouValues.shape
     multLinks = pd.DataFrame(
         columns=('VarSou', 'VarTar', 'Source', 'Target', 'Rpear', 'Ppear', 'Cij', 'Wij', 'MIij'))
     for iSou in np.arange(0, agentNum):
-        thisSou = SouValues[iSou, ...]
+        thisSou = SouValuesNor[iSou, ...]
         for iTar in np.arange(0, agentNum - 1):
             [Rpear, Ppear, link_C, link_W, linkMI] = correlation(
-                thisSou, TarValues[iTar, ...], dataNum)
+                thisSou, TarValuesNor[iTar, ...], dataNum)
             multLinks = multLinks.append(pd.DataFrame(
                 {
                     'VarSou': [VarSouName],
@@ -201,32 +206,39 @@ def GetRmult(VarSouName, VarTarName):
                     'Wij': [link_W],
                     'MIij': [linkMI],
                 }), ignore_index=True)
+    print('Over a Rmult')
+    return multLinks
 
-    pRpear = multLinks.loc[:, "Rpear"]
-    pPpear = multLinks.loc[:, "Ppear"]
-    pCij = multLinks.loc[:, "Cij"]
-    pWij = multLinks.loc[:, "Wij"]
-    pMiij = multLinks.loc[:, "MIij"]
-    Cdes70 = pCij.describe(percentiles=[0.7]).loc['70%']
-    Wdes70 = pWij.describe(percentiles=[0.7]).loc['70%']
-    Mdes70 = pMiij.describe(percentiles=[0.7]).loc['70%']
+
+def FilterLinks(Links):
+    """
+    filter links by some rules
+    @param Links:links
+    @return:
+    """
+    pRpear = Links.loc[:, "Rpear"]
+    pPpear = Links.loc[:, "Ppear"]
+    pCij = Links.loc[:, "Cij"]
+    pWij = Links.loc[:, "Wij"]
+    pMiij = Links.loc[:, "MIij"]
+    Cdes = pCij.describe(percentiles=[0.8]).loc['80%']
+    Wdes = pWij.describe(percentiles=[0.8]).loc['80%']
+    Mdes = pMiij.describe(percentiles=[0.8]).loc['80%']
     # Filter the Links
     # 1 Ppear<1e-10
-    # 2 Cij>Cdes70
-    # 3 Wij>Wdes70
-    # 4 Miij>Mdes70
-    filteredLinks = multLinks[
-        (multLinks["Ppear"] < 1e-10)
-        & (multLinks["Cij"] > Cdes70)
-        & (multLinks["Wij"] > Wdes70)
-        & (multLinks["MIij"] > Mdes70)
+    # 2 Cij>Cdes80
+    # 3 Wij>Wdes80
+    # 4 Miij>Mdes80
+    filteredLinks = Links[
+        (Links["Ppear"] < 1e-10)
+        & (Links["Cij"] > Cdes)
+        & (Links["Wij"] > Wdes)
+        & (Links["MIij"] > Mdes)
         ].copy()
-    print('Over a Rmult')
     return filteredLinks
 
 
 # ******Correlation Function******
-
 
 def mutual_information_2d(x, y, binNum=64, sigma=1, normalized=False):
     # cite https://gist.github.com/GaelVaroquaux/ead9898bd3c973c40429
