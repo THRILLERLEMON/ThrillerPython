@@ -241,14 +241,14 @@ def FilterLinks(Links):
     pCij = Links.loc[:, "Cij"]
     pWij = Links.loc[:, "Wij"]
     pMiij = Links.loc[:, "MIij"]
-    Cdes = pCij.describe(percentiles=[0.6]).loc['60%']
-    Wdes = pWij.describe(percentiles=[0.6]).loc['60%']
-    Mdes = pMiij.describe(percentiles=[0.6]).loc['60%']
+    Cdes = pCij.describe(percentiles=[0.5]).loc['50%']
+    Wdes = pWij.describe(percentiles=[0.5]).loc['50%']
+    Mdes = pMiij.describe(percentiles=[0.5]).loc['50%']
     # Filter the Links
     # 1 Ppear<1e-10
-    # 2 Cij>Cdes60
-    # 3 Wij>Wdes60
-    # 4 Miij>Mdes60
+    # 2 Cij>Cdes50
+    # 3 Wij>Wdes50
+    # 4 Miij>Mdes50
     filteredLinks = Links[
         (Links["Ppear"] < 1e-10)
         & (Links["Cij"] > Cdes)
@@ -256,6 +256,40 @@ def FilterLinks(Links):
         & (Links["MIij"] > Mdes)
         ].copy()
     return filteredLinks
+
+
+def FilterLinksGrouply(Links):
+    """
+    filter links by some rules
+    @param Links:links
+    @return:
+    """
+    linksGroup = Links.groupby([Links['VarSou'], Links['VarTar']])
+
+    kindsLinks = []
+    for group_name, group_data in linksGroup:
+        pRpear = group_data.loc[:, "Rpear"]
+        pPpear = group_data.loc[:, "Ppear"]
+        pCij = group_data.loc[:, "Cij"]
+        pWij = group_data.loc[:, "Wij"]
+        pMiij = group_data.loc[:, "MIij"]
+        Cdes = pCij.describe(percentiles=[0.7]).loc['70%']
+        Wdes = pWij.describe(percentiles=[0.7]).loc['70%']
+        Mdes = pMiij.describe(percentiles=[0.7]).loc['70%']
+        # Filter the Links
+        # 1 Ppear<1e-10
+        # 2 Cij>Cdes70
+        # 3 Wij>Wdes70
+        # 4 Miij>Mdes70
+        filteredLinks = group_data[
+            (group_data["Ppear"] < 1e-10)
+            & (group_data["Cij"] > Cdes)
+            & (group_data["Wij"] > Wdes)
+            & (group_data["MIij"] > Mdes)
+            ].copy()
+        kindsLinks.append(filteredLinks)
+    allFiltered = pd.concat(kindsLinks, ignore_index=True)
+    return allFiltered
 
 
 # ******Correlation Function******
