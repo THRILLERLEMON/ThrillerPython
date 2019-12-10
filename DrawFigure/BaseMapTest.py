@@ -4,40 +4,131 @@
 # @Email   : thrillerlemon@outlook.com
 # @File    : BaseMapTest.py
 # @Software: PyCharm
+# Backup from GeoAgent_GlobalClimate
+import time
 
-import networkx as nx
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import networkx as nx
 from mpl_toolkits.basemap import Basemap as Basemap
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.collections import PolyCollection
 
-m = Basemap(
-    projection='merc',
-    llcrnrlon=-130,
-    llcrnrlat=25,
-    urcrnrlon=-60,
-    urcrnrlat=50,
-    lat_ts=0,
-    resolution='i',
-    suppress_ticks=True)
+outPutPath = 'C:\\Users\\thril\\Desktop\\'
 
-# position in decimal lat/lon
-lats = [37.96, 42.82]
-lons = [-121.29, -73.95]
-# convert lat and lon to map projection
-mx, my = m(lons, lats)
 
-# The NetworkX part
-# put map projection coordinates in pos dictionary
-G = nx.Graph()
-G.add_edge('a', 'b')
-pos = {}
-pos['a'] = (mx[0], my[0])
-pos['b'] = (mx[1], my[1])
-# draw
-nx.draw_networkx(G, pos, node_size=200, node_color='blue')
+def main():
+    # ******Main******
+    print(time.strftime('%H:%M:%S', time.localtime(time.time())))
+    geoAgentSHPpath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\GlobalClimate_SHPGeoAgent'
+    geoAgentInfopath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\PointInfo.csv'
+    geoLinkspath = 'D:\\OneDrive\\SharedFile\\环境经济社会可持续发展耦合网络模型\\GeoAgent_GlobalClimate\\geoLinks1118.csv'
+    allLinks = pd.read_csv(geoLinkspath, index_col=0, header=0, dtype={'Source': np.int32, 'Target': np.int32})
+    allNodes = pd.read_csv(geoAgentInfopath, header=0, dtype={'label': np.int32})
+    # print(allLinks)
 
-# Now draw the map
-m.drawcountries()
-m.drawstates()
-m.bluemarble()
-plt.title('How to get from point a to point b')
-plt.show()
+    # varList = {'Tem', 'Prs', 'Pre'}
+    # for var in varList:
+    #     for secvar in varList:
+    #         NetG = build2VarNetWork(
+    #             allNodesData=allNodes,
+    #             allLinksData=allLinks,
+    #             VarSou=var,
+    #             VarTar=secvar,
+    #             weightQuota='Cij')
+    #         draw2DNetWorkOnMap(
+    #             showOrSave='save',
+    #             netWorkG=NetG,
+    #             geoAgentShpPath=geoAgentSHPpath,
+    #             edgeColorF='weight',
+    #             nodeColorF='tem_skew_mean')
+
+    print(time.strftime('%H:%M:%S', time.localtime(time.time())))
+
+
+# SubFunction
+def build2VarNetWork(allNodesData, allLinksData, VarSou, VarTar, weightQuota):
+    """
+    @param allNodesData: allNodesData pandas.df
+    @param allLinksData: allLinksData pandas.df
+    @param VarSou: VarSou str
+    @param VarTar: VarTar str
+    @param weightQuota: weightQuota str
+    @return: G nx.DiGraph
+    """
+    netWorkDF = allLinksData[(allLinksData["VarSou"] == VarSou) & (allLinksData["VarTar"] == VarTar)]
+    G = nx.DiGraph(VarSou=VarSou, VarTar=VarTar)
+    for nIndex, nRow in allNodesData.iterrows():
+        nodeID = nRow['label']
+        G.add_node(nodeID)
+        for nf in allNodesData.columns.values:
+            G.node[nodeID][nf] = nRow[nf]
+    for lIndex, lRow in netWorkDF.iterrows():
+        thisSou = lRow["Source"]
+        thisTar = lRow["Target"]
+        G.add_edge(thisSou, thisTar, weight=lRow[weightQuota])
+        for lf in netWorkDF.columns.values:
+            G.edges[thisSou, thisTar][lf] = lRow[lf]
+    return G
+
+
+def draw2DNetWorkOnMap(showOrSave, netWorkG, geoAgentShpPath, edgeColorF, nodeColorF):
+    """
+    @param showOrSave 'show','save'
+    @param netWorkG: netWorkG nx.DiGraph
+    @param geoAgentShpPath: geoAgentShpPath shapefile by ESRI
+    @param edgeColorF: edgeColorField str
+    @param nodeColorF: nodeColorField str
+    @return: just show Map
+    """
+    plt.figure(figsize=(20, 15), dpi=300)
+    worldMap = Basemap(
+        projection='robin',
+        lon_0=0,
+        resolution='l',
+    )
+    # Now draw the map
+    # worldMap.drawcountries(linewidth=0.5)
+    # worldMap.drawstates()
+    # worldMap.drawcoastlines(linewidth=0.5)
+    # fill in color
+    # worldMap.fillcontinents(color='gray', lake_color='#7396FE')
+    # worldMap.drawmapboundary(fill_color='#7396FE', color='#404243', linewidth=0.5)
+    # draw lon and lat
+    # worldMap.drawparallels(np.arange(-90., 91., 30.))
+    # worldMap.drawmeridians(np.arange(-180., 181., 30.))
+    # worldMap.bluemarble(scale=0.5, alpha=0.8)
+    # worldMap.shadedrelief()
+    worldMap.etopo(scale=0.5, alpha=0.5)
+    worldMap.readshapefile(geoAgentShpPath, 'GeoAgent', color='#818487', linewidth=0.5)
+    mapTitle = 'NetWork ' + netWorkG.graph['VarSou'] + ' to ' + netWorkG.graph['VarTar'] + ' By THRILLER'
+    plt.title(mapTitle)
+
+    pos = {}
+    for n, d in netWorkG.nodes(data=True):
+        # convert lat and lon to map projection
+        mx, my = worldMap(d['longitude'], d['latitude'])
+        pos[n] = (mx, my)
+    nx.draw_networkx_edges(netWorkG, pos, width=0.2, alpha=0.8,
+                           edge_color=[float(d[edgeColorF]) for (u, v, d) in netWorkG.edges(data=True)],
+                           edge_cmap=plt.cm.Purples, arrows=True, arrowstyle='fancy', arrowsize=2,
+                           connectionstyle="arc3,rad=0.1")
+    # first draw point's edge in black
+    nx.draw_networkx_nodes(netWorkG, pos, node_size=[netWorkG.degree(n) * 1.7 for n in netWorkG],
+                           node_color='k')
+    nx.draw_networkx_nodes(netWorkG, pos, node_size=[netWorkG.degree(n) * 1.5 for n in netWorkG],
+                           node_color=[d[nodeColorF] for n, d in netWorkG.nodes(data=True)], cmap=plt.cm.OrRd)
+    # nx.draw_networkx_labels(netWorkG, pos, font_size=11, font_family='Times New Roman', font_color='k')
+
+    if showOrSave == 'show':
+        # max windows
+        plt.get_current_fig_manager().window.showMaximized()
+        plt.show()
+    if showOrSave == 'save':
+        plt.savefig(outPutPath + mapTitle + ".png")
+
+
+# Run main
+if __name__ == "__main__":
+    main()
