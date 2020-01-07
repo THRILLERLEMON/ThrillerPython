@@ -62,17 +62,30 @@ def main():
             thisYearKindV = sortData[(sortData['ChangeLabel'] == kind)]['ChangeArea'].values[0]
             kindsValues.append(thisYearKindV)
             totalTop10 = totalTop10 + thisYearKindV
-        kindsValues.insert(0,(totalCA - totalTop10))
+        kindsValues.insert(0, (totalCA - totalTop10))
         YearsTop10[str(year)] = pd.Series(kindsValues)
         print('finish a year')
     YearsTop10.index = YearsTop10['Type']
-    print(YearsTop10)
+    # print(YearsTop10)
     YearsTop10 = YearsTop10.drop(['Type'], axis=1)
     YearsTop10T = pd.DataFrame(YearsTop10.values.T, index=YearsTop10.columns, columns=YearsTop10.index)
-    print(YearsTop10T)
-    YearsTop10T.plot.bar(stacked=True, color=['#8B8B8B','#ff6d4c','#d6b3b3','#D05300','#BC9900','#dcd159','#A25300','#086a10','#c6b044','#b6ff05','#78d203'],title='Top 10 Change Type')
-    plt.tight_layout()
-    plt.show()
+    # print(YearsTop10T)
+    YearsTop10T.plot.bar(figsize=(20, 10), stacked=True,
+                         color=['#8B8B8B', '#ff6d4c', '#d6b3b3', '#D05300', '#BC9900', '#dcd159', '#A25300', '#086a10',
+                                '#c6b044', '#b6ff05', '#78d203'])
+    font = {'family': 'Times New Roman',
+            'weight': 'normal',
+            'size': 14}
+
+    plt.yticks(fontproperties='Times New Roman', size=12)
+    plt.xticks(fontproperties='Times New Roman', size=12)
+    plt.xlabel('Year', font)
+    plt.ylabel('Change in Area ($\mathregular{m^2}$)', font)
+    plt.legend(loc='upper left', ncol=6, prop={'family': 'Times New Roman', 'size': 12})
+    # plt.tight_layout()
+    plt.get_current_fig_manager().window.showMaximized()
+    plt.savefig("C:\\Users\\thril\\Desktop\\temp.png", dpi=300, bbox_inches='tight')
+    # plt.show()
 
 
 if __name__ == '__main__':
