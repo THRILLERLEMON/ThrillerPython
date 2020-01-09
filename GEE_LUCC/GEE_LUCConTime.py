@@ -10,7 +10,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-
 def main():
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
     mapList = {
@@ -34,7 +33,7 @@ def main():
     fnPath = 'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTime\\Years\\'
     fnHead = 'KindChangeArea'
     fnTail = '.csv'
-    dfOut = pd.DataFrame(columns=['Source', 'Target', 'weight', 'Start','End','ChangeType'])
+    dfOut = pd.DataFrame(columns=['Source', 'Target', 'weight', 'Start', 'End', 'ChangeType'])
 
     for year in np.arange(1987, 2019):
         thisYearData = pd.read_csv(fnPath + fnHead + str(year) + fnTail)
@@ -47,12 +46,12 @@ def main():
         thisYearData = thisYearData.drop(
             ['system:index', '.geo', 'SourceLabel', 'TargetLabel', 'ChangeArea'], axis=1)
         # thisYearData = thisYearData[['Source', 'Target', 'weight','ChangeType']]
-        thisYearData['Start']=year-1
-        thisYearData['End']=year
+        thisYearData['Start'] = year - 1
+        thisYearData['End'] = year
         print(thisYearData)
-        dfOut=dfOut.append(thisYearData)
+        dfOut = dfOut.append(thisYearData)
 
-    dfOut=dfOut.fillna(0)
+    dfOut = dfOut.fillna(0)
     print(dfOut)
     dfOut.to_csv(
         'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTime\\Years\\YearsChangeTypeValue.csv')
@@ -91,9 +90,10 @@ def mainold():
     thisYearData1987['TargetLabel'] = targetLabel1987
     thisYearData1987['ChangeLabel'] = thisYearData1987['SourceLabel'] + ' to ' + thisYearData1987['TargetLabel']
     thisYearData1987.index = thisYearData1987['ChangeLabel']
-    thisYearData1987 = thisYearData1987.drop(['system:index','.geo','SourceLabel','TargetLabel','ChangeArea','ChangeLabel'], axis=1)
-    thisYearData1987.rename(columns={'ChangeRate':str(1987)},inplace=True)
-    thisYearData1987 = thisYearData1987[['Source','Target','1987']]
+    thisYearData1987 = thisYearData1987.drop(
+        ['system:index', '.geo', 'SourceLabel', 'TargetLabel', 'ChangeArea', 'ChangeLabel'], axis=1)
+    thisYearData1987.rename(columns={'ChangeRate': str(1987)}, inplace=True)
+    thisYearData1987 = thisYearData1987[['Source', 'Target', '1987']]
 
     for year in np.arange(1988, 2019):
         thisYearData = pd.read_csv(fnPath + fnHead + str(year) + fnTail)
@@ -106,12 +106,13 @@ def mainold():
         thisYearData = thisYearData.drop(
             ['system:index', '.geo', 'SourceLabel', 'TargetLabel', 'ChangeArea', 'ChangeLabel'], axis=1)
         thisYearData.rename(columns={'ChangeRate': str(year)}, inplace=True)
-        thisYearData1987 = pd.merge(thisYearData1987, thisYearData, how='outer', on=['Source','Target'])
-    thisYearData1987=thisYearData1987.fillna(0)
+        thisYearData1987 = pd.merge(thisYearData1987, thisYearData, how='outer', on=['Source', 'Target'])
+    thisYearData1987 = thisYearData1987.fillna(0)
     print(thisYearData1987)
     thisYearData1987.to_csv(
         'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTime\\Years\\YearsChangeTypeValue.csv')
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
+
 
 if __name__ == '__main__':
     main()
