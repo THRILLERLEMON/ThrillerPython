@@ -12,7 +12,7 @@ import pandas as pd
 def main():
     # combine years kinds area csv to 1 total Table
     fnPath = 'D:\\OneDrive\\SharedFile\\GEE_V2\\AnalyzeLocalArea\\KindsArea\\'
-    fnHead = 'JinShanMengKindsArea'
+    fnHead = 'WuqiZhidanKindsArea'
     fnTail = '.csv'
 
     yearsData = pd.DataFrame({'Years': np.arange(1986, 2019)})

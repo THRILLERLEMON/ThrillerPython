@@ -27,7 +27,6 @@ type = sys.getfilesystemencoding()
 sys.stdout = Logger('OutLog_2018ALL.txt')
 print(printpath)
 
-
 # labels表示你不同类别的代号
 labels = [
     'DBF',
@@ -35,11 +34,11 @@ labels = [
     'MF',
     'Oshrub',
     'Cshrub',
-    'Dgrass',
-    'Tgrass',
+    'XerGra',
+    'TemGra',
     'Crop',
     'Orchard',
-    'Buildup',
+    'Builtup',
     'Water',
     'Wet',
     'Snow',
@@ -50,6 +49,8 @@ labels = [
 y_true = np.loadtxt('C:/Users/thril/Desktop/True_ALL.txt')
 y_pred = np.loadtxt('C:/Users/thril/Desktop/Pred_ALL.txt')
 
+fontInfo = {'family': 'Times New Roman', 'size': 14}
+
 tick_marks = np.array(range(len(labels))) + 0.5
 
 
@@ -58,10 +59,10 @@ def plot_confusion_matrix(cm, title='Confusion Matrix', cmap=plt.cm.binary):
     plt.title(title)
     plt.colorbar()
     xlocations = np.array(range(len(labels)))
-    plt.xticks(xlocations, labels, rotation=90)
-    plt.yticks(xlocations, labels)
-    plt.ylabel('True_ALL')
-    plt.xlabel('Pred_ALL')
+    plt.xticks(xlocations, labels, rotation=90, fontproperties='Times New Roman', size=12)
+    plt.yticks(xlocations, labels, fontproperties='Times New Roman', size=12)
+    plt.ylabel('True_ALL', fontdict=fontInfo)
+    plt.xlabel('Pred_ALL', fontdict=fontInfo)
 
 
 cm = confusion_matrix(y_true, y_pred)
@@ -71,7 +72,7 @@ print(classification_report(y_true, y_pred, target_names=labels))
 np.set_printoptions(precision=2)
 cm_normalized = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
 # print(cm_normalized)
-plt.figure(figsize=(12, 8), dpi=120)
+plt.figure(figsize=(12, 8), dpi=400)
 
 ind_array = np.arange(len(labels))
 x, y = np.meshgrid(ind_array, ind_array)
@@ -79,8 +80,8 @@ x, y = np.meshgrid(ind_array, ind_array)
 for x_val, y_val in zip(x.flatten(), y.flatten()):
     c = cm_normalized[y_val][x_val]
     if c > 0.01:
-        plt.text(x_val, y_val, "%0.2f" % (c,), color='red',
-                 fontsize=7, va='center', ha='center')
+        plt.text(x_val, y_val, "%0.2f" % (c,), color='red', family='Times New Roman',
+                 fontsize=10, va='center', ha='center')
 # offset the tick
 plt.gca().set_xticks(tick_marks, minor=True)
 plt.gca().set_yticks(tick_marks, minor=True)
