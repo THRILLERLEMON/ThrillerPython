@@ -15,7 +15,7 @@ draw_Normalized Confusion Matrix_from2rows.py
 从两行数据绘出归一化混淆矩阵
 ***
 GEE_LUCConTime.py
-对GEE_LUCConTime数据的一个整理
+对GEE_LUCConTime数据的一个整理脚本
 ***
 GEE_LUCCTop10onTime.py
 统计出30年来变化类型最高的10类
