@@ -21,7 +21,7 @@ GEE_LUCCTop10onTime.py
 统计出30年来变化类型最高的10类
 ***
 LUCC_ChangeOnTimeWithLaiChagne.py
-LUCC_ChangeOnTimeWithLaiChagne的散点图绘制
+LUCC_ChangeOnTimeWithLaiChagne的散点图的绘制
 ***
 LUCC_CircularLayOut.py
 输出每两年间的LUCC转换网络
