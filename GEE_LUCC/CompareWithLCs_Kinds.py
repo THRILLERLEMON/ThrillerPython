@@ -2,7 +2,7 @@
 # @Time    : 2020/4/17 21:07
 # @Author  : THRILLER柠檬
 # @Email   : thrillerlemon@outlook.com
-# @File    : CompareWithLCs_Agricultural_land.py
+# @File    : CompareWithLCs_Kinds.py
 # @Software: PyCharm
 
 import numpy as np
