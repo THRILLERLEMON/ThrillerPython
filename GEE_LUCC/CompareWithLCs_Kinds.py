@@ -32,186 +32,78 @@ type = sys.getfilesystemencoding()
 sys.stdout = Logger('OutLog.txt')
 print(printpath)
 
-allCountryTrueData = pd.read_excel(
-    'D:\OneDrive\SharedFile\GEE_V2\CompareWithLCs\CompareWithLCs_Agricultural_land\耕地面积_单位-平方米.xlsx', sheet_name="pingfangmi")
+excelData = pd.read_excel(
+    'D:\OneDrive\SharedFile\GEE_V2\CompareWithLCs\CompareFIG\ALLLLLLLLLLLL.xlsx', sheet_name="Sheet1")
 
-def FindValue(pCountryCode, pYear):
-    findresult = allCountryTrueData[
-        (allCountryTrueData["County_code_N"] == int(pCountryCode))
-        ].copy()
-    return findresult[pYear].iloc[0]
+csvPath='D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareFIG\\'
 
+fig, ax = plt.subplots(figsize=(15, 7), dpi=300)
 
-dfOut = pd.DataFrame(columns=['TrueArea', 'DataArea', 'DataSet','CountryCode','Year'])
+colors=['#267300','#55FF00','#FFFF00','#FF7F7F','#A900E6','#00C5FF','#000000']
+names=['Forests','Shrubs','Grasslands','Agricultural lands','Built-up and Urban','Water','Barren lands']
 
 
-csvPath='D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\csv\\'
+# plt.scatter(1, 1,color='black', marker='o',s=50, label='MCD12Q1-V6')
+# plt.scatter(2, 2,color='black', marker='x',s=50, label='ChinaLC1000')
+# plt.scatter(3, 3,color='black', marker='H',s=50, label='FROM-GLC')
+# plt.scatter(4, 4,color='black', marker='v',s=50, label='GlobeLand30')
+# plt.scatter(5, 5,color='black', marker='s',s=50, label='GlobCover')
+# plt.scatter(6, 6,color='black', marker='+',s=50, label='GLCC')
+# plt.scatter(7, 7,color='black', marker='*',s=50, label='CGLS-LC100')
+# ax.legend()
+# plt.legend(bbox_to_anchor=(1.05, 0), loc=3, borderaxespad=0,prop={'family' : 'Times New Roman', 'size'   : 10})
+# plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\figggg.png',dpi=300,bbox_inches='tight')
 
-fig, ax = plt.subplots(figsize=(10, 10), dpi=300)
 
-#ThisStudy1990-2014
-for year in np.arange(1990, 2014, 1):
-    dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_ThisStudy'+str(year)+'.csv')
-    for tIndex, tRow in dataCSV.iterrows():
-        countryCode = tRow["County_c_1"]
-        dataArea=tRow["sum"]
-        findedvalue = FindValue(countryCode, year)
-        dic={'TrueArea':findedvalue/100000000,
-             'DataArea':dataArea/100000000,
-             'DataSet':'This Study',
-             'CountryCode':countryCode,
-             'Year':year,
-             }
-        dfOut=dfOut.append(dic,ignore_index=True)
-dfOut=dfOut[(dfOut["TrueArea"]>1) & (dfOut["TrueArea"]<50) & (dfOut["DataArea"]>0) & (dfOut["DataArea"]<50) ]
-thisDS=dfOut[dfOut['DataSet']=='This Study']
-print('This Study')
-print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
-print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
-print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='^', color='b', s=80,alpha=0.8,label='This Study',edgecolors='none')
 
-#Modis2001-2014
-for year in np.arange(2001, 2014, 1):
-    dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_LC_'+str(year)+'MODIS_500.csv')
-    for tIndex, tRow in dataCSV.iterrows():
-        countryCode = tRow["County_c_1"]
-        dataArea=tRow["sum"]
-        findedvalue = FindValue(countryCode, year)
-        dic={'TrueArea':findedvalue/100000000,
-             'DataArea':dataArea/100000000,
-             'DataSet':'MCD12Q1-V6',
-             'CountryCode':countryCode,
-             'Year':year,
-             }
-        dfOut=dfOut.append(dic,ignore_index=True)
-dfOut=dfOut[(dfOut["TrueArea"]>1) & (dfOut["TrueArea"]<50) & (dfOut["DataArea"]>0) & (dfOut["DataArea"]<50) ]
-thisDS=dfOut[dfOut['DataSet']=='MCD12Q1-V6']
-print('MCD12Q1-V6')
-print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
-print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
-print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='o', color='g',s=80,alpha=0.8,label='MCD12Q1-V6',edgecolors='none')
-
-#LJY1995\2000\2005
-for year in [1995,2000,2005]:
-    dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_LC_'+str(year)+'LJY_1000.csv')
-    for tIndex, tRow in dataCSV.iterrows():
-        countryCode = tRow["County_c_1"]
-        dataArea=tRow["sum"]
-        findedvalue = FindValue(countryCode, year)
-        dic={'TrueArea':findedvalue/100000000,
-             'DataArea':dataArea/100000000,
-             'DataSet':'ChinaLC1000',
-             'CountryCode':countryCode,
-             'Year':year,
-             }
-        dfOut=dfOut.append(dic,ignore_index=True)
-dfOut=dfOut[(dfOut["TrueArea"]>1) & (dfOut["TrueArea"]<50) & (dfOut["DataArea"]>0) & (dfOut["DataArea"]<50) ]
-thisDS=dfOut[dfOut['DataSet']=='ChinaLC1000']
-print('ChinaLC1000')
-print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
-print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
-print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='x', color='r', s=80,alpha=0.8,label='ChinaLC1000',edgecolors='none')
-
+#Modis2001-2016
+drawData=excelData.loc['0':'15']
+for kind in np.arange(1,8,1):
+    # plt.plot(list(np.arange(1,17,1)),drawData.iloc[:, kind],color=colors[kind-1],linewidth=9,linestyle='-',label=names[kind-1])
+    plt.plot(list(np.arange(1,17,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1], linewidth=1,linestyle='-',marker='o',ms=5,label=names[kind-1])
+#LJY1985\1995\2000\2005
+drawData=excelData.loc['16':'19']
+for kind in np.arange(1,8,1):
+    plt.plot(list(np.arange(17,21,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1], linewidth=1,linestyle='-',marker='x',ms=5,label=names[kind-1])
+#FROMGLC 2010 2015  2017
+drawData=excelData.loc['20':'22']
+for kind in np.arange(1,8,1):
+    plt.plot(list(np.arange(21,24,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1], linewidth=1,linestyle='-',marker='H',ms=5,label=names[kind-1])
 #GlobalLandCover30 2000   2010
-for year in [2000,2010]:
-    dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_LC_'+str(year)+'GlobalLandCover30_30.csv')
-    for tIndex, tRow in dataCSV.iterrows():
-        countryCode = tRow["County_c_1"]
-        dataArea=tRow["sum"]
-        findedvalue = FindValue(countryCode, year)
-        dic={'TrueArea':findedvalue/100000000,
-             'DataArea':dataArea/100000000,
-             'DataSet':'GlobeLand30',
-             'CountryCode':countryCode,
-             'Year':year,
-             }
-        dfOut=dfOut.append(dic,ignore_index=True)
-dfOut=dfOut[(dfOut["TrueArea"]>1) & (dfOut["TrueArea"]<50) & (dfOut["DataArea"]>0) & (dfOut["DataArea"]<50) ]
-thisDS=dfOut[dfOut['DataSet']=='GlobeLand30']
-print('GlobeLand30')
-print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
-print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
-print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='v', color='c', s=80,alpha=0.8,label='GlobeLand30',edgecolors='none')
-
+drawData=excelData.loc['23':'24']
+for kind in np.arange(1,8,1):
+    plt.plot(list(np.arange(24,26,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1],linewidth=1,linestyle='-',marker='v',ms=5,label=names[kind-1])
 #GlobCover 2005 2009
-for year in [2005,2009]:
-    dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_LC_'+str(year)+'GlobCover_300.csv')
-    for tIndex, tRow in dataCSV.iterrows():
-        countryCode = tRow["County_c_1"]
-        dataArea=tRow["sum"]
-        findedvalue = FindValue(countryCode, year)
-        dic={'TrueArea':findedvalue/100000000,
-             'DataArea':dataArea/100000000,
-             'DataSet':'GlobCover',
-             'CountryCode':countryCode,
-             'Year':year,
-             }
-        dfOut=dfOut.append(dic,ignore_index=True)
-dfOut=dfOut[(dfOut["TrueArea"]>1) & (dfOut["TrueArea"]<50) & (dfOut["DataArea"]>0) & (dfOut["DataArea"]<50) ]
-thisDS=dfOut[dfOut['DataSet']=='GlobCover']
-print('GlobCover')
-print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
-print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
-print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='s', color='y',s=80,alpha=0.8,label='GlobCover',edgecolors='none')
-
-#FROMGLC 2010
-dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_LC_2010FROMGLC_30.csv')
-for tIndex, tRow in dataCSV.iterrows():
-    countryCode = tRow["County_c_1"]
-    dataArea=tRow["sum"]
-    findedvalue = FindValue(countryCode, year)
-    dic={'TrueArea':findedvalue/100000000,
-         'DataArea':dataArea/100000000,
-         'DataSet':'FROM-GLC',
-         'CountryCode':countryCode,
-         'Year':year,
-         }
-    dfOut=dfOut.append(dic,ignore_index=True)
-dfOut=dfOut[(dfOut["TrueArea"]>1) & (dfOut["TrueArea"]<50) & (dfOut["DataArea"]>0) & (dfOut["DataArea"]<50) ]
-thisDS=dfOut[dfOut['DataSet']=='FROM-GLC']
-print('FROM-GLC')
-print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
-print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
-print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='H', color='k',s=80,alpha=0.8,label='FROM-GLC',edgecolors='none')
-
+drawData=excelData.loc['25':'26']
+for kind in np.arange(1,8,1):
+    plt.plot(list(np.arange(26,28,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1],linewidth=1,linestyle='-',marker='s',ms=5,label=names[kind-1])
 #GLC 1992
-dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_LC_1992GLC_1000.csv')
-for tIndex, tRow in dataCSV.iterrows():
-    countryCode = tRow["County_c_1"]
-    dataArea=tRow["sum"]
-    findedvalue = FindValue(countryCode, year)
-    dic={'TrueArea':findedvalue/100000000,
-         'DataArea':dataArea/100000000,
-         'DataSet':'GLCC',
-         'CountryCode':countryCode,
-         'Year':year,
-         }
-    dfOut=dfOut.append(dic,ignore_index=True)
-dfOut=dfOut[(dfOut["TrueArea"]>1) & (dfOut["TrueArea"]<50) & (dfOut["DataArea"]>0) & (dfOut["DataArea"]<50) ]
-thisDS=dfOut[dfOut['DataSet']=='GLCC']
-print('GLCC')
-print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
-print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
-print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='+', color='m', s=80,alpha=0.8,label='GLCC',edgecolors='none')
+drawData=list(excelData.loc[27])
+for kind in np.arange(1,8,1):
+    plt.scatter(28, drawData[kind]/10000000000,color=colors[kind-1], marker='+',s=50,alpha=0.8, label=names[kind-1])
+    # plt.plot(28,drawData[kind],color=colors[kind-1],linewidth=1,linestyle='--',label=names[kind-1])
+#COPERNICUS_100 2015
+drawData=list(excelData.loc[28])
+for kind in np.arange(1,8,1):
+    plt.scatter(29, drawData[kind]/10000000000, color=colors[kind - 1],  marker='*',s=50, alpha=0.8,label=names[kind - 1])
+    # plt.plot(29,drawData[kind],color=colors[kind-1],linewidth=1,linestyle='--',label=names[kind-1])
 
-ax.legend()
-plt.xlim((0, 50))
-plt.ylim((0, 50))
-plt.yticks(fontproperties = 'Times New Roman', size = 18)
-plt.xticks(fontproperties = 'Times New Roman', size = 18)
-plt.legend(prop={'family' : 'Times New Roman', 'size'   : 18})
-ax.set_xlabel('TrueArea($\mathregular{10^4hm^2}$)', fontdict={'family' : 'Times New Roman', 'size'   : 20})
-ax.set_ylabel('DataArea($\mathregular{10^4hm^2}$)',fontdict={'family' : 'Times New Roman', 'size'   : 20})
-ax.set_title('Agricultural land Area Compare',fontdict={'family' : 'Times New Roman', 'size'   : 20})
 
-plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\scatter.png',dpi=300,bbox_inches='tight')
+
+
+plt.ylim((-30, 30))
+years=['2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016',
+       '1985','1995','2000','2005',
+       '2010','2015','2017','2000','2010','2005','2009','1992','2015']
+plt.xticks(list(np.arange(1,30,1)),years , fontsize=12,fontfamily='Times New Roman')
+
+plt.yticks(fontproperties = 'Times New Roman', size = 12)
+
+
+ax.set_xlabel('DataSet and Year', fontdict={'family' : 'Times New Roman', 'size'   : 15})
+ax.set_ylabel(r'$\Delta$'+' Area($\mathregular{10^4km^2}$)',fontdict={'family' : 'Times New Roman', 'size'   : 15})
+# ax.set_title('Agricultural land Area Compare',fontdict={'family' : 'Times New Roman', 'size'   : 20})
+
+plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\figggg.png',dpi=300,bbox_inches='tight')
 # plt.show()
-dfOut.to_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\outDF.csv')
+

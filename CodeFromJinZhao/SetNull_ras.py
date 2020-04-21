@@ -4,11 +4,11 @@ print '去除单个无效值'
 
 #修改部分
 ###########
-filepath=r"C:\tmp"    #原始数据位置
+filepath=r"C:\Users\thril\Desktop\set0"    #原始数据位置
 suffix='tif'    #数据后缀
-bvalue= -9999 #要去除的背景值
+bvalue= 0 #要去除的背景值
 
-file_cutnull=r"C:\tmp\cut"  #去除无效值结果文件夹
+file_cutnull=r"C:\Users\thril\Desktop\UP"  #去除无效值结果文件夹
 ###########
 
 #计算部分
