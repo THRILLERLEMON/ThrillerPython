@@ -208,4 +208,4 @@ def mainold():
 
 
 if __name__ == '__main__':
-    drawlegend()
+    main()

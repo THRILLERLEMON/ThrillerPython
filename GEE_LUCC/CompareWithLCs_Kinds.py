@@ -37,10 +37,10 @@ excelData = pd.read_excel(
 
 csvPath='D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareFIG\\'
 
-fig, ax = plt.subplots(figsize=(15, 7), dpi=300)
+fig, ax = plt.subplots(figsize=(17, 7), dpi=300)
 
-colors=['#267300','#55FF00','#FFFF00','#FF7F7F','#A900E6','#00C5FF','#000000']
-names=['Forests','Shrubs','Grasslands','Agricultural lands','Built-up and Urban','Water','Barren lands']
+colors = ['#1b7201', '#50ff00', '#f2f100', '#a0c882', '#ad0101', '#0058f0', '#000000']
+names = ['Forests', 'Shrubs', 'Grasslands', 'Agricultural lands', 'Built-up and Urban', 'Water', 'Barren lands']
 
 
 # plt.scatter(1, 1,color='black', marker='o',s=50, label='MCD12Q1-V6')
@@ -57,45 +57,53 @@ names=['Forests','Shrubs','Grasslands','Agricultural lands','Built-up and Urban'
 
 
 #Modis2001-2016
-drawData=excelData.loc['0':'15']
-for kind in np.arange(1,8,1):
-    # plt.plot(list(np.arange(1,17,1)),drawData.iloc[:, kind],color=colors[kind-1],linewidth=9,linestyle='-',label=names[kind-1])
-    plt.plot(list(np.arange(1,17,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1], linewidth=1,linestyle='-',marker='o',ms=5,label=names[kind-1])
+drawData = excelData.loc['0':'17']
+for kind in np.arange(1, 8, 1):
+    # plt.plot(list(np.arange(1,19,1)),drawData.iloc[:, kind],color=colors[kind-1],linewidth=9,linestyle='-',label=names[kind-1])
+    plt.plot(list(np.arange(1, 19, 1)), drawData.iloc[:, kind].apply(lambda x: x / 10000000000), color=colors[kind - 1],
+             linewidth=1, linestyle='-', marker='o', ms=5, label=names[kind - 1])
 #LJY1985\1995\2000\2005
-drawData=excelData.loc['16':'19']
+drawData = excelData.loc['18':'21']
 for kind in np.arange(1,8,1):
-    plt.plot(list(np.arange(17,21,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1], linewidth=1,linestyle='-',marker='x',ms=5,label=names[kind-1])
+    plt.plot(list(np.arange(19, 23, 1)), drawData.iloc[:, kind].apply(lambda x: x / 10000000000),
+             color=colors[kind - 1], linewidth=1, linestyle='-', marker='x', ms=5, label=names[kind - 1])
 #FROMGLC 2010 2015  2017
-drawData=excelData.loc['20':'22']
+drawData = excelData.loc['22':'24']
 for kind in np.arange(1,8,1):
-    plt.plot(list(np.arange(21,24,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1], linewidth=1,linestyle='-',marker='H',ms=5,label=names[kind-1])
+    plt.plot(list(np.arange(23, 26, 1)), drawData.iloc[:, kind].apply(lambda x: x / 10000000000),
+             color=colors[kind - 1], linewidth=1, linestyle='-', marker='H', ms=5, label=names[kind - 1])
 #GlobalLandCover30 2000   2010
-drawData=excelData.loc['23':'24']
+drawData = excelData.loc['25':'26']
 for kind in np.arange(1,8,1):
-    plt.plot(list(np.arange(24,26,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1],linewidth=1,linestyle='-',marker='v',ms=5,label=names[kind-1])
+    plt.plot(list(np.arange(26, 28, 1)), drawData.iloc[:, kind].apply(lambda x: x / 10000000000),
+             color=colors[kind - 1], linewidth=1, linestyle='-', marker='v', ms=5, label=names[kind - 1])
 #GlobCover 2005 2009
-drawData=excelData.loc['25':'26']
+drawData = excelData.loc['27':'28']
 for kind in np.arange(1,8,1):
-    plt.plot(list(np.arange(26,28,1)),drawData.iloc[:, kind].apply(lambda x: x/10000000000),color=colors[kind-1],linewidth=1,linestyle='-',marker='s',ms=5,label=names[kind-1])
+    plt.plot(list(np.arange(28, 30, 1)), drawData.iloc[:, kind].apply(lambda x: x / 10000000000),
+             color=colors[kind - 1], linewidth=1, linestyle='-', marker='s', ms=5, label=names[kind - 1])
 #GLC 1992
-drawData=list(excelData.loc[27])
-for kind in np.arange(1,8,1):
-    plt.scatter(28, drawData[kind]/10000000000,color=colors[kind-1], marker='+',s=50,alpha=0.8, label=names[kind-1])
-    # plt.plot(28,drawData[kind],color=colors[kind-1],linewidth=1,linestyle='--',label=names[kind-1])
+drawData = list(excelData.loc[29])
+for kind in np.arange(1, 8, 1):
+    plt.scatter(30, drawData[kind] / 10000000000, color=colors[kind - 1], marker='+', s=50, alpha=0.99,
+                label=names[kind - 1])
+    # plt.plot(30,drawData[kind],color=colors[kind-1],linewidth=1,linestyle='--',label=names[kind-1])
 #COPERNICUS_100 2015
-drawData=list(excelData.loc[28])
-for kind in np.arange(1,8,1):
-    plt.scatter(29, drawData[kind]/10000000000, color=colors[kind - 1],  marker='*',s=50, alpha=0.8,label=names[kind - 1])
-    # plt.plot(29,drawData[kind],color=colors[kind-1],linewidth=1,linestyle='--',label=names[kind-1])
+drawData = list(excelData.loc[30])
+for kind in np.arange(1, 8, 1):
+    plt.scatter(31, drawData[kind] / 10000000000, color=colors[kind - 1], marker='*', s=50, alpha=0.99,
+                label=names[kind - 1])
+    # plt.plot(31,drawData[kind],color=colors[kind-1],linewidth=1,linestyle='--',label=names[kind-1])
 
 
 
 
 plt.ylim((-30, 30))
-years=['2001','2002','2003','2004','2005','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016',
-       '1985','1995','2000','2005',
-       '2010','2015','2017','2000','2010','2005','2009','1992','2015']
-plt.xticks(list(np.arange(1,30,1)),years , fontsize=12,fontfamily='Times New Roman')
+years = ['2001', '2002', '2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010', '2011', '2012', '2013', '2014',
+         '2015', '2016', '2017', '2018',
+         '1985', '1995', '2000', '2005',
+         '2010', '2015', '2017', '2000', '2010', '2005', '2009', '1992', '2015']
+plt.xticks(list(np.arange(1, 32, 1)), years, fontsize=12, fontfamily='Times New Roman')
 
 plt.yticks(fontproperties = 'Times New Roman', size = 12)
 

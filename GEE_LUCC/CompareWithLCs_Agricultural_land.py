@@ -69,7 +69,8 @@ print('This Study')
 print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
 print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
 print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='^', color='b', s=80,alpha=0.8,label='This Study',edgecolors='none')
+plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='^', color='b', s=50, alpha=0.8, label='This Study',
+            edgecolors='none')
 
 #Modis2001-2014
 for year in np.arange(2001, 2014, 1):
@@ -91,7 +92,8 @@ print('MCD12Q1-V6')
 print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
 print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
 print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='o', color='g',s=80,alpha=0.8,label='MCD12Q1-V6',edgecolors='none')
+plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='o', color='g', s=50, alpha=0.8, label='MCD12Q1-V6',
+            edgecolors='none')
 
 #LJY1995\2000\2005
 for year in [1995,2000,2005]:
@@ -113,7 +115,8 @@ print('ChinaLC1000')
 print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
 print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
 print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='x', color='r', s=80,alpha=0.8,label='ChinaLC1000',edgecolors='none')
+plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='x', color='r', s=50, alpha=0.8, label='ChinaLC1000',
+            edgecolors='none')
 
 #GlobalLandCover30 2000   2010
 for year in [2000,2010]:
@@ -135,7 +138,8 @@ print('GlobeLand30')
 print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
 print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
 print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='v', color='c', s=80,alpha=0.8,label='GlobeLand30',edgecolors='none')
+plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='v', color='c', s=50, alpha=0.8, label='GlobeLand30',
+            edgecolors='none')
 
 #GlobCover 2005 2009
 for year in [2005,2009]:
@@ -157,7 +161,8 @@ print('GlobCover')
 print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
 print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
 print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='s', color='y',s=80,alpha=0.8,label='GlobCover',edgecolors='none')
+plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='s', color='y', s=50, alpha=0.8, label='GlobCover',
+            edgecolors='none')
 
 #FROMGLC 2010
 dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_LC_2010FROMGLC_30.csv')
@@ -178,7 +183,8 @@ print('FROM-GLC')
 print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
 print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
 print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='H', color='k',s=80,alpha=0.8,label='FROM-GLC',edgecolors='none')
+plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='H', color='k', s=50, alpha=0.8, label='FROM-GLC',
+            edgecolors='none')
 
 #GLC 1992
 dataCSV=pd.read_csv(csvPath+'KindArea_Agricultural_land_LC_1992GLC_1000.csv')
@@ -199,7 +205,8 @@ print('GLCC')
 print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
 print(f"根均方误差(RMSE)：{np.sqrt(mean_squared_error(thisDS['TrueArea'],thisDS['DataArea']))}")
 print(f"测试集R^2：{r2_score(thisDS['TrueArea'], thisDS['DataArea'])}")
-plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='+', color='m', s=80,alpha=0.8,label='GLCC',edgecolors='none')
+plt.scatter(thisDS['TrueArea'], thisDS['DataArea'], marker='+', color='m', s=50, alpha=0.8, label='GLCC',
+            edgecolors='none')
 
 ax.legend()
 plt.xlim((0, 50))
