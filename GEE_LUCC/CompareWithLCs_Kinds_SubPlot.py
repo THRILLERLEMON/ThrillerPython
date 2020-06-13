@@ -38,9 +38,8 @@ excelData = pd.read_excel(
 
 csvPath = 'D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareFIG\\'
 
-fig, ax = plt.subplots(figsize=(17, 7), dpi=300)
 
-colors = ['#1b7201', '#50ff00', '#f2f100', '#a0c882', '#ad0101', '#0058f0', '#000000']
+colors = ['#1b7201', '#50ff00', '#a4d081', '#f2f100', '#f00001', '#0058f0', '#000000']
 names = ['Forests', 'Shrubs', 'Grasslands', 'Agricultural lands', 'Built-up and Urban', 'Water', 'Barren lands']
 
 # plt.scatter(1, 1,color='black', marker='o',s=50, label='MCD12Q1-V6')

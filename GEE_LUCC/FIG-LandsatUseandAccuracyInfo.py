@@ -43,6 +43,8 @@ def main():
     ax2.set_yticks(np.arange(0, 1400, 200))
     ax2.set_yticklabels(['0', '200', '400', '600', '800', '1000', '1200'], fontsize=16, fontfamily='Times New Roman')
     ax2.set_ylim(0, 1200)
+
+    ax2.set_ylabel('Number of Landsat scenes', fontsize=18, fontfamily='Times New Roman')
     ax2.legend(loc=7, bbox_to_anchor=(0.95, 0.59), prop=fontL, frameon=False)
 
     # ax.set_yticks(np.arange(0,1.8,0.5))
