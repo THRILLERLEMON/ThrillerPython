@@ -60,8 +60,12 @@ def main():
     ax.bar(changeTimesIndex, a,
            color=['#ffffff', '#8aa8ce', '#b9d5ed', '#fffec5', '#ffe88b', '#ffb457', '#f9783f', '#db4f36'],
            label='Frequency', edgecolor='#6e6e6e')
+
+    for a, b in zip(range(8), np.array(a)):
+        ax.text(a, b + 0.3, '%.2f' % b + '%', ha='center', va='bottom', fontsize=14, fontfamily='Times New Roman')
+
     ax.set_yticks(np.arange(0, 55, 5))
-    ax.set_yticklabels(np.arange(0, 55, 5), fontsize=16, fontfamily='Times New Roman')
+    ax.set_yticklabels(np.arange(0, 55, 5), fontsize=12, fontfamily='Times New Roman')
     ax.set_xlim(-0.5, 7.5)
     ax.set_xticks(changeTimesIndex)
     ax.set_xticklabels(changeTimes, fontsize=16, fontfamily='Times New Roman')
@@ -69,9 +73,41 @@ def main():
     ax.spines['top'].set_color('none')
     ax.set_xlabel('Number of Changes', fontsize=18, fontfamily='Times New Roman')
     ax.set_ylabel('Frequency(%)', fontsize=18, fontfamily='Times New Roman')
-    plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\ChangeTimes\\Frequency.png',
-                dpi=500, bbox_inches='tight')
+    plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\ChangeTimes\\Frequency.png', bbox_inches='tight')
 
+
+def mainother():
+    times = np.array(
+        [73898870, 49266308, 20891142, 4861868, 528379, 13629, 256])
+
+    changeTimesIndex = np.arange(0, 7, 1)
+    changeTimes = ['0', '1', '2', '3', '4', '5', '6']
+
+    frequency = times / times.sum()
+    print(changeTimesIndex)
+    print(frequency * 100)
+    a = frequency * 100
+    print(a.sum())
+
+    fig = plt.figure(figsize=(7, 4), dpi=400)
+    ax = fig.add_subplot(111)
+    ax.bar(changeTimesIndex, a,
+           color=['#FFFFFF', '#ACC993', '#E3EB74', '#FBDE56', '#FCA03D', '#F56425', '#E81015'],
+           label='Frequency', edgecolor='#6e6e6e')
+
+    for a, b in zip(range(7), np.array(a)):
+        ax.text(a, b + 0.3, '%.2f' % b + '%', ha='center', va='bottom', fontsize=14, fontfamily='Times New Roman')
+
+    ax.set_yticks(np.arange(0, 55, 5))
+    ax.set_yticklabels(np.arange(0, 55, 5), fontsize=12, fontfamily='Times New Roman')
+    ax.set_xlim(-0.5, 6.5)
+    ax.set_xticks(changeTimesIndex)
+    ax.set_xticklabels(changeTimes, fontsize=16, fontfamily='Times New Roman')
+    ax.spines['right'].set_color('none')
+    ax.spines['top'].set_color('none')
+    ax.set_xlabel('Number of Changes', fontsize=18, fontfamily='Times New Roman')
+    ax.set_ylabel('Frequency(%)', fontsize=18, fontfamily='Times New Roman')
+    plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\ChangeTimes\\NoTFrequency.png', bbox_inches='tight')
 
 if __name__ == '__main__':
-    main()
+    mainother()

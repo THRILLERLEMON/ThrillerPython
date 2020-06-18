@@ -128,7 +128,7 @@ def main():
     # Read Files
     dfOut2 = pd.DataFrame(
         columns=['Source', 'Target', 'Year', 'ChangeType', 'ChangeLAI'])
-    fnPath2 = 'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\LAIchange_InStudyArea_MKSen'
+    fnPath2 = 'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\LAIchange_InLP_HotPotMKSen'
     filenames2 = os.listdir(fnPath2)
     for i, filename in enumerate(filenames2):
         thisYearData = pd.read_csv(fnPath2 + '\\' + filename)
@@ -227,9 +227,9 @@ def main():
     cb.set_label('Change of LAI in types of Land Cover change', fontsize=14, fontfamily='Times New Roman')
 
     tem = pd.read_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\Change_ERA5_TEM_StudyArea.csv')
+        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\Change_ERA5_TEM.csv')
     pre = pd.read_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\Change_ERA5_PRE_StudyArea.csv')
+        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\Change_ERA5_PRE.csv')
     pre['mean'] = pre['mean'].apply(lambda x: x * 1000)
     temMean = tem['mean'].mean()
     temChange = tem['mean'].apply(lambda x: x - temMean)
