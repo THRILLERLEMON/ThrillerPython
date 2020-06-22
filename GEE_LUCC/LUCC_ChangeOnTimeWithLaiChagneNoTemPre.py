@@ -36,7 +36,7 @@ def main():
     }
 
     fontL = {'family': 'Times New Roman',
-             'size': 14,
+             'size': 16,
              }
 
     dfOut = pd.DataFrame(columns=['Source', 'Target', 'Year', 'ChangeType', 'ChangeArea', 'ChangeLA'])
@@ -91,7 +91,7 @@ def main():
                                     columns=typesChangeLAFig.index)
     typesChangeLAFig = typesChangeLAFig[typesChangeLAFig['ChangeAreaMean'] > 100000]
     typesChangeLAFig.to_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\ChangeTypes_LA_ChangePercent.csv')
+        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\NoTemPre\\ChangeTypes_LA_ChangePercent.csv')
 
     ax.plot(range(topTypesNum), typesChangeLAFig['ChangeAreaMean'].head(topTypesNum), color='lightcoral', linewidth=1,
             linestyle='-', marker='o', ms=2, label='Mean change area in years')
@@ -122,96 +122,93 @@ def main():
     ax2.legend(loc=7, bbox_to_anchor=(1, 0.6), prop=fontL, frameon=False)
     # plt.title('Cumulative ratio of leaf area change in various types of Land Cover change',fontfamily='Times New Roman')
     plt.savefig(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\ChangeTypes_LA_ChangePercent.png',
+        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\NoTemPre\\ChangeTypes_LA_ChangePercent.png',
         bbox_inches='tight')
 
     # --------------------------------------------------------------
     # Read Files
-    dfOut2 = pd.DataFrame(
-        columns=['Source', 'Target', 'Year', 'ChangeType', 'ChangeLAI'])
-    fnPath2 = 'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\LAIchange_InLP_HotPotMKSen'
-    filenames2 = os.listdir(fnPath2)
-    for i, filename in enumerate(filenames2):
-        thisYearData = pd.read_csv(fnPath2 + '\\' + filename)
-        sourceLabel = thisYearData['Source'].map(mapList)
-        targetLabel = thisYearData['Target'].map(mapList)
-        thisYearData['SourceLabel'] = sourceLabel
-        thisYearData['TargetLabel'] = targetLabel
-        thisYearData['ChangeType'] = thisYearData['SourceLabel'] + ' to ' + thisYearData['TargetLabel']
-        thisYearData = thisYearData.drop(
-            ['system:index', '.geo', 'SourceLabel', 'TargetLabel'], axis=1)
-        dfOut2 = dfOut2.append(thisYearData)
-    dfOut2 = dfOut2.fillna(0)
+    # dfOut2 = pd.DataFrame(
+    #     columns=['Source', 'Target', 'Year', 'ChangeType', 'ChangeLAI'])
+    # fnPath2 = 'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\LAIchange_InLP_HotPotMKSen'
+    # filenames2 = os.listdir(fnPath2)
+    # for i, filename in enumerate(filenames2):
+    #     thisYearData = pd.read_csv(fnPath2 + '\\' + filename)
+    #     sourceLabel = thisYearData['Source'].map(mapList)
+    #     targetLabel = thisYearData['Target'].map(mapList)
+    #     thisYearData['SourceLabel'] = sourceLabel
+    #     thisYearData['TargetLabel'] = targetLabel
+    #     thisYearData['ChangeType'] = thisYearData['SourceLabel'] + ' to ' + thisYearData['TargetLabel']
+    #     thisYearData = thisYearData.drop(
+    #         ['system:index', '.geo', 'SourceLabel', 'TargetLabel'], axis=1)
+    #     dfOut2 = dfOut2.append(thisYearData)
+    # dfOut2 = dfOut2.fillna(0)
     # --------------------------------------------------------------
 
     needShowTypes = list(typesByChangeLASort)[:topTypesNum]
 
     # typesChangeLAIGroupMeanAll = dfOut2.groupby('ChangeType')['ChangeLAI'].mean()
     # typesChangeLAIGroupMeanAll.to_csv(
-    #     'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\Annual_ChangeType_TypesChangeLAIGroupMeanAll.csv')
+    #     'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\NoTemPre\\Annual_ChangeType_TypesChangeLAIGroupMeanAll.csv')
 
-    topTypes = dfOut2[dfOut2['ChangeType'].isin(needShowTypes)]
-    # 计算出每一类的平均LAI变化量
-    typesChangeLAIGroupMean = topTypes.groupby('ChangeType')['ChangeLAI'].mean()
-    typesChangeLAI = typesChangeLAIGroupMean.sort_values(ascending=False)
+    topTypes = dfOut[dfOut['ChangeType'].isin(needShowTypes)]
+
     # typesByChangeLAISort = list(typesChangeLAI.index)
     changeType_Index = range(topTypesNum)
     type_Index_Map = dict(map(lambda x, y: [x, y], typesByChangeLASort, changeType_Index))
     topTypes['ChangeType_Index'] = topTypes['ChangeType'].map(type_Index_Map)
     topTypes = topTypes.sort_values(by='ChangeType_Index', ascending=True)
+    topTypes['ChangeLA(10_4km2)'] = topTypes['ChangeLA'] / 1e10
     topTypes.to_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\ChangeType_LAI_EveryYear.csv')
-    typesChangeLAI.to_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\ChangeType_LAI_Group.csv')
+        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\NoTemPre\\ChangeType_LA_EveryYear.csv')
 
-    fig = plt.figure(figsize=(13, 6), dpi=500)
-    rectCB = [0, 0.99, 0.4, 0.45]
-    rect1 = [0, 0.1, 0.55, 0.8]  # [左, 下, 宽, 高] 规定的矩形区域 （全部是0~1之间的数，表示比例）
-    rect2 = [0.59, 0.1, 0.15, 0.8]
-    rect3 = [0.74, 0.1, 0.15, 0.8]
+    fig = plt.figure(figsize=(13, 7), dpi=500)
+    rectCB = [0, 0.99, 0.38, 0.45]
+    rect1 = [0, 0.1, 0.6, 0.8]  # [左, 下, 宽, 高] 规定的矩形区域 （全部是0~1之间的数，表示比例）
+    rect2 = [0.64, 0.1, 0.2, 0.8]
+    # rect3 = [0.74, 0.1, 0.15, 0.8]
     # ax1 = fig.add_subplot(121)
 
     ax11 = plt.axes(rect1)
     ax11.yaxis.tick_right()
     ax11.plot(range(topTypesNum), np.array(typesChangeLAFig['LAC_cumulative_per'].head(topTypesNum).values),
               color='#2C4063', linewidth=2.5, alpha=0.95, linestyle='-',
-              label='Cumulative ratio of the change in leaf area to the total')
+              label='Cumulative ratio of the net change in leaf area to the total(%)')
     # ax11.set_yticks(np.arange(0.0050, 0.03, 0.0025))
     # ax11.set_yticklabels(
     #     ['', '0.0075', '0.0100', '0.0125', '0.0150', '0.0175', '0.0200', '0.0225', '0.0250', '0.0275', ''], fontsize=10,
     #     fontfamily='Times New Roman')
-    ax11.set_ylabel('Ratio', fontsize=14, fontfamily='Times New Roman')
+    ax11.set_ylabel('Ratio', fontsize=16, fontfamily='Times New Roman')
 
     ax11.set_xlim(-1, topTypesNum)
     ax11.set_yticks(np.arange(0, 1.1, 0.1))
-    ax11.set_yticklabels([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], fontsize=12,
+    ax11.set_yticklabels([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], fontsize=14,
                          fontfamily='Times New Roman')
     width = 0.4
     figIndex = np.arange(0, topTypesNum, 1)
     ax11.bar(x=figIndex - width / 2, height=np.array(typesChangeLAFig['ChangeLA_Percent'].head(topTypesNum).values),
              width=width,
-             alpha=0.95, edgecolor='#3C6EC7', linewidth=0.8, color='#5DADEC',
-             label='Ratio of the change in leaf area to the total')
+             alpha=0.95, edgecolor='#3C6EC7', linewidth=0.7, color='#97A1DF',
+             label='Ratio of the net change in leaf area to the total(%)')
     ax11.bar(x=figIndex + width / 2, height=np.array(typesChangeLAFig['ChangeArea_Percent'].head(topTypesNum).values),
              width=width,
-             alpha=0.95, edgecolor='#5C2775', linewidth=0.8, color='#C9ADD3',
-             label='Ratio of the area to the total')
+             alpha=0.95, edgecolor='#5C2775', linewidth=0.7, color='#876BC0',
+             label='Ratio of the change area to the total(%)')
 
     ax1 = ax11.twinx()
 
-    # cm0 = plt.get_cmap('bwr')
-    # cNorm0 = matplotlib.colors.Normalize(vmin=-0.5, vmax=0.5)
+    cm1 = plt.get_cmap('bwr')
+    cNorm1 = matplotlib.colors.Normalize()
     cm0 = ListedColormap(['#F40000', '#FD7600', '#FACB01', '#FFE8A5', '#DFFFBF', '#D0FF73', '#4DE600', '#287201'])
-    cNorm0 = BoundaryNorm([-0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4], cm0.N)
+    cNorm0 = BoundaryNorm([-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2], cm0.N)
     axcolorbar = ax1.scatter(x=topTypes['ChangeType_Index'], y=topTypes['Year'], s=50, edgecolors='black',
                              linewidths=0.2,
-                             c=topTypes['ChangeLAI'], norm=cNorm0, cmap=cm0)
+                             c=topTypes['ChangeLA(10_4km2)'], norm=cNorm0, cmap=cm0)
     ax1.set_yticks(range(1987, 2019))
     ax1.set_yticklabels(range(1987, 2019), fontsize=12, fontfamily='Times New Roman')
     ax1.set_ylim(1986, 2019)
     ax11.set_xticks(changeType_Index)
-    ax11.set_xticklabels(typesByChangeLASort, rotation=90, fontsize=12, fontfamily='Times New Roman')
-    ax11.set_xlabel('Land Cover Change Types', fontsize=14, fontfamily='Times New Roman')
+    ax11.set_xticklabels(typesByChangeLASort, rotation=90, fontsize=13, fontfamily='Times New Roman')
+    ax11.set_xlabel('Land cover change types', fontsize=16, fontfamily='Times New Roman')
     # ax1.set_ylabel('Year', fontsize=12, fontfamily='Times New Roman')
 
     axCB = plt.axes(rectCB)
@@ -225,17 +222,7 @@ def main():
     for l in cb.ax.xaxis.get_ticklabels():
         l.set_family('Times New Roman')
         l.set_size(14)
-    cb.set_label('Change of LAI in types of Land Cover change', fontsize=14, fontfamily='Times New Roman')
-
-    tem = pd.read_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\Change_ERA5_TEM.csv')
-    pre = pd.read_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\Change_ERA5_PRE.csv')
-    pre['mean'] = pre['mean'].apply(lambda x: x * 1000)
-    temMean = tem['mean'].mean()
-    temChange = tem['mean'].apply(lambda x: x - temMean)
-    preMean = pre['mean'].mean()
-    preChange = pre['mean'].apply(lambda x: x - preMean)
+    cb.set_label('Net change in leaf area($\mathregular{10^4km^2}$)', fontsize=16, fontfamily='Times New Roman')
 
     temALL = pd.read_csv(
         'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\ALL-Change_ERA5_TEM.csv')
@@ -245,65 +232,44 @@ def main():
     temDiff = changeDiff(list(temALL['mean']))
     preDiff = changeDiff(list(preALL['mean']))
 
+    yearsChangeLA = topTypes.groupby('Year')['ChangeLA(10_4km2)'].sum()
+
     ax2 = plt.axes(rect2)
-    # ax2 = fig.add_subplot(122)
-    ax2.barh(tem['year'], temChange, color='darkorange', label='Annual anomaly of average air temperature at 2m height')
-    # ax2.yaxis.tick_right()
+    # # ax2 = fig.add_subplot(122)
+    ax2.barh(np.arange(1987, 2019, 1), list(yearsChangeLA), color='#45425F',
+             label='Annual sum of net changes in leaf area')
+    # # ax2.yaxis.tick_right()
     ax2.axvline(0, color='k', linewidth=0.5)
     ax2.set_yticks(range(1987, 2019))
-    ax2.set_yticklabels([], fontsize=10, fontfamily='Times New Roman')
+    ax2.set_yticklabels([], fontsize=14, fontfamily='Times New Roman')
     ax2.set_ylim(1986, 2019)
-    ax2.set_xticks(np.arange(-1, 1, 0.5))
-    ax2.set_xticklabels(['-1', '-0.5', '0', '0.5', '1'], fontsize=12, fontfamily='Times New Roman')
-    ax2.set_xlabel('Air temperature(K)', fontsize=14, fontfamily='Times New Roman')
+    ax2.set_xticks(np.arange(-4, 10, 2))
+    ax2.set_xticklabels(['-4', '-2', '0', '2', '4', '6', '8'], fontsize=14, fontfamily='Times New Roman')
+    ax2.set_xlabel('Net change in leaf area($\mathregular{10^4km^2}$)', fontsize=16, fontfamily='Times New Roman')
 
-    ax3 = plt.axes(rect3)
-    ax3.barh(pre['year'], preChange, color='lightseagreen', label='Annual anomaly of total precipitation')
-    ax3.yaxis.tick_right()
-    ax3.axvline(0, color='k', linewidth=0.5)
-    ax3.set_yticks([])
-    ax3.set_yticklabels([], fontsize=10, fontfamily='Times New Roman')
-    ax3.set_ylim(1986, 2019)
-    ax3.set_xticks(np.arange(-50, 200, 50))
-    ax3.set_xticklabels(['-50', '0', '50', '100', '150'], fontsize=12, fontfamily='Times New Roman')
-    ax3.yaxis.set_label_position("right")
-    # ax3.set_ylabel('Year', fontsize=12, fontfamily='Times New Roman')
-    ax3.set_xlabel('Precipitation(mm)', fontsize=14, fontfamily='Times New Roman')
+    # ax3 = plt.axes(rect3)
+    # # ax3 = fig.add_subplot(122)
+    # ax3.barh(np.arange(1987,2019,1), temDiff, color='darkorange', label='Annual anomaly of average air temperature at 2m height')
+    # # ax3.yaxis.tick_right()
+    # ax3.axvline(0, color='k', linewidth=0.5)
+    # ax3.set_yticks(range(1987, 2019))
+    # ax3.set_yticklabels([], fontsize=10, fontfamily='Times New Roman')
+    # ax3.set_ylim(1986, 2019)
+    # ax3.set_xticks(np.arange(-1, 1, 0.5))
+    # ax3.set_xticklabels(['-1', '-0.5', '0', '0.5', '1'], fontsize=12, fontfamily='Times New Roman')
+    # ax3.set_xlabel('Air temperature(K)', fontsize=14, fontfamily='Times New Roman')
 
-    ax11.legend(loc=8, bbox_to_anchor=(2, 0.2), prop=fontL, frameon=False)
-    ax2.legend(loc=8, bbox_to_anchor=(3.4, 0.5), prop=fontL, frameon=False)
-    ax3.legend(loc=8, bbox_to_anchor=(2.2, 0.8), prop=fontL, frameon=False)
+    ax11.legend(loc=9, bbox_to_anchor=(1.11, 1.23), prop=fontL, frameon=False)
+    ax2.legend(loc=9, bbox_to_anchor=(0.61, -0.14), prop=fontL, frameon=False)
+    # ax3.legend(loc=8, bbox_to_anchor=(2.2, 0.8), prop=fontL, frameon=False)
 
     plt.savefig(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\PointHist.png',
+        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\NoTemPre\\PointHist.png',
         dpi=500, bbox_inches='tight')
-
-    RRROut = pd.DataFrame(columns=['ChangeType_Index', 'ChangeType', 'RwithTem', 'PwithTem', 'RwithPre', 'PwithPre'])
-    for index in changeType_Index:
-        thisTypeLAIc = []
-        thisType = topTypes[(topTypes["ChangeType_Index"] == index) & (topTypes["Year"] == 1987)]['ChangeType'].iloc[0]
-        for y in np.arange(1987, 2019, 1):
-            thisTyperYearLAIc = topTypes[(topTypes["ChangeType_Index"] == index) & (topTypes["Year"] == y)]['ChangeLAI']
-            thisTypeLAIc.append(thisTyperYearLAIc.iloc[0])
-        # ******Pearsonr
-        RwithTem, PwithTem = st.pearsonr(temDiff, thisTypeLAIc)
-        RwithPre, PwithPre = st.pearsonr(preDiff, thisTypeLAIc)
-
-        s = pd.Series([index, thisType, RwithTem, PwithTem, RwithPre, PwithPre])
-        RRROut = RRROut.append(s, ignore_index=True)
-    RRROut.to_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\TypesLAIChangeWithTemPreR.csv')
-
-    yearsChangeLAI = topTypes.groupby('Year')['ChangeLAI'].sum()
-    sumRwithTem, sumPwithTem = st.pearsonr(temDiff, list(yearsChangeLAI))
-    sumRwithPre, sumPwithPre = st.pearsonr(preDiff, list(yearsChangeLAI))
-
-    print(sumRwithTem, sumPwithTem)
-    print(sumRwithPre, sumPwithPre)
 
     # out all records
     dfOut.to_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\OnePic\\Annual_ChangeTypes_ALL.csv')
+        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\NoTemPre\\Annual_ChangeTypes_ALL.csv')
     print(time.strftime('%H:%M:%S', time.localtime(time.time())))
 
 
