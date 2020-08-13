@@ -40,8 +40,8 @@ def main():
     for a, b in zip(range(5), np.array(a)):
         ax.text(a, b + 0.3, '%.2f' % b + '%', ha='center', va='bottom', fontsize=16, fontfamily='Times New Roman')
 
-    ax.set_yticks(np.arange(0, 55, 5))
-    ax.set_yticklabels(np.arange(0, 55, 5), fontsize=16, fontfamily='Times New Roman')
+    ax.set_yticks(np.arange(0, 60, 10))
+    ax.set_yticklabels(np.arange(0, 60, 10), fontsize=16, fontfamily='Times New Roman')
     ax.set_xlim(-0.5, 4.5)
     ax.set_xticks(changeTimesIndex)
     ax.set_xticklabels(label, fontsize=16, fontfamily='Times New Roman')

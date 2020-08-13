@@ -156,5 +156,5 @@ for kind in np.arange(1, 8, 1):
     ax7.set_xlabel('Year', fontdict={'family': 'Times New Roman', 'size': 14})
     ax7.set_ylabel(r'$\Delta$' + ' Area($\mathregular{10^4km^2}$)', fontdict={'family': 'Times New Roman', 'size': 14})
 
-plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\figggg.png', bbox_inches='tight')
+plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Kinds_SubPlot.png', bbox_inches='tight')
 # plt.show()

@@ -68,7 +68,7 @@ for year in np.arange(1990, 2015, 1):
                'Year': year,
                }
         dfOut = dfOut.append(dic, ignore_index=True)
-dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 30) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
+dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 50) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
 # thisDS=dfOut[dfOut['DataSet']=='This Study']
 # print('This Study')
 # print(f"均方误差(MSE)：{mean_squared_error(thisDS['TrueArea'],thisDS['DataArea'])}")
@@ -125,7 +125,7 @@ for year in np.arange(startY, endY, 1):
                'Year': year,
                }
         dfOut = dfOut.append(dic, ignore_index=True)
-dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 30) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
+dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 50) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
 
 # do this study1990-2014
 myDS = dfOut[(dfOut['DataSet'] == 'This Study') & (dfOut['Year'] <= endY) & (dfOut['Year'] >= startY)]
@@ -199,7 +199,7 @@ for year in np.arange(startY, endY, 1):
                'Year': year,
                }
         dfOut = dfOut.append(dic, ignore_index=True)
-dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 30) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
+dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 50) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
 
 # do this study2001-2014
 myDS = dfOut[(dfOut['DataSet'] == 'This Study') & (dfOut['Year'] <= endY) & (dfOut['Year'] >= startY)]
@@ -272,7 +272,7 @@ for year in [1995, 2000, 2005]:
                'Year': year,
                }
         dfOut = dfOut.append(dic, ignore_index=True)
-dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 30) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
+dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 50) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
 
 # do this study1995\2000\2005
 myDS = dfOut[(dfOut['DataSet'] == 'This Study') & (dfOut['Year'].isin([1995, 2000, 2005]))]
@@ -344,7 +344,7 @@ for year in [2000, 2010]:
                'Year': year,
                }
         dfOut = dfOut.append(dic, ignore_index=True)
-dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 30) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
+dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 50) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
 
 # do this study2000\2010
 myDS = dfOut[(dfOut['DataSet'] == 'This Study') & (dfOut['Year'].isin([2000, 2010]))]
@@ -415,7 +415,7 @@ for year in [2005, 2009]:
                'Year': year,
                }
         dfOut = dfOut.append(dic, ignore_index=True)
-dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 30) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
+dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 50) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
 
 # do this study 2005 2009
 myDS = dfOut[(dfOut['DataSet'] == 'This Study') & (dfOut['Year'].isin([2005, 2009]))]
@@ -485,7 +485,7 @@ for tIndex, tRow in dataCSV.iterrows():
            'Year': year,
            }
     dfOut = dfOut.append(dic, ignore_index=True)
-dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 30) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
+dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 50) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
 
 # do this study2010
 myDS = dfOut[(dfOut['DataSet'] == 'This Study') & (dfOut['Year'] == 2010)]
@@ -555,7 +555,7 @@ for tIndex, tRow in dataCSV.iterrows():
            'Year': year,
            }
     dfOut = dfOut.append(dic, ignore_index=True)
-dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 30) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
+dfOut = dfOut[(dfOut["TrueArea"] > 1) & (dfOut["TrueArea"] < 50) & (dfOut["DataArea"] > 1) & (dfOut["DataArea"] < 50)]
 
 # do this study1992
 myDS = dfOut[(dfOut['DataSet'] == 'This Study') & (dfOut['Year'] == 1992)]
@@ -604,15 +604,16 @@ plt.text(50, 46, "This Study $\mathregular{R^2}$: " + str(thisR2), family='Times
          horizontalalignment='right', verticalalignment='center')
 plt.text(50, 43, "This Study RMSE: " + str(thisRMSE), family='Times New Roman', size=12, horizontalalignment='right',
          verticalalignment='center')
-plt.text(50, 40, "ChinaLC1000 $\mathregular{R^2}$: " + str(compR2), family='Times New Roman', size=12,
+plt.text(50, 40, "GLCC $\mathregular{R^2}$: " + str(compR2), family='Times New Roman', size=12,
          horizontalalignment='right', verticalalignment='center')
-plt.text(50, 37, "ChinaLC1000 RMSE: " + str(compRMSE), family='Times New Roman', size=12, horizontalalignment='right',
+plt.text(50, 37, "GLCC RMSE: " + str(compRMSE), family='Times New Roman', size=12, horizontalalignment='right',
          verticalalignment='center')
 
 # ax.set_title('Agricultural land Area Compare',fontdict={'family' : 'Times New Roman', 'size'   : 20})
 
-plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\Sub_scatter.png',
-            dpi=300, bbox_inches='tight')
+plt.savefig(
+    'D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\AgrSat_Sub_scatter.png',
+    dpi=300, bbox_inches='tight')
 # plt.show()
 dfOut.to_csv(
     'D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\Sub_outDF.csv')

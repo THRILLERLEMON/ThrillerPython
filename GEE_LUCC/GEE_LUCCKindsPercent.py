@@ -64,68 +64,70 @@ def main():
     KindsAreaData['mean'] = Means
     width = 0.4
 
-    fig = plt.figure(figsize=(10, 5), dpi=400)
+    fig = plt.figure(figsize=(10, 4.3), dpi=400)
     ax = fig.add_subplot(111)
-    ax.bar('Forest', KindsAreaData['mean'][101], width, yerr=KindsAreaData['std'][101], label=LabelmapList[101],
+    ax.bar('Forests', KindsAreaData['mean'][101], width, label=LabelmapList[101],
            color=ColormapList[101])
-    ax.bar('Forest', KindsAreaData['mean'][102], width, yerr=KindsAreaData['std'][102],
+    # ax.bar('Forests', KindsAreaData['mean'][101], width, yerr=KindsAreaData['std'][101], label=LabelmapList[101],
+    #        color=ColormapList[101])
+    ax.bar('Forests', KindsAreaData['mean'][102], width,
            bottom=KindsAreaData['mean'][101], label=LabelmapList[102], color=ColormapList[102])
-    ax.bar('Forest', KindsAreaData['mean'][103], width, yerr=KindsAreaData['std'][103],
+    ax.bar('Forests', KindsAreaData['mean'][103], width,
            bottom=KindsAreaData['mean'][101] + KindsAreaData['mean'][102], label=LabelmapList[103],
            color=ColormapList[103])
     ForestsPer = KindsAreaData['mean'][101] + KindsAreaData['mean'][102] + KindsAreaData['mean'][103]
-    ax.text('Forest', ForestsPer + 1, str('%.2f' % ForestsPer) + '%', ha='center', va='bottom', fontsize=12,
+    ax.text('Forests', ForestsPer + 0.5, str('%.1f' % ForestsPer) + '%', ha='center', va='bottom', fontsize=12,
             fontfamily='Times New Roman')
 
-    ax.bar('Shrublands', KindsAreaData['mean'][201], width, yerr=KindsAreaData['std'][201], label=LabelmapList[201],
+    ax.bar('Shrublands', KindsAreaData['mean'][201], width, label=LabelmapList[201],
            color=ColormapList[201])
     ShrublandsPer = KindsAreaData['mean'][201]
-    ax.text('Shrublands', ShrublandsPer + 1, str('%.2f' % ShrublandsPer) + '%', ha='center', va='bottom', fontsize=12,
+    ax.text('Shrublands', ShrublandsPer + 0.5, str('%.1f' % ShrublandsPer) + '%', ha='center', va='bottom', fontsize=12,
             fontfamily='Times New Roman')
 
-    ax.bar('Grasslands', KindsAreaData['mean'][301], width, yerr=KindsAreaData['std'][301], label=LabelmapList[301],
+    ax.bar('Grasslands', KindsAreaData['mean'][301], width, label=LabelmapList[301],
            color=ColormapList[301])
-    ax.bar('Grasslands', KindsAreaData['mean'][302], width, yerr=KindsAreaData['std'][302],
+    ax.bar('Grasslands', KindsAreaData['mean'][302], width,
            bottom=KindsAreaData['mean'][301], label=LabelmapList[302], color=ColormapList[302])
-    ax.bar('Grasslands', KindsAreaData['mean'][303], width, yerr=KindsAreaData['std'][303],
+    ax.bar('Grasslands', KindsAreaData['mean'][303], width,
            bottom=KindsAreaData['mean'][301] + KindsAreaData['mean'][302], label=LabelmapList[303],
            color=ColormapList[303])
     GrasslandsPer = KindsAreaData['mean'][301] + KindsAreaData['mean'][302] + KindsAreaData['mean'][303]
-    ax.text('Grasslands', GrasslandsPer + 1, str('%.2f' % GrasslandsPer) + '%', ha='center', va='bottom', fontsize=12,
+    ax.text('Grasslands', GrasslandsPer + 0.5, str('%.1f' % GrasslandsPer) + '%', ha='center', va='bottom', fontsize=12,
             fontfamily='Times New Roman')
 
-    ax.bar('Agricultural\nlands', KindsAreaData['mean'][401], width, yerr=KindsAreaData['std'][401],
+    ax.bar('Agricultural\nLands', KindsAreaData['mean'][401], width,
            label=LabelmapList[401], color=ColormapList[401])
-    ax.bar('Agricultural\nlands', KindsAreaData['mean'][402], width, yerr=KindsAreaData['std'][402],
+    ax.bar('Agricultural\nLands', KindsAreaData['mean'][402], width,
            bottom=KindsAreaData['mean'][401], label=LabelmapList[402], color=ColormapList[402])
     AgriculturalPer = KindsAreaData['mean'][401] + KindsAreaData['mean'][402]
-    ax.text('Agricultural\nlands', AgriculturalPer + 1.3, str('%.2f' % AgriculturalPer) + '%', ha='center', va='bottom',
+    ax.text('Agricultural\nLands', AgriculturalPer + 0.5, str('%.1f' % AgriculturalPer) + '%', ha='center', va='bottom',
             fontsize=12,
             fontfamily='Times New Roman')
 
-    ax.bar('Urban and\nBuilt-up', KindsAreaData['mean'][501], width, yerr=KindsAreaData['std'][501],
+    ax.bar('Urban and\nBuilt-up', KindsAreaData['mean'][501], width,
            label=LabelmapList[501], color=ColormapList[501])
     UrbanPer = KindsAreaData['mean'][501]
-    ax.text('Urban and\nBuilt-up', UrbanPer + 1, str('%.2f' % UrbanPer) + '%', ha='center', va='bottom', fontsize=12,
+    ax.text('Urban and\nBuilt-up', UrbanPer + 0.5, str('%.1f' % UrbanPer) + '%', ha='center', va='bottom', fontsize=12,
             fontfamily='Times New Roman')
 
-    ax.bar('Water\nBodies', KindsAreaData['mean'][601], width, yerr=KindsAreaData['std'][601], label=LabelmapList[601],
+    ax.bar('Water\nBodies', KindsAreaData['mean'][601], width, label=LabelmapList[601],
            color=ColormapList[601])
-    ax.bar('Water\nBodies', KindsAreaData['mean'][602], width, yerr=KindsAreaData['std'][602],
+    ax.bar('Water\nBodies', KindsAreaData['mean'][602], width,
            bottom=KindsAreaData['mean'][601], label=LabelmapList[602], color=ColormapList[602])
-    ax.bar('Water\nBodies', KindsAreaData['mean'][603], width, yerr=KindsAreaData['std'][603],
+    ax.bar('Water\nBodies', KindsAreaData['mean'][603], width,
            bottom=KindsAreaData['mean'][601] + KindsAreaData['mean'][602], label=LabelmapList[603],
            color=ColormapList[603])
     WaterPer = KindsAreaData['mean'][601] + KindsAreaData['mean'][602] + KindsAreaData['mean'][603]
-    ax.text('Water\nBodies', WaterPer + 1, str('%.2f' % WaterPer) + '%', ha='center', va='bottom', fontsize=12,
+    ax.text('Water\nBodies', WaterPer + 0.5, str('%.1f' % WaterPer) + '%', ha='center', va='bottom', fontsize=12,
             fontfamily='Times New Roman')
 
-    ax.bar('Desert and\nLow-vegetated lands', KindsAreaData['mean'][701], width, yerr=KindsAreaData['std'][701],
+    ax.bar('Desert and\nLow-vegetated Lands', KindsAreaData['mean'][701], width,
            label=LabelmapList[701], color=ColormapList[701])
-    ax.bar('Desert and\nLow-vegetated lands', KindsAreaData['mean'][702], width, yerr=KindsAreaData['std'][702],
+    ax.bar('Desert and\nLow-vegetated Lands', KindsAreaData['mean'][702], width,
            bottom=KindsAreaData['mean'][701], label=LabelmapList[702], color=ColormapList[702])
     DesertPer = KindsAreaData['mean'][701] + KindsAreaData['mean'][702]
-    ax.text('Desert and\nLow-vegetated lands', DesertPer + 1, str('%.2f' % DesertPer) + '%', ha='center', va='bottom',
+    ax.text('Desert and\nLow-vegetated Lands', DesertPer + 0.5, str('%.1f' % DesertPer) + '%', ha='center', va='bottom',
             fontsize=12,
             fontfamily='Times New Roman')
 
@@ -137,10 +139,14 @@ def main():
     plt.xticks(fontproperties='Times New Roman', size=12)
     ax.set_ylim(0, 50)
     plt.xlabel('Class', font)
-    plt.ylabel('Area Ratio(%)', font)
-    plt.legend(loc='upper right', ncol=3, prop={'family': 'Times New Roman', 'size': 12}, frameon=False)
+    plt.ylabel('Area ratio (%)', font)
+    plt.legend(loc='upper right', ncol=3, prop={'family': 'Times New Roman', 'size': 11}, frameon=False)
+    ax.spines['bottom'].set_linewidth(1)
+    ax.spines['left'].set_linewidth(1)
+    ax.spines['top'].set_linewidth(1)
+    ax.spines['right'].set_linewidth(1)
 
-    plt.savefig(fnPath + "KindsPercent.png", bbox_inches='tight')
+    plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\StudyArea\\' + "KindsPercent.png", bbox_inches='tight')
 
 
 if __name__ == '__main__':

@@ -22,17 +22,17 @@ def main():
         102: 'ENF',
         103: 'MF',
         201: 'Shrub',
-        301: 'Lgrass',
-        302: 'Mgrass',
-        303: 'Hgrass',
+        301: 'LCG',
+        302: 'MCG',
+        303: 'HCG',
         401: 'Crop',
-        402: 'Orchard',
-        501: 'Builtup',
+        402: 'OT',
+        501: 'UB',
         601: 'Water',
         602: 'Wet',
         603: 'Snow',
-        701: 'Desert',
-        702: 'Barren',
+        701: 'DB',
+        702: 'LV',
     }
 
     fontL = {'family': 'Times New Roman',
@@ -73,7 +73,7 @@ def main():
     typesByChangeLASort = list(PaA.index)
 
     # 假设只绘出LA变化量最大的前40种类型
-    topTypesNum = 35
+    topTypesNum = 25
 
     # 画累计百分比分布图
     fig = plt.figure(figsize=(10, 5), dpi=500)
@@ -161,54 +161,54 @@ def main():
     topTypes.to_csv(
         'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\NoTemPre\\ChangeType_LA_EveryYear.csv')
 
-    fig = plt.figure(figsize=(13, 7), dpi=500)
-    rectCB = [0, 0.99, 0.38, 0.45]
-    rect1 = [0, 0.1, 0.6, 0.8]  # [左, 下, 宽, 高] 规定的矩形区域 （全部是0~1之间的数，表示比例）
-    rect2 = [0.64, 0.1, 0.2, 0.8]
+    fig = plt.figure(figsize=(12, 7), dpi=500)
+    rectCB = [0, 1.1, 0.42, 0.45]
+    rect1 = [0, 0.1, 0.58, 0.9]  # [左, 下, 宽, 高] 规定的矩形区域 （全部是0~1之间的数，表示比例）
+    rect2 = [0.625, 0.1, 0.25, 0.9]
     # rect3 = [0.74, 0.1, 0.15, 0.8]
     # ax1 = fig.add_subplot(121)
 
     ax11 = plt.axes(rect1)
     ax11.yaxis.tick_right()
     ax11.plot(range(topTypesNum), np.array(typesChangeLAFig['LAC_cumulative_per'].head(topTypesNum).values),
-              color='#2C4063', linewidth=2.5, alpha=0.95, linestyle='-',
-              label='Cumulative ratio of the net change in leaf area to the total(%)')
+              color='#2C4063', linewidth=2.5, alpha=1, linestyle='-',
+              label='Cumulative ratio of the net change in leaf area')
     # ax11.set_yticks(np.arange(0.0050, 0.03, 0.0025))
     # ax11.set_yticklabels(
     #     ['', '0.0075', '0.0100', '0.0125', '0.0150', '0.0175', '0.0200', '0.0225', '0.0250', '0.0275', ''], fontsize=10,
     #     fontfamily='Times New Roman')
-    ax11.set_ylabel('Ratio', fontsize=16, fontfamily='Times New Roman')
+    ax11.set_ylabel('Ratio (%)', fontsize=16, fontfamily='Times New Roman')
 
     ax11.set_xlim(-1, topTypesNum)
     ax11.set_yticks(np.arange(0, 1.1, 0.1))
-    ax11.set_yticklabels([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0], fontsize=14,
+    ax11.set_yticklabels([0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100], fontsize=14,
                          fontfamily='Times New Roman')
     width = 0.4
     figIndex = np.arange(0, topTypesNum, 1)
     ax11.bar(x=figIndex - width / 2, height=np.array(typesChangeLAFig['ChangeLA_Percent'].head(topTypesNum).values),
              width=width,
-             alpha=0.95, edgecolor='#3C6EC7', linewidth=0.7, color='#97A1DF',
-             label='Ratio of the net change in leaf area to the total(%)')
+             alpha=1, edgecolor='#3C6EC7', linewidth=0, color='#9CB2E0',
+             label='Ratio of the net change in leaf area to the total')
     ax11.bar(x=figIndex + width / 2, height=np.array(typesChangeLAFig['ChangeArea_Percent'].head(topTypesNum).values),
              width=width,
-             alpha=0.95, edgecolor='#5C2775', linewidth=0.7, color='#876BC0',
-             label='Ratio of the change area to the total(%)')
-
+             alpha=1, edgecolor='#5C2775', linewidth=0, color='#9873C3',
+             label='Ratio of the change area to the total')
+    ax11.set_ylim(0, 1)
     ax1 = ax11.twinx()
 
     cm1 = plt.get_cmap('bwr')
     cNorm1 = matplotlib.colors.Normalize()
     cm0 = ListedColormap(['#F40000', '#FD7600', '#FACB01', '#FFE8A5', '#DFFFBF', '#D0FF73', '#4DE600', '#287201'])
     cNorm0 = BoundaryNorm([-2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2], cm0.N)
-    axcolorbar = ax1.scatter(x=topTypes['ChangeType_Index'], y=topTypes['Year'], s=50, edgecolors='black',
-                             linewidths=0.2,
+    axcolorbar = ax1.scatter(x=topTypes['ChangeType_Index'], y=topTypes['Year'], s=60, edgecolors='black',
+                             linewidths=0,
                              c=topTypes['ChangeLA(10_4km2)'], norm=cNorm0, cmap=cm0)
     ax1.set_yticks(range(1987, 2019))
-    ax1.set_yticklabels(range(1987, 2019), fontsize=12, fontfamily='Times New Roman')
+    ax1.set_yticklabels(range(1987, 2019), fontsize=13, fontfamily='Times New Roman')
     ax1.set_ylim(1986, 2019)
     ax11.set_xticks(changeType_Index)
     ax11.set_xticklabels(typesByChangeLASort, rotation=90, fontsize=13, fontfamily='Times New Roman')
-    ax11.set_xlabel('Land cover change types', fontsize=16, fontfamily='Times New Roman')
+    ax11.set_xlabel('Land cover transition type', fontsize=16, fontfamily='Times New Roman')
     # ax1.set_ylabel('Year', fontsize=12, fontfamily='Times New Roman')
 
     axCB = plt.axes(rectCB)
@@ -222,46 +222,43 @@ def main():
     for l in cb.ax.xaxis.get_ticklabels():
         l.set_family('Times New Roman')
         l.set_size(14)
-    cb.set_label('Net change in leaf area($\mathregular{10^4km^2}$)', fontsize=16, fontfamily='Times New Roman')
+    cb.set_label('Net change in leaf area ($\mathregular{10^4km^2}$)', fontsize=16, fontfamily='Times New Roman')
 
-    temALL = pd.read_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\ALL-Change_ERA5_TEM.csv')
-    preALL = pd.read_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\ALL-Change_ERA5_PRE.csv')
-
-    temDiff = changeDiff(list(temALL['mean']))
-    preDiff = changeDiff(list(preALL['mean']))
+    LAIchange = pd.read_csv(
+        'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\NOAA_LAI_ChangeSlope1986-2018_1000m\\LAI_Change_NOAA_LP.csv',
+        index_col='year')
 
     yearsChangeLA = topTypes.groupby('Year')['ChangeLA(10_4km2)'].sum()
 
     ax2 = plt.axes(rect2)
     # # ax2 = fig.add_subplot(122)
-    ax2.barh(np.arange(1987, 2019, 1), list(yearsChangeLA), color='#45425F',
-             label='Annual sum of net changes in leaf area')
+    ax2.barh(np.arange(1987, 2019, 1), list(yearsChangeLA), color='#3F5E9F',
+             label='Annual sum of net change in leaf area')
     # # ax2.yaxis.tick_right()
-    ax2.axvline(0, color='k', linewidth=0.5)
+    ax2.axvline(0, color='k', linewidth=0.8)
     ax2.set_yticks(range(1987, 2019))
     ax2.set_yticklabels([], fontsize=14, fontfamily='Times New Roman')
     ax2.set_ylim(1986, 2019)
-    ax2.set_xticks(np.arange(-4, 10, 2))
-    ax2.set_xticklabels(['-4', '-2', '0', '2', '4', '6', '8'], fontsize=14, fontfamily='Times New Roman')
-    ax2.set_xlabel('Net change in leaf area($\mathregular{10^4km^2}$)', fontsize=16, fontfamily='Times New Roman')
+    ax2.set_xticks(np.arange(-6, 10, 2))
+    ax2.set_xlim(-6, 8)
+    ax2.set_xticklabels(['-6', '-4', '-2', '0', '2', '4', '6', '8'], fontsize=14, fontfamily='Times New Roman')
+    ax2.set_xlabel('Net change in leaf area ($\mathregular{10^4km^2}$)', fontsize=16, fontfamily='Times New Roman')
 
-    # ax3 = plt.axes(rect3)
-    # # ax3 = fig.add_subplot(122)
-    # ax3.barh(np.arange(1987,2019,1), temDiff, color='darkorange', label='Annual anomaly of average air temperature at 2m height')
-    # # ax3.yaxis.tick_right()
+    ax3 = ax2.twiny()
+    ax3.plot(LAIchange['mean'], list(LAIchange.index), color='#97B85D', label='Annual average AVHRR LAI', linewidth=2.5,
+             alpha=1, linestyle='-', )
     # ax3.axvline(0, color='k', linewidth=0.5)
-    # ax3.set_yticks(range(1987, 2019))
-    # ax3.set_yticklabels([], fontsize=10, fontfamily='Times New Roman')
-    # ax3.set_ylim(1986, 2019)
-    # ax3.set_xticks(np.arange(-1, 1, 0.5))
-    # ax3.set_xticklabels(['-1', '-0.5', '0', '0.5', '1'], fontsize=12, fontfamily='Times New Roman')
-    # ax3.set_xlabel('Air temperature(K)', fontsize=14, fontfamily='Times New Roman')
+    ax3.set_yticks(range(1987, 2019))
+    ax3.set_yticklabels([], fontsize=16, fontfamily='Times New Roman')
+    ax3.set_ylim(1986, 2019)
+    ax3.set_xticks(np.arange(0.5, 1.1, 0.1))
+    ax3.set_xlim(0.5, 1)
+    ax3.set_xticklabels(['0.5', '0.6', '0.7', '0.8', '0.9', '1'], fontsize=14, fontfamily='Times New Roman')
+    ax3.set_xlabel('LAI ($\mathregular{m^2}$ per $\mathregular{m^2}$)', fontsize=16, fontfamily='Times New Roman')
 
-    ax11.legend(loc=9, bbox_to_anchor=(1.11, 1.23), prop=fontL, frameon=False)
-    ax2.legend(loc=9, bbox_to_anchor=(0.61, -0.14), prop=fontL, frameon=False)
-    # ax3.legend(loc=8, bbox_to_anchor=(2.2, 0.8), prop=fontL, frameon=False)
+    ax11.legend(loc=9, bbox_to_anchor=(1.2, 1.3), prop=fontL, frameon=False)
+    ax2.legend(loc=9, bbox_to_anchor=(0.6, -0.14), prop=fontL, frameon=False)
+    ax3.legend(loc=8, bbox_to_anchor=(0.6, -0.35), prop=fontL, frameon=False)
 
     plt.savefig(
         'D:\\OneDrive\\SharedFile\\GEE_V2\\showLUCC\\LUCC_ChangeOnTimeWithLAIchange_InLP_HotPotMKSen\\NoTemPre\\PointHist.png',

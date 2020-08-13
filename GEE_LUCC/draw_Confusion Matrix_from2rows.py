@@ -33,17 +33,17 @@ labels = [
     'ENF',
     'MF',
     'Shrub',
-    'Lgrass',
-    'Mgrass',
-    'Hgrass',
+    'LCG',
+    'MCG',
+    'HCG',
     'Crop',
-    'Orchard',
-    'Builtup',
+    'OT',
+    'UB',
     'Water',
     'Wet',
     'Snow',
-    'Desert',
-    'Barren']
+    'DB',
+    'LV']
 
 # y_true代表真实的label值 y_pred代表预测得到的lavel值
 y_true = np.loadtxt('C:/Users/thril/Desktop/True_ALL.txt')
@@ -66,7 +66,7 @@ def plot_confusion_matrix(cm, title='Confusion Matrix', cmap=plt.cm.YlGn):
     xlocations = np.array(range(len(labels)))
     plt.xticks(xlocations, labels, rotation=90, fontproperties='Times New Roman', size=12)
     plt.yticks(xlocations, labels, fontproperties='Times New Roman', size=12)
-    plt.ylabel('Reference', fontdict=fontInfo)
+    plt.ylabel('Ground-truth', fontdict=fontInfo)
     plt.xlabel('Prediction', fontdict=fontInfo)
 
 

@@ -27,8 +27,8 @@ def main():
     fig = plt.figure(figsize=(10, 6), dpi=400)
     ax = fig.add_subplot(111)
 
-    ax.plot(years, data['3Window'], color='darkgreen', label='3 years Window', linewidth=2.5, linestyle='-')
-    ax.plot(years, data['5Window'], color='darkorange', label='5 years Window', linewidth=2.5, linestyle='-')
+    ax.plot(years, data['3Window'], color='darkgreen', label='3-years window', linewidth=2.5, linestyle='-')
+    ax.plot(years, data['5Window'], color='darkorange', label='5-years window', linewidth=2.5, linestyle='-')
 
     ax.legend(loc='lower right', prop=fontL, frameon=False)
 
@@ -45,18 +45,18 @@ def main():
     # label_X = ['1986','1987','1988','1989','1990','1991','1992','1993','1994','1995',
     #            '1996','1997','1998','1999','2000','2001','2002','2003','2004','2005',
     #            '2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018']
-    label_X = ['', '', '', '', '1990', '', '', '', '', '1995',
+    label_X = ['1986', '', '', '', '1990', '', '', '', '', '1995',
                '', '', '', '', '2000', '', '', '', '', '2005',
-               '', '', '', '', '2010', '', '', '', '', '2015', '', '', '']
+               '', '', '', '', '2010', '', '', '', '', '2015', '', '', '2018']
     ax.set_xticklabels(label_X, fontsize=16, fontfamily='Times New Roman')
     ax.set_xlim(1986, 2018)
     ax.set_ylim(0.75, 0.95)
 
-    ax.set_yticklabels(['0.70', '0.75', '0.80', '0.85', '0.90', '0.95'], fontsize=16, fontfamily='Times New Roman')
+    ax.set_yticklabels(['70', '75', '80', '85', '90', '95'], fontsize=16, fontfamily='Times New Roman')
     # ax.spines['right'].set_color('none')
     # ax.spines['top'].set_color('none')
-    ax.set_xlabel('Years', fontsize=18, fontfamily='Times New Roman')
-    ax.set_ylabel('Accuracy', fontsize=18, fontfamily='Times New Roman')
+    ax.set_xlabel('Year', fontsize=18, fontfamily='Times New Roman')
+    ax.set_ylabel('Accuracy (%)', fontsize=18, fontfamily='Times New Roman')
     plt.savefig('D:\\OneDrive\\GEE_Figure\\SlidWindow\\SlidingWindow.png',
                 bbox_inches='tight')
 

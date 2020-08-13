@@ -29,7 +29,7 @@ def main():
 
     ax1.fill_between(years, data['min'], data['Accuracy range'], alpha=0.8, color='thistle', label='Accuracy range')
 
-    ax1.plot(years, data['Training accuracy of all(mean)'], color='purple', label='Training accuracy of all(mean)',
+    ax1.plot(years, data['Training accuracy of all(mean)'], color='purple', label='Overall training accuracy (mean)',
              linewidth=2, linestyle='-')
 
     ax1.legend(loc='upper left', prop=fontL, frameon=False)
@@ -53,18 +53,18 @@ def main():
     # label_X = ['1986','1987','1988','1989','1990','1991','1992','1993','1994','1995',
     #            '1996','1997','1998','1999','2000','2001','2002','2003','2004','2005',
     #            '2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018']
-    label_X = ['', '', '', '', '1990', '', '', '', '', '1995',
+    label_X = ['1986', '', '', '', '1990', '', '', '', '', '1995',
                '', '', '', '', '2000', '', '', '', '', '2005',
-               '', '', '', '', '2010', '', '', '', '', '2015', '', '', '']
+               '', '', '', '', '2010', '', '', '', '', '2015', '', '', '2018']
     ax1.set_xticklabels(label_X, fontsize=16, fontfamily='Times New Roman')
     ax1.set_xlim(1985.4, 2018.6)
     ax1.set_ylim(0.83, 0.93)
     ax1.set_yticks(np.arange(0.83, 0.95, 0.02))
-    ax1.set_yticklabels(['0.83', '0.85', '0.87', '0.89', '0.91', '0.93'], fontsize=16, fontfamily='Times New Roman')
+    ax1.set_yticklabels(['83', '85', '87', '89', '91', '93'], fontsize=16, fontfamily='Times New Roman')
     # ax1.spines['right'].set_color('none')
     #     # ax1.spines['top'].set_color('none')
-    ax1.set_xlabel('Years', fontsize=18, fontfamily='Times New Roman')
-    ax1.set_ylabel('Accuracy', fontsize=18, fontfamily='Times New Roman')
+    ax1.set_xlabel('Year', fontsize=18, fontfamily='Times New Roman')
+    ax1.set_ylabel('Accuracy of classifier (%)', fontsize=18, fontfamily='Times New Roman')
     plt.savefig('D:\\OneDrive\\GEE_Figure\\分类精度和使用景数\\分类精度和使用景数.png',
                 bbox_inches='tight')
 
