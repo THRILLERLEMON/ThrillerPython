@@ -46,8 +46,8 @@ labels = [
     'LV']
 
 # y_true代表真实的label值 y_pred代表预测得到的lavel值
-y_true = np.loadtxt('C:/Users/thril/Desktop/True_ALL.txt')
-y_pred = np.loadtxt('C:/Users/thril/Desktop/Pred_ALL.txt')
+y_true = np.loadtxt('D:\\OneDrive\\SharedFile\\GEE_V2\\Validation_FIG\\True_ALL.txt')
+y_pred = np.loadtxt('D:\\OneDrive\\SharedFile\\GEE_V2\\Validation_FIG\\Pred_ALL.txt')
 
 fontInfo = {'family': 'Times New Roman', 'size': 14}
 
@@ -101,5 +101,5 @@ plt.gcf().subplots_adjust(bottom=0.15)
 plot_confusion_matrix(cm_normalized, title='Normalized Confusion Matrix')
 # show confusion matrix
 plt.savefig(
-    'C:/Users/thril/Desktop/confusion_matrix_ALL.png', format='png')
+    'D:\\OneDrive\\SharedFile\\GEE_V2\\Validation_FIG\\confusion_matrix_ALL.png', format='png')
 # plt.show()

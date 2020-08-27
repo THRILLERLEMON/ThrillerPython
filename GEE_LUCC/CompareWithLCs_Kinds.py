@@ -33,9 +33,9 @@ sys.stdout = Logger('OutLog.txt')
 print(printpath)
 
 excelData = pd.read_excel(
-    'D:\OneDrive\SharedFile\GEE_V2\CompareWithLCs\CompareFIG\ALLLLLLLLLLLL.xlsx', sheet_name="Sheet1")
+    'D:\GIS_DATA\GEE_DATA_landcover_V2\CompareWithLCs\CompareFIG\ALLLLLLLLLLLL.xlsx', sheet_name="Sheet1")
 
-csvPath='D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareFIG\\'
+csvPath = 'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareFIG\\'
 
 fig, ax = plt.subplots(figsize=(17, 7), dpi=300)
 
@@ -52,7 +52,7 @@ names = ['Forests', 'Shrubs', 'Grasslands', 'Agricultural lands', 'Built-up and 
 # plt.scatter(7, 7,color='black', marker='*',s=50, label='CGLS-LC100')
 # ax.legend()
 # plt.legend(bbox_to_anchor=(1.05, 0), loc=3, borderaxespad=0,prop={'family' : 'Times New Roman', 'size'   : 10})
-# plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\figggg.png',dpi=300,bbox_inches='tight')
+# plt.savefig('D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\figggg.png',dpi=300,bbox_inches='tight')
 
 
 
@@ -112,6 +112,6 @@ ax.set_xlabel('DataSet and Year', fontdict={'family' : 'Times New Roman', 'size'
 ax.set_ylabel(r'$\Delta$'+' Area($\mathregular{10^4km^2}$)',fontdict={'family' : 'Times New Roman', 'size'   : 15})
 # ax.set_title('Agricultural land Area Compare',fontdict={'family' : 'Times New Roman', 'size'   : 20})
 
-plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\figggg.png',dpi=300,bbox_inches='tight')
+plt.savefig('D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\figggg.png', dpi=300, bbox_inches='tight')
 # plt.show()
 

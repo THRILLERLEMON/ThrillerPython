@@ -33,7 +33,8 @@ sys.stdout = Logger('OutLog.txt')
 print(printpath)
 
 allCountryTrueData = pd.read_excel(
-    'D:\OneDrive\SharedFile\GEE_V2\CompareWithLCs\CompareWithLCs_Agricultural_land\耕地面积_单位-平方米.xlsx', sheet_name="pingfangmi")
+    'D:\GIS_DATA\GEE_DATA_landcover_V2\CompareWithLCs\CompareWithLCs_Agricultural_land\耕地面积_单位-平方米.xlsx',
+    sheet_name="pingfangmi")
 
 def FindValue(pCountryCode, pYear):
     findresult = allCountryTrueData[
@@ -44,8 +45,7 @@ def FindValue(pCountryCode, pYear):
 
 dfOut = pd.DataFrame(columns=['TrueArea', 'DataArea', 'DataSet','CountryCode','Year'])
 
-
-csvPath='D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\csv\\'
+csvPath = 'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\csv\\'
 
 fig, ax = plt.subplots(figsize=(10, 10), dpi=300)
 
@@ -218,7 +218,8 @@ ax.set_xlabel('TrueArea($\mathregular{10^4hm^2}$)', fontdict={'family' : 'Times 
 ax.set_ylabel('DataArea($\mathregular{10^4hm^2}$)',fontdict={'family' : 'Times New Roman', 'size'   : 20})
 ax.set_title('Agricultural land Area Compare',fontdict={'family' : 'Times New Roman', 'size'   : 20})
 
-plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\scatter.png',dpi=300,bbox_inches='tight')
+plt.savefig('D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\scatter.png',
+            dpi=300, bbox_inches='tight')
 # plt.show()
 dfOut.to_csv(
-        'D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\outDF.csv')
+    'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\outDF.csv')

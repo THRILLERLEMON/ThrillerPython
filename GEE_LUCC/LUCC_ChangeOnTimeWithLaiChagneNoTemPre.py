@@ -222,7 +222,8 @@ def main():
     for l in cb.ax.xaxis.get_ticklabels():
         l.set_family('Times New Roman')
         l.set_size(14)
-    cb.set_label('Net change in leaf area ($\mathregular{10^4km^2}$)', fontsize=16, fontfamily='Times New Roman')
+    cb.set_label('Net change in leaf area ($\mathregular{10^4}$ $\mathregular{km^2}$)', fontsize=16,
+                 fontfamily='Times New Roman')
 
     LAIchange = pd.read_csv(
         'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\NOAA_LAI_ChangeSlope1986-2018_1000m\\LAI_Change_NOAA_LP.csv',
@@ -242,7 +243,8 @@ def main():
     ax2.set_xticks(np.arange(-6, 10, 2))
     ax2.set_xlim(-6, 8)
     ax2.set_xticklabels(['-6', '-4', '-2', '0', '2', '4', '6', '8'], fontsize=14, fontfamily='Times New Roman')
-    ax2.set_xlabel('Net change in leaf area ($\mathregular{10^4km^2}$)', fontsize=16, fontfamily='Times New Roman')
+    ax2.set_xlabel('Net change in leaf area ($\mathregular{10^4}$ $\mathregular{km^2}$)', fontsize=16,
+                   fontfamily='Times New Roman')
 
     ax3 = ax2.twiny()
     ax3.plot(LAIchange['mean'], list(LAIchange.index), color='#97B85D', label='Annual average AVHRR LAI', linewidth=2.5,

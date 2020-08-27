@@ -22,6 +22,10 @@ gpData = pd.read_excel(path + '\\LPsta.xlsx', sheet_name="粮食产量", index_c
 # 10^4t
 gpData = gpData / 1e6
 
+incomeData = pd.read_excel(path + '\\农村居民人均纯收入.xlsx', sheet_name="Sheet4", index_col='Year')
+# Annual per Capita Net Income of Rural Households yuan
+incomeData = incomeData / 1000
+
 laData = pd.read_excel(path + '\\LPsta.xlsx', sheet_name="LA", index_col='Year')
 # 10^4km^2
 laData = laData / 1e10
@@ -89,6 +93,18 @@ ax0.set_xlim(1985.5, 2015.5)
 plt.xlabel('Year', font)
 plt.ylabel('Grain production ($\mathregular{10^6}$ t)', font)
 plt.legend(loc='upper left', ncol=4, prop={'family': 'Times New Roman', 'size': 14}, frameon=False)
+
+ax000 = ax0.twinx()
+ax000.plot(list(incomeData.index), list(incomeData['Income']), color='#2A557F',
+           label='Annual per capita net income of rural households', linewidth=2, linestyle='-')
+plt.yticks(fontproperties='Times New Roman', size=14)
+# plt.xticks(fontproperties='Times New Roman', size=14)
+ax000.set_ylim(0, 10)
+# ax000.set_xlim(1985.5, 2015.5)
+
+# plt.xlabel('Year', font)
+plt.ylabel('Net income (Thousand Yuan)', font)
+plt.legend(loc=(0.1, 1.1), ncol=4, prop={'family': 'Times New Roman', 'size': 14}, frameon=False)
 
 ax1 = plt.axes(rect1)
 
@@ -270,4 +286,4 @@ ax33.spines['left'].set_linewidth(1.5)
 ax33.spines['top'].set_linewidth(1.5)
 ax33.spines['right'].set_linewidth(1.5)
 
-plt.savefig(path + '\\StaForGEELC-Scatter.png', dpi=300, bbox_inches='tight')
+plt.savefig(path + '\\StaForGEELC-AddIncome.png', dpi=300, bbox_inches='tight')

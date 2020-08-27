@@ -36,7 +36,7 @@ sys.stdout = Logger('OutLog.txt')
 print(printpath)
 
 allCountryTrueData = pd.read_excel(
-    'D:\OneDrive\SharedFile\GEE_V2\CompareWithLCs\CompareWithLCs_Agricultural_land\耕地面积_单位-平方米.xlsx',
+    'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\耕地面积_单位-平方米.xlsx',
     sheet_name="pingfangmi")
 
 
@@ -49,7 +49,7 @@ def FindValue(pCountryCode, pYear):
 
 dfOut = pd.DataFrame(columns=['TrueArea', 'DataArea', 'DataSet', 'CountryCode', 'Year'])
 
-csvPath = 'D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\csv\\'
+csvPath = 'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\csv\\'
 
 fig = plt.figure(figsize=(20, 10), dpi=300)
 
@@ -612,8 +612,8 @@ plt.text(50, 37, "GLCC RMSE: " + str(compRMSE), family='Times New Roman', size=1
 # ax.set_title('Agricultural land Area Compare',fontdict={'family' : 'Times New Roman', 'size'   : 20})
 
 plt.savefig(
-    'D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\AgrSat_Sub_scatter.png',
+    'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\AgrSat_Sub_scatter.png',
     dpi=300, bbox_inches='tight')
 # plt.show()
 dfOut.to_csv(
-    'D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\Sub_outDF.csv')
+    'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\Sub_outDF.csv')

@@ -36,7 +36,7 @@ sys.stdout = Logger('OutLog.txt')
 print(printpath)
 
 allCountryTrueData = pd.read_excel(
-    'D:\OneDrive\SharedFile\GEE_V2\CompareWithLCs\CompareWithLCs_Agricultural_land\耕地面积_单位-平方米.xlsx',
+    'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\耕地面积_单位-平方米.xlsx',
     sheet_name="pingfangmi")
 
 fig = plt.figure(figsize=(10, 10), dpi=300)
@@ -144,5 +144,6 @@ plt.xticks(fontproperties='Times New Roman', size=14)
 plt.xlabel('RMSE (other datasets)', font)
 plt.ylabel('RMSE (this study)', font)
 
-plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\ShowAgrSatResult.png',
-            dpi=300, bbox_inches='tight')
+plt.savefig(
+    'D:\\GIS_DATA\\GEE_DATA_landcover_V2\\CompareWithLCs\\CompareWithLCs_Agricultural_land\\ShowAgrSatResult.png',
+    dpi=300, bbox_inches='tight')

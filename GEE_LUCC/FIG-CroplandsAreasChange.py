@@ -47,7 +47,7 @@ def main():
     ax.spines['right'].set_color('none')
     ax.spines['top'].set_color('none')
     plt.xlabel('Year', font)
-    plt.ylabel('Croplands Area($\mathregular{10^4hm^2}$)', font)
+    plt.ylabel('Croplands area($\mathregular{10^4}$ $\mathregular{hm^2}$)', font)
     plt.legend(loc='upper left', ncol=4, prop={'family': 'Times New Roman', 'size': 12}, frameon=False)
 
     plt.savefig(fnPath + "CroplandsAreaChange.png", bbox_inches='tight')
