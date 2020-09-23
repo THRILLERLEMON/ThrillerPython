@@ -33,7 +33,7 @@ ColormapList = {
     'Xi an': '#E02F5E',
     'Taiyuan': '#E29A4B',
     'Lanzhou': '#35B568',
-    'Hohhot': '#45BC9C',
+    'Hohhot': '#6B49E6',
     'Xining': '#525870'
 }
 

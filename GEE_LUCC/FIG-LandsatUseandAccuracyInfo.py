@@ -29,7 +29,7 @@ def main():
 
     ax1.fill_between(years, data['min'], data['Accuracy range'], alpha=0.8, color='thistle', label='Accuracy range')
 
-    ax1.plot(years, data['Training accuracy of all(mean)'], color='purple', label='Overall training accuracy (mean)',
+    ax1.plot(years, data['Training accuracy of all(mean)'], color='purple', label='Mean training accuracy',
              linewidth=2, linestyle='-')
 
     ax1.legend(loc='upper left', prop=fontL, frameon=False)

@@ -27,8 +27,8 @@ def main():
     fig = plt.figure(figsize=(10, 6), dpi=400)
     ax = fig.add_subplot(111)
 
-    ax.plot(years, data['3Window'], color='darkgreen', label='3-years window', linewidth=2.5, linestyle='-')
-    ax.plot(years, data['5Window'], color='darkorange', label='5-years window', linewidth=2.5, linestyle='-')
+    ax.plot(years, data['3Window'], color='darkgreen', label='3-year window', linewidth=2.5, linestyle='-')
+    ax.plot(years, data['5Window'], color='darkorange', label='5-year window', linewidth=2.5, linestyle='-')
 
     ax.legend(loc='lower right', prop=fontL, frameon=False)
 

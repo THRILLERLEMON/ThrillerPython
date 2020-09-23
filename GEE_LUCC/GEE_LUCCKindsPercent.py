@@ -139,7 +139,7 @@ def main():
     plt.xticks(fontproperties='Times New Roman', size=12)
     ax.set_ylim(0, 50)
     plt.xlabel('Class', font)
-    plt.ylabel('Area ratio (%)', font)
+    plt.ylabel('Area percentage (%)', font)
     plt.legend(loc='upper right', ncol=3, prop={'family': 'Times New Roman', 'size': 11}, frameon=False)
     ax.spines['bottom'].set_linewidth(1)
     ax.spines['left'].set_linewidth(1)
