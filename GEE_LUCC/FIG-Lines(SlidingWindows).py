@@ -18,9 +18,9 @@ from sklearn.linear_model import LinearRegression
 
 def main():
     fontL = {'family': 'Times New Roman',
-             'size': 16, }
+             'size': 12, }
 
-    data = pd.read_excel('D:\\OneDrive\\GEE_Figure\\SlidWindow\\ALL.xlsx')
+    data = pd.read_excel('E:\\OFFICE\\YR_LP_LC_GEE\\GEE_Figure\\SlidWindow\\ALL.xlsx')
 
     years = range(1986, 2019)
 
@@ -48,16 +48,20 @@ def main():
     label_X = ['1986', '', '', '', '1990', '', '', '', '', '1995',
                '', '', '', '', '2000', '', '', '', '', '2005',
                '', '', '', '', '2010', '', '', '', '', '2015', '', '', '2018']
-    ax.set_xticklabels(label_X, fontsize=16, fontfamily='Times New Roman')
+    ax.set_xticklabels(label_X, fontsize=12, fontfamily='Times New Roman')
     ax.set_xlim(1986, 2018)
     ax.set_ylim(0.75, 0.95)
 
-    ax.set_yticklabels(['70', '75', '80', '85', '90', '95'], fontsize=16, fontfamily='Times New Roman')
+    ax.set_yticklabels(['70', '75', '80', '85', '90', '95'], fontsize=12, fontfamily='Times New Roman')
     # ax.spines['right'].set_color('none')
     # ax.spines['top'].set_color('none')
-    ax.set_xlabel('Year', fontsize=18, fontfamily='Times New Roman')
-    ax.set_ylabel('Accuracy (%)', fontsize=18, fontfamily='Times New Roman')
-    plt.savefig('D:\\OneDrive\\GEE_Figure\\SlidWindow\\SlidingWindow.png',
+    ax.set_xlabel('Year', fontsize=14, fontfamily='Times New Roman')
+    ax.set_ylabel('Accuracy (%)', fontsize=14, fontfamily='Times New Roman')
+    ax.spines['bottom'].set_linewidth(1.25)
+    ax.spines['left'].set_linewidth(1.25)
+    ax.spines['top'].set_linewidth(1.25)
+    ax.spines['right'].set_linewidth(1.25)
+    plt.savefig('D:\\OneDrive\\SharedFile\\GEE_V2\\Manuscript\\STOTEN-Figure-500dpi\\SlidingWindow.png',
                 bbox_inches='tight')
 
 
