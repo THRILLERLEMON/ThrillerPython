@@ -208,7 +208,7 @@ def main():
     ax1.set_ylim(1986, 2019)
     ax11.set_xticks(changeType_Index)
     ax11.set_xticklabels(typesByChangeLASort, rotation=90, fontsize=13, fontfamily='Times New Roman')
-    ax11.set_xlabel('Land cover transition type', fontsize=16, fontfamily='Times New Roman')
+    ax11.set_xlabel('Land use/cover transition type', fontsize=16, fontfamily='Times New Roman')
     # ax1.set_ylabel('Year', fontsize=12, fontfamily='Times New Roman')
 
     axCB = plt.axes(rectCB)
