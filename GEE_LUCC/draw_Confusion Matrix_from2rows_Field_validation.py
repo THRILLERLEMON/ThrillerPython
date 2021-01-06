@@ -8,7 +8,7 @@ import numpy as np
 import os
 import sys
 
-output_path = 'E:\\OFFICE\\YR_LP_LC_GEE\\Validation\\2002\\'
+output_path = 'E:\\OFFICE\\YR_LP_LC_GEE\\Validation\\Validation_Field\\'
 
 
 # 输出print内容
@@ -33,16 +33,16 @@ print(printpath)
 # labels表示你不同类别的代号
 labels = [
     'DBF', 'ENF', 'MF', 'Shrub', 'LCG', 'MCG', 'HCG', 'Crop', 'OT', 'UB',
-    'Water', 'Wet', 'Snow', 'DB', 'LV'
+    'Water','DB', 'LV'
 ]
 
 # y_true代表真实的label值 y_pred代表预测得到的lavel值
-data_df = pd.read_csv(output_path + '2002.csv')
-# data_df = pd.read_excel(output_path + '2001.xlsx')
-y_true = data_df['Ground_Truth_LC']
-y_pred = data_df['YRLP_LC']
+data_df = pd.read_excel(output_path + 'ALL_Validation_Field.xlsx')
+y_true=data_df['GroundTruth_YR_90m']
+y_pred=data_df['YR_90m_LC']
 
 fontInfo = {'family': 'Times New Roman', 'size': 14}
+
 tick_marks = np.array(range(len(labels))) + 0.5
 
 
